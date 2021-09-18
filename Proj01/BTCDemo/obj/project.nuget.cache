@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/ahIEKJC/zwlsg+5VPn8okRXlQ8+9kHyTveGpu7nf3TpKpJWkctAVTovJiq4mxcmwdli1DjEyh6dwDjrL5NvQA==",
+  "dgSpecHash": "k+UCK4tZuTNRaOcXb9rdrdZZ3t6qsKsNX3WRacr/j/QNZ6Rfv9tBJJOQD3Sjj/SVwh1Y4+8Ge6TIYZOJ57mOJA==",
   "success": true,
-  "projectFilePath": "E:\\Documents\\Courses\\DOSP\\BTCDemo\\BTCDemo.fsproj",
+  "projectFilePath": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj01\\BTCDemo\\BTCDemo.fsproj",
   "expectedPackageFiles": [
     "C:\\Users\\fongziyjun\\.nuget\\packages\\akka\\1.4.25\\akka.1.4.25.nupkg.sha512",
     "C:\\Users\\fongziyjun\\.nuget\\packages\\akka.fsharp\\1.4.25\\akka.fsharp.1.4.25.nupkg.sha512",

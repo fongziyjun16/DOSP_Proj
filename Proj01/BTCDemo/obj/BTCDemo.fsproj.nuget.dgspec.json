@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Documents\\Courses\\DOSP\\BTCDemo\\BTCDemo.fsproj": {}
+    "E:\\Documents\\Courses\\DOSP\\Projs\\Proj01\\BTCDemo\\BTCDemo.fsproj": {}
   },
   "projects": {
-    "E:\\Documents\\Courses\\DOSP\\BTCDemo\\BTCDemo.fsproj": {
+    "E:\\Documents\\Courses\\DOSP\\Projs\\Proj01\\BTCDemo\\BTCDemo.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Documents\\Courses\\DOSP\\BTCDemo\\BTCDemo.fsproj",
+        "projectUniqueName": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj01\\BTCDemo\\BTCDemo.fsproj",
         "projectName": "BTCDemo",
-        "projectPath": "E:\\Documents\\Courses\\DOSP\\BTCDemo\\BTCDemo.fsproj",
+        "projectPath": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj01\\BTCDemo\\BTCDemo.fsproj",
         "packagesPath": "C:\\Users\\fongziyjun\\.nuget\\packages\\",
-        "outputPath": "E:\\Documents\\Courses\\DOSP\\BTCDemo\\obj\\",
+        "outputPath": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj01\\BTCDemo\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\fongziyjun\\AppData\\Roaming\\NuGet\\NuGet.Config",

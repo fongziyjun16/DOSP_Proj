@@ -25,7 +25,7 @@ type worker() =
             printfn "%s starts computing" (x.GetName())
             let result = mission.findTheHash(msg.PREFIX, msg.NUMBEROFZERO)
             if result.STAT then
-                printfn "%s get results: %s" (x.GetName()) result.RESULT
+                printfn "%s get results: \"%s\"" (x.GetName()) result.RESULT
             else
                 printfn "%s stops computing" (x.GetName())
         | _ -> failwith "unknow message"
@@ -33,7 +33,7 @@ type worker() =
 [<EntryPoint>]
 let main argv =
 
-    let msg = new missionInfo("yingjie.chen", 3)
+    let msg = new missionInfo("yingjie.chen", 6)
 
     let actors = 
         [1 .. 10]
