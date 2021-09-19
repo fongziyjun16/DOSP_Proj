@@ -11,6 +11,8 @@ open Akka.Configuration
 open Msgs
 open Actors
 
+// hostname change localhost to IPv4
+
 let configuration = ConfigurationFactory.ParseString(@"
         akka {
             actor.provider = remote
@@ -31,7 +33,7 @@ let eventManager = mainSys.EventStream
 
 [<EntryPoint>]
 let main argv =
-    let startInfo = new StartComputation("yingjie.chen", 5)
+    let startInfo = new StartComputation("yingjie.chen", 4)
     
     let printer = mainSys.ActorOf(Props(typedefof<PrinterActor>), "printer")
     printer <! new PrintInfo(

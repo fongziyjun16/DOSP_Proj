@@ -141,14 +141,14 @@ type WorkerActor() =
                 x.incrRecorder() |> ignore
                 // make mainSys slowly so that simulating subSys getting data
                 //if Actor.Context.System.Name.Equals("mainSys") then
-                    //System.Threading.Thread.Sleep(1)
+                    //System.Threading.Thread.Sleep(100)
                 if recorder.Count > suffixLength then
                     exceedLength <- true
                 else result <- (x.buildOrign())
             
             if exceedLength = true then
                 x.Sender <! new IncrSuffixLength(suffixLength, suffixLength + 1, x.Self.Path.Name)
-                printer <! " exceed"
+                printer <! " exceed " + suffixLength.ToString()
             else if computationStat && x.isValid(x.SHA256AnyString2Hex(result), numberOfZeros) then
                 x.Sender <! new FindResult(result, x.Self.Path.Name)
                 printer <! " get result"

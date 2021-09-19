@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>BTCMainSysDemo</id>
+    <version>1.0.0</version>
+    <authors>BTCMainSysDemo</authors>
+    <description>Package Description</description>
+    <dependencies>
+      <group targetFramework="net5.0">
+        <dependency id="Akka" version="1.4.25" exclude="Build,Analyzers" />
+        <dependency id="Akka.FSharp" version="1.4.25" exclude="Build,Analyzers" />
+        <dependency id="Akka.Remote" version="1.4.25" exclude="Build,Analyzers" />
+        <dependency id="FSharp.Core" version="5.0.2" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="E:\Documents\Courses\DOSP\Projs\Proj01\BTCSysDemo\BTCMainSysDemo\bin\Debug\net5.0\BTCMainSysDemo.runtimeconfig.json" target="lib\net5.0\BTCMainSysDemo.runtimeconfig.json" />
+    <file src="E:\Documents\Courses\DOSP\Projs\Proj01\BTCSysDemo\BTCMainSysDemo\bin\Debug\net5.0\BTCMainSysDemo.dll" target="lib\net5.0\BTCMainSysDemo.dll" />
+  </files>
+</package>
