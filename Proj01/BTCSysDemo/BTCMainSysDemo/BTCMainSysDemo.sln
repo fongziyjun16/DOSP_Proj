@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "BTCMainSysDemo", "BTCMainSysDemo.fsproj", "{ABFB6648-622E-49A6-A3AC-E05497E32471}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "BTCSubSysDemo", "..\BTCSubSysDemo\BTCSubSysDemo.fsproj", "{BEFA1964-B1DC-445A-8EFF-A5AE943C9F94}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ABFB6648-622E-49A6-A3AC-E05497E32471}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABFB6648-622E-49A6-A3AC-E05497E32471}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABFB6648-622E-49A6-A3AC-E05497E32471}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABFB6648-622E-49A6-A3AC-E05497E32471}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEFA1964-B1DC-445A-8EFF-A5AE943C9F94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEFA1964-B1DC-445A-8EFF-A5AE943C9F94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEFA1964-B1DC-445A-8EFF-A5AE943C9F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEFA1964-B1DC-445A-8EFF-A5AE943C9F94}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D7387AC3-4FCF-445F-9112-7703D1213DEC}
+	EndGlobalSection
+EndGlobal
