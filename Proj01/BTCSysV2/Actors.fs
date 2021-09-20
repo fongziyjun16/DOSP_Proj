@@ -146,11 +146,10 @@ type WorkActor() =
                         result <- (x.buildOrign())
                         // if Actor.Context.System.Name.Equals("mainSys") then
                             // System.Threading.Thread.Sleep(100)
-                        if x.isValid(x.SHA256AnyString2Hex(result), numberOfZeros) = false then
-                            x.incrRecorder()
-                        else 
+                        if x.isValid(x.SHA256AnyString2Hex(result), numberOfZeros) = true then
                             stateManager <! new FoundOneResult(result, x.Self.Path.ToStringWithAddress())
-
+                        x.incrRecorder()
+                    printfn "test flg"
         | _ -> printer <! "unknown message"
 
     member private x.InitRecorder() =
