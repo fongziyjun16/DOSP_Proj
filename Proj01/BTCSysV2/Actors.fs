@@ -124,6 +124,7 @@ type WorkActor() =
     let mutable prefix = ""
     let mutable numberOfZeros = 3
     let mutable result = ""
+    let lengthSet = Collections.Generic.HashSet<int>()
 
     override x.OnReceive message =
         match box message with
@@ -133,20 +134,22 @@ type WorkActor() =
 
             while true do
                 suffixLength <- int(Async.RunSynchronously((stateManager <? new GetSuffixLength(suffixLength)), -1))
-                printer <! new PrintingInfo(
-                                x.Self.Path.ToStringWithAddress(), 
-                                " start computing with suffixlength " + suffixLength.ToString())
+                if lengthSet.Contains(suffixLength) = false then
+                    lengthSet.Add(suffixLength) |> ignore
+                    printer <! new PrintingInfo(
+                                    x.Self.Path.ToStringWithAddress(), 
+                                    " start computing with suffixlength " + suffixLength.ToString())
                 
-                x.InitRecorder()
+                    x.InitRecorder()
                 
-                while recorder.Count <= suffixLength do
-                    result <- (x.buildOrign())
-                    if Actor.Context.System.Name.Equals("mainSys") then
-                        System.Threading.Thread.Sleep(100)
-                    if x.isValid(x.SHA256AnyString2Hex(result), numberOfZeros) = false then
-                        x.incrRecorder()
-                    else 
-                        stateManager <! new FoundOneResult(result, x.Self.Path.ToStringWithAddress())
+                    while recorder.Count <= suffixLength do
+                        result <- (x.buildOrign())
+                        // if Actor.Context.System.Name.Equals("mainSys") then
+                            // System.Threading.Thread.Sleep(100)
+                        if x.isValid(x.SHA256AnyString2Hex(result), numberOfZeros) = false then
+                            x.incrRecorder()
+                        else 
+                            stateManager <! new FoundOneResult(result, x.Self.Path.ToStringWithAddress())
 
         | _ -> printer <! "unknown message"
 
