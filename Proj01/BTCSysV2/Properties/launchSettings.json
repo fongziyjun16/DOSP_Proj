@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BTCSysV2": {
+      "commandName": "Project",
+      "commandLineArgs": "192.168.230.1 10010 y 8"
+    }
+  }
+}
