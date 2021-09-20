@@ -15,6 +15,8 @@ type PrinterActor(isMainSys: bool) =
     override x.OnReceive message =
         if isMainSys then
             match box message with
+            | :? OneTuple as msg ->
+                printfn "[%s]\t[0x%s]" msg.COIN msg.SHA256
             | :? PrintingInfo as msg ->
                 printfn "From [%s] 's message: [%s]" msg.FROM msg.CONTENT
             | :? string as msg ->
@@ -52,6 +54,10 @@ type StateManagementActor(isMainSys: bool, prefix: string,
                 if resultSet.Contains(msg.RESULT) = false then
                     resultSet.Add(msg.RESULT) |> ignore
                     printer <! new PrintingInfo(msg.FROM, msg.RESULT)
+            | :? OneTuple as msg ->
+                if resultSet.Contains(msg.COIN) = false then
+                    resultSet.Add(msg.COIN) |> ignore
+                    printer <! msg
             | :? GetSuffixLength as msg ->
                 if numberOfWorkers < 3 then
                     x.Sender <! suffixLength
@@ -74,6 +80,8 @@ type StateManagementActor(isMainSys: bool, prefix: string,
                 eventManager.Publish(new StartComputing(msg.PREFIX, msg.NUMBEROFZEROS))
             | :? FoundOneResult as msg ->
                 connector <! msg
+            | :? OneTuple as msg ->
+                connector <! msg
             | :? GetSuffixLength as msg ->
                 x.Sender <! Async.RunSynchronously((connector <? msg), -1)
             | _ -> printer <! "unknown message"
@@ -94,6 +102,8 @@ type ConnectionActor(isMainSys: bool, mainSysAddrBase: string) =
                 printer <! new PrintingInfo(msg.FROM, msg.CONTENT)
             | :? FoundOneResult as msg ->
                 stateManager <! msg
+            | :? OneTuple as msg ->
+                stateManager <! msg
             | :? GetSuffixLength as msg ->
                 x.Sender <! Async.RunSynchronously((stateManager <? msg), -1)
             | :? OuterStartComputing as msg ->
@@ -107,6 +117,8 @@ type ConnectionActor(isMainSys: bool, mainSysAddrBase: string) =
             | :? OuterPrintingInfo as msg ->
                 mainSysConnector <! msg
             | :? FoundOneResult as msg ->
+                mainSysConnector <! msg
+            | :? OneTuple as msg ->
                 mainSysConnector <! msg
             | :? GetSuffixLength as msg ->
                 x.Sender <! Async.RunSynchronously((mainSysConnector <? msg), -1)
@@ -136,20 +148,22 @@ type WorkActor() =
                 suffixLength <- int(Async.RunSynchronously((stateManager <? new GetSuffixLength(suffixLength)), -1))
                 if lengthSet.Contains(suffixLength) = false then
                     lengthSet.Add(suffixLength) |> ignore
-                    printer <! new PrintingInfo(
+(*                    printer <! new PrintingInfo(
                                     x.Self.Path.ToStringWithAddress(), 
                                     " start computing with suffixlength " + suffixLength.ToString())
-                
+*)                
                     x.InitRecorder()
                 
                     while recorder.Count <= suffixLength do
                         result <- (x.buildOrign())
                         // if Actor.Context.System.Name.Equals("mainSys") then
                             // System.Threading.Thread.Sleep(100)
-                        if x.isValid(x.SHA256AnyString2Hex(result), numberOfZeros) = true then
-                            stateManager <! new FoundOneResult(result, x.Self.Path.ToStringWithAddress())
+                        let sha256 = x.SHA256AnyString2Hex(result)
+                        if x.isValid(sha256, numberOfZeros) = true then
+                            // stateManager <! new FoundOneResult(result, x.Self.Path.ToStringWithAddress())
+                            stateManager <! new OneTuple(result, sha256)
                         x.incrRecorder()
-                    printfn "test flg"
+                    
         | _ -> printer <! "unknown message"
 
     member private x.InitRecorder() =

@@ -60,3 +60,13 @@ type OuterStartComputing =
             NUMBEROFZEROS = numberOfZeros
         }
     end
+
+type OneTuple = 
+    struct
+        val COIN: string
+        val SHA256: string
+        new (coin: string, sha256: string) = {
+            COIN = coin;
+            SHA256 = sha256
+        }
+    end

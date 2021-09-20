@@ -80,7 +80,7 @@ let main argv =
             |> List.map (fun id ->
                             let worker = sys.ActorOf(Props(typedefof<WorkActor>), "worker_" + id.ToString())
                             eventManager.Subscribe(worker, typedefof<StartComputing>) |> ignore
-                            printer <! new PrintingInfo(sysName, " generate " + worker.Path.Name)
+                            // printer <! new PrintingInfo(sysName, " generate " + worker.Path.Name)
                             worker)
 
         // start computing
