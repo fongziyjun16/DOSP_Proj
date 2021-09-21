@@ -65,8 +65,15 @@ type OneTuple =
     struct
         val COIN: string
         val SHA256: string
+        val LEADINGZEROS: int
         new (coin: string, sha256: string) = {
             COIN = coin;
-            SHA256 = sha256
+            SHA256 = sha256;
+            LEADINGZEROS = 0
+        }
+        new (coin: string, sha256: string, leadingZeros: int) = {
+            COIN = coin;
+            SHA256 = sha256;
+            LEADINGZEROS = leadingZeros
         }
     end

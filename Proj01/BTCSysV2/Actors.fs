@@ -16,7 +16,8 @@ type PrinterActor(isMainSys: bool) =
         if isMainSys then
             match box message with
             | :? OneTuple as msg ->
-                printfn "[%s]\t[0x%s]" msg.COIN msg.SHA256
+                if msg.LEADINGZEROS > 0 then
+                    printfn "[%s]\twith [%d] leading zeros\t[0x%s]" msg.COIN msg.LEADINGZEROS msg.SHA256
             | :? PrintingInfo as msg ->
                 printfn "From [%s] 's message: [%s]" msg.FROM msg.CONTENT
             | :? string as msg ->
@@ -42,6 +43,7 @@ type StateManagementActor(isMainSys: bool, prefix: string,
     let mutable sameComputingNumber = 0
 
     let resultSet = System.Collections.Generic.HashSet<string>()
+    let suffixResultLengthSet = System.Collections.Generic.HashSet<int>()
 
     let eventManager = Actor.Context.System.EventStream
 
@@ -55,9 +57,14 @@ type StateManagementActor(isMainSys: bool, prefix: string,
                     resultSet.Add(msg.RESULT) |> ignore
                     printer <! new PrintingInfo(msg.FROM, msg.RESULT)
             | :? OneTuple as msg ->
-                if resultSet.Contains(msg.COIN) = false then
-                    resultSet.Add(msg.COIN) |> ignore
-                    printer <! msg
+                if msg.LEADINGZEROS = numberOfZeros then
+                    if resultSet.Contains(msg.COIN) = false then
+                        resultSet.Add(msg.COIN) |> ignore
+                        printer <! msg
+                else
+                    if suffixResultLengthSet.Contains(msg.LEADINGZEROS) = false then
+                        suffixResultLengthSet.Add(msg.LEADINGZEROS) |> ignore
+                        printer <! msg
             | :? GetSuffixLength as msg ->
                 if numberOfWorkers < 3 then
                     x.Sender <! suffixLength
@@ -85,7 +92,7 @@ type StateManagementActor(isMainSys: bool, prefix: string,
             | :? GetSuffixLength as msg ->
                 x.Sender <! Async.RunSynchronously((connector <? msg), -1)
             | _ -> printer <! "unknown message"
-
+            
 type ConnectionActor(isMainSys: bool, mainSysAddrBase: string) =
     inherit Actor()
 
@@ -158,10 +165,13 @@ type WorkActor() =
                         result <- (x.buildOrign())
                         // if Actor.Context.System.Name.Equals("mainSys") then
                             // System.Threading.Thread.Sleep(100)
-                        let sha256 = x.SHA256AnyString2Hex(result)
-                        if x.isValid(sha256, numberOfZeros) = true then
+                        let sha256: string = x.SHA256AnyString2Hex(result)
+                        if '0' = sha256.[0] then
+                            stateManager <! new OneTuple(result, sha256, x.CountLeadingZeros(sha256))
+(*                        if x.isValid(sha256, numberOfZeros) = true then
                             // stateManager <! new FoundOneResult(result, x.Self.Path.ToStringWithAddress())
                             stateManager <! new OneTuple(result, sha256)
+*)
                         x.incrRecorder()
                     
         | _ -> printer <! "unknown message"
@@ -189,6 +199,14 @@ type WorkActor() =
 
         if extra = 1 then
             recorder.Insert(0, 32)
+
+    member x.CountLeadingZeros (sha256: string): int =
+        let mutable count = 0;
+        let mutable i = 0;
+        while i < sha256.Length && sha256.[i] = '0' do
+            count <- (count + 1)
+            i <- (i + 1)
+        count
 
     member private x.SHA256AnyString2Hex (str : string) =
         Security.Cryptography.SHA256.Create().ComputeHash(Text.Encoding.Default.GetBytes str)
