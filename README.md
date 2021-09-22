@@ -1,9 +1,31 @@
-# DOSP_Proj
+# DOSP_Proj01
 
-## Reference
+## Group Members
 
-1. AKKA.NET https://getakka.net/index.html
+1. UFID: 83981600, Email: yingjie.chen@ufl.edu
+2. UFID: , Email: 
 
-2. AKKA.FSharp https://github.com/akkadotnet/akka.net/tree/dev/src/core/Akka.FSharp
-3. Samples https://gist.github.com/akimboyko/e58e4bfbba3e9a551f05
+## How to Run
+
+
+
+## Architecture
+
+
+
+## Experiment
+
+
+
+## CPU Usage
+
+
+
+## Shortages
+
+
+
+## Scalability
+
+
 
