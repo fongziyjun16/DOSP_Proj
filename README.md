@@ -1,31 +1,11 @@
 # DOSP_Proj01
 
-## Group Members
+## Reference
 
-1. UFID: 83981600, Email: yingjie.chen@ufl.edu
-2. UFID: , Email: 
-
-## How to Run
+1. AKKA.NET
+2. Microsoft F# Doc
 
 
-
-## Architecture
-
-
-
-## Experiment
-
-
-
-## CPU Usage
-
-
-
-## Shortages
-
-
-
-## Scalability
 
 
 
