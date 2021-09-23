@@ -28,9 +28,9 @@
    
 5. On the base of the fourth step, it will need you to type in the prefix and the number of leading zero to run
 
-   ![001](.\images\001.png)
+   ![001](images/001.png)
 
-   ![002](.\images\002.png)
+   ![002](images/002.png)
 
 6. Copying the decompressed folder mentioned above to another computer that can connect to the computer above (main application run on) 
 
@@ -46,11 +46,11 @@
 
 8. On the base of the seventh step, you will need to type in the IPv4 Address and the specific port  both of the main application 
 
-   ![003](.\images\003.png)
+   ![003](images/003.png)
 
    - Above image is from main application, when a sub application joins in main application, we can see related information displayed
 
-   ![004](.\images\004.png)
+   ![004](images/004.png)
 
    - Above image is from sub application, the information represents it connects to the main application
 
@@ -98,19 +98,19 @@
 
 - Main application and Sub application
 
-  ![005](.\images\005.png)
+  ![005](images/005.png)
 
 - Communication in Main Application
 
-  ![006](.\images\006.png)
+  ![006](images/006.png)
 
 - Communication in Sub Application
 
-  ![007](.\images\007.png)
+  ![007](images/007.png)
 
 - Main Application and several Sub Applications
 
-  ![008](.\images\008.png)
+  ![008](images/008.png)
 
 ## Experiment
 
