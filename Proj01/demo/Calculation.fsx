@@ -43,15 +43,18 @@ let findTheHash (prefix : string, zeros : int) =
 
     let mutable testValue = buildOrign(prefix, recorder)
     while isValid(SHA256AnyString2Hex(testValue), zeros) = false do
-        printfn "invalid hash value: %s" testValue
+        // printfn "invalid hash value: %s" testValue
         recorderIncrement recorder
         testValue <- (buildOrign(prefix, recorder))
     printfn "valid hash value: \"%s\"" testValue
-    
-[<EntryPoint>]
-let main argv =
-    let timer = new Diagnostics.Stopwatch()
-    timer.Start();
-    findTheHash("yingjie.chen", 3)
-    printfn "Elapsed time: %i milliseconds" timer.ElapsedMilliseconds
-    0 
+
+let args : string array = fsi.CommandLineArgs |> Array.tail
+let first = args.[0]
+let second = args.[1]
+printfn "%s ; %s" first second
+
+#time
+findTheHash("yingjie.chen", 3)
+printfn "cores: %d" Environment.ProcessorCount
+#time
+
