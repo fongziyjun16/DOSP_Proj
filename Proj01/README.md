@@ -114,12 +114,6 @@
 
 ## Experiment
 
-#### Size of The Unit
-
-Size of the work unit here is set to be  
-
-
-
 #### Result
 
 The program is running on two virtual machines of Linux Ubuntu systems to get the cpu time, since linux supports better in multi-core and multi-thread operations. Each machine sets two cores at the beginning to do the paralleling computing.
