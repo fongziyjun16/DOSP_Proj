@@ -114,6 +114,11 @@
 
 ## Experiment
 
+The program is running on two virtual machines to get the cpu time, since windows performs worse support in multi-core and multi-thread operations.
+- After the Main Application begins calculating, input "ps -aux" in a new terminal window to acquire PID of the process
+- Input "top -t #PID" to get the dynamic corresponding CPU usage situation
+
+There is the CPU time of Main application and Subapplication 
 
 
 #### CPU Usage
