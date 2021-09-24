@@ -114,11 +114,44 @@
 
 ## Experiment
 
-The program is running on two virtual machines of Linux Ubuntu systems to get the cpu time, since linux supports better in multi-core and multi-thread operations. Each machine sets two cores of CUP to do the computing.
+#### Size of The Unit
+
+Size of the work unit here is set to be  
 
 
 
+#### Result
 
+The program is running on two virtual machines of Linux Ubuntu systems to get the cpu time, since linux supports better in multi-core and multi-thread operations. Each machine sets two cores at the beginning to do the paralleling computing.
+1. Main Application:
+   -IP: 10.0.2.15
+   -Port: 10010
+   -Running the command "dotnet run 10.0.2.15 10010 y 10"
+   -Input the prefix "yingjie.chen"
+   -Input the leading 0
+   
+![image](https://user-images.githubusercontent.com/28448629/134704691-dbf18daa-d608-4955-b259-dc2922f630e8.png)
+
+2. Sub Application:
+   -IP: 10.0.2.4
+   -Port: 10010
+   -Running the command "dotnet run 10.0.2.4 10010 n 10"
+   -Input the Main application IP: 10.0.2.15
+   -Input the Main application Port: 10010
+   
+![image](https://user-images.githubusercontent.com/28448629/134704755-494837fa-c71a-43bb-9bec-a30448cbda1c.png)
+
+Outcome of leading 0 = 4
+
+![image](https://user-images.githubusercontent.com/28448629/134704999-7ea0b945-0e89-43b5-817c-db1c02698c33.png)
+
+![image](https://user-images.githubusercontent.com/28448629/134705034-080e5409-27cc-4f58-b213-61fb742cab78.png)
+
+![image](https://user-images.githubusercontent.com/28448629/134705065-cf661196-3b12-4ef4-8df8-51c42b3d66ab.png)
+
+![image](https://user-images.githubusercontent.com/28448629/134705101-ce60562f-5296-4345-8861-601052fff723.png)
+
+The list will extend unless pressing the "Enter" button to stop.
 
 #### CPU Usage
 
@@ -132,11 +165,15 @@ The real time takes the system time of Linux. The CPU time can be shown synchron
    - Real time: 10:29
    - CPU time: 11:27.94
    - CPU time > Real time (10:29 - 10:22), proving that this actor model is CPU bound.
+   - Ratio of CPU time / Real time = 11.5 / 7 = 1.6429 (as there is only two cores)
+   - CPU Usage: 172.3%. Average: 170%
 
 Start Picture:
+
 ![image](https://user-images.githubusercontent.com/28448629/134697032-9c6878bc-3b0f-42b5-8b8e-eded16bf6540.png)
 
 Later Picture:
+
 ![image](https://user-images.githubusercontent.com/28448629/134697323-5a37c1d6-9b0b-481e-a169-e5f85dd74aaa.png)
 
 2. Sub Application
@@ -145,16 +182,23 @@ Later Picture:
    - Real time: 10:27
    - CPU time: 6:36.53
    - CPU time > Real time (10:27 - 10:22), proving that this actor model is CPU bound.
+   - Ratio of CPU time / Real time = 6.6 / 5 = 1.32 (as there is only two cores)
+   - CPU Usage: 171.3%. Average: 169%
 
 Start Picture:
+
 ![image](https://user-images.githubusercontent.com/28448629/134700026-9b63e50e-ede8-4869-92ad-1cd64873abe1.png)
 
-
 Later Picture:
+
 ![image](https://user-images.githubusercontent.com/28448629/134700161-78a2697c-3d61-4820-9ecd-08e723663fb6.png)
 
+#### Coins with most 0s
 
-## Scalability
+Coins with nine 0s is the most out program can find. When 0s = 10, the program need a long time to compute the result and that time has proved to be longer than 1 hour.
+
+
+#### Scalability
 
 After starting one Main Application, we can start a number of Sub Application in the same machine or other machines to join in computation for finding the results with specific length of leading zeros and other results with different length of leading zeros.
 
