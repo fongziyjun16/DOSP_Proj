@@ -124,7 +124,7 @@ The program is running on two virtual machines of Linux Ubuntu systems to get th
    -Input the prefix "yingjie.chen"
    -Input the leading 0
    
-![image](https://user-images.githubusercontent.com/28448629/134704691-dbf18daa-d608-4955-b259-dc2922f630e8.png)
+![image](images/009.png)
 
 2. Sub Application:
    -IP: 10.0.2.4
