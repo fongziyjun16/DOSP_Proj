@@ -114,19 +114,44 @@
 
 ## Experiment
 
-The program is running on two virtual machines to get the cpu time, since windows performs worse support in multi-core and multi-thread operations.
-- After the Main Application begins calculating, input "ps -aux" in a new terminal window to acquire PID of the process
-- Input "top -t #PID" to get the dynamic corresponding CPU usage situation
+The program is running on two virtual machines of Linux Ubuntu systems to get the cpu time, since linux supports better in multi-core and multi-thread operations. Each machine sets two cores of CUP to do the computing.
 
-There is the CPU time of Main application and Subapplication 
+
+
 
 
 #### CPU Usage
 
+The real time takes the system time of Linux. The CPU time can be shown synchronizingly using Linux conmmands which are listed below. CPU time and CPU usage is the summary time and usage of the two cores allocated to each machine.
+- After the Main Application begins calculating, input "ps -aux" in a new terminal window to acquire PID of the process
+- Input "top -t #PID" to get the dynamic corresponding CPU usage situation
+
+1. Main Application
+-Start: REAL TIME is 10:22
+-After a time interval:
+   - Real time: 10:29
+   - CPU time: 11:27.94
+   - CPU time > Real time (10:29 - 10:22), proving that this actor model is CPU bound.
+
+Start Picture:
+![image](https://user-images.githubusercontent.com/28448629/134697032-9c6878bc-3b0f-42b5-8b8e-eded16bf6540.png)
+
+Later Picture:
+![image](https://user-images.githubusercontent.com/28448629/134697323-5a37c1d6-9b0b-481e-a169-e5f85dd74aaa.png)
+
+2. Sub Application
+-Start: REAL TIME is 10:23
+-After a time interval:
+   - Real time: 10:27
+   - CPU time: 6:36.53
+   - CPU time > Real time (10:27 - 10:22), proving that this actor model is CPU bound.
+
+Start Picture:
+![image](https://user-images.githubusercontent.com/28448629/134700026-9b63e50e-ede8-4869-92ad-1cd64873abe1.png)
 
 
-
-
+Later Picture:
+![image](https://user-images.githubusercontent.com/28448629/134700161-78a2697c-3d61-4820-9ecd-08e723663fb6.png)
 
 
 ## Scalability
