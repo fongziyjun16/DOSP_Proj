@@ -133,17 +133,17 @@ The program is running on two virtual machines of Linux Ubuntu systems to get th
    -Input the Main application IP: 10.0.2.15
    -Input the Main application Port: 10010
    
-   ![image](https://user-images.githubusercontent.com/28448629/134704755-494837fa-c71a-43bb-9bec-a30448cbda1c.png)
+   ![image](images/010.png)
 
 Outcome of leading 0 = 4
 
-   ![image](https://user-images.githubusercontent.com/28448629/134704999-7ea0b945-0e89-43b5-817c-db1c02698c33.png)
+   ![image](images/011.png)
 
-   ![image](https://user-images.githubusercontent.com/28448629/134705034-080e5409-27cc-4f58-b213-61fb742cab78.png)
+   ![image](images/012.png)
 
-   ![image](https://user-images.githubusercontent.com/28448629/134705065-cf661196-3b12-4ef4-8df8-51c42b3d66ab.png)
+   ![image](images/013.png)
 
-   ![image](https://user-images.githubusercontent.com/28448629/134705101-ce60562f-5296-4345-8861-601052fff723.png)
+   ![image](images/014.png)
 
 The list will extend unless pressing the "Enter" button to stop.
 
@@ -164,11 +164,11 @@ The real time takes the system time of Linux. The CPU time can be shown synchron
 
 Start Picture:
 
-   ![image](https://user-images.githubusercontent.com/28448629/134697032-9c6878bc-3b0f-42b5-8b8e-eded16bf6540.png)
+   ![image](images/015.png)
 
 Later Picture:
 
-   ![image](https://user-images.githubusercontent.com/28448629/134697323-5a37c1d6-9b0b-481e-a169-e5f85dd74aaa.png)
+   ![image](images/016.png)
 
 2. Sub Application
 -Start: REAL TIME is 10:23
@@ -181,11 +181,11 @@ Later Picture:
 
 Start Picture:
 
-   ![image](https://user-images.githubusercontent.com/28448629/134700026-9b63e50e-ede8-4869-92ad-1cd64873abe1.png)
+   ![image](images/017.png)
 
 Later Picture:
 
-   ![image](https://user-images.githubusercontent.com/28448629/134700161-78a2697c-3d61-4820-9ecd-08e723663fb6.png)
+   ![image](images/018.png)
 
 #### Coins with most 0s
 
