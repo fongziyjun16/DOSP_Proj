@@ -27,3 +27,11 @@ type RumorCounter =
             COUNTER = counter
         }
     end
+
+type SendRumor = 
+    struct
+    end
+
+type GetRumor = 
+    struct
+    end
