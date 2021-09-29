@@ -1,5 +1,6 @@
 ﻿open Akka.FSharp
 
+open System
 open Akka.Actor
 open Akka.FSharp
 open Akka.Cluster
@@ -8,7 +9,7 @@ open Akka.Configuration
 open Msgs
 open Actors
 
-let numberOfWorkers = 8
+let numberOfWorkers = 100000
 let sysName = "PushSumFullNetworkSystem"
 
 [<EntryPoint>]
@@ -38,5 +39,5 @@ let main argv =
     
     recorder <! (new StartRumor())
 
-    System.Console.Read() |> ignore
+    Console.Read() |> ignore
     0 // return an integer exit code
