@@ -34,7 +34,7 @@ let main argv =
     let recorder = GossipFullNetworkSystem.ActorOf(Props(typeof<RecorderActor>, [| numberOfWorkers :> obj |]), "recorder")
 
     for i in 1 .. numberOfWorkers do
-        GossipFullNetworkSystem.ActorOf(Props(typeof<WorkerActor>, [| i :> obj; numberOfWorkers :> obj; times :> obj |]), "worker_" + i.ToString()) |> ignore
+        GossipFullNetworkSystem.ActorOf(Props(typeof<FullNetworkWorkerActor>, [| i :> obj; numberOfWorkers :> obj; times :> obj |]), "worker_" + i.ToString()) |> ignore
     
     recorder <! (new StartRumor())
 

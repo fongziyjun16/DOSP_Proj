@@ -48,7 +48,7 @@ type RecorderActor(numberOfWorkers: int) =
     override x.PostStop() =
         Cluster.Unsubscribe(Actor.Context.Self)
 
-type WorkerActor(id: int, numberOfWorkers: int, rumorTimes: int) =
+type FullNetworkWorkerActor(id: int, numberOfWorkers: int, rumorTimes: int) =
     inherit Actor()
 
     let addrs = new Collections.Generic.List<int>()
