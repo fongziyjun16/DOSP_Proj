@@ -35,8 +35,6 @@ type RecorderActor(numberOfWorkers: int) =
                 printfn "stop rumor. real time span: %A ; process run how long: %A" 
                         (realTimeEnd.Subtract(realTimeStart).Milliseconds) 
                         stopWatch.Elapsed.Milliseconds
-        | :? PrintRumor as msg ->
-            printfn "from: %s, s: %f, w: %f, counter: %d" msg.FROM msg.S msg.W msg.COUNTER
         | _ -> printfn "unknown message"
 
 type PushSumFullNetworkWorkerActor(id: int, numberOfWorkers: int) =
@@ -45,6 +43,7 @@ type PushSumFullNetworkWorkerActor(id: int, numberOfWorkers: int) =
     let mutable s = double(id)
     let mutable w = 1.0
 
+    let addrs = new Collections.Generic.List<int>()
     let mutable receiveCounter = 0;
     let mutable roundCounter = 0;
     let mutable stopSend = false
@@ -53,6 +52,9 @@ type PushSumFullNetworkWorkerActor(id: int, numberOfWorkers: int) =
 
     override x.PreStart() =
         mediator <! (new Put(Actor.Context.Self))
+        for i in 1 .. numberOfWorkers do
+            if i <> id then
+                addrs.Add(i)
 
     override x.OnReceive message =
         match box message with
@@ -60,8 +62,8 @@ type PushSumFullNetworkWorkerActor(id: int, numberOfWorkers: int) =
             if rumor.S = -1.0 && rumor.W = -1.0 then // first send
                 s <- s / 2.0
                 w <- w / 2.0
-                let nextWorkerID = Random().Next(numberOfWorkers) + 1
-                mediator <! (new Send("/user/worker_" + nextWorkerID.ToString(), new Rumor(s, w), true))
+                let nextWorkerID = Random().Next(numberOfWorkers - 1)
+                mediator <! (new Send("/user/worker_" + (addrs.[nextWorkerID]).ToString(), new Rumor(s, w), true))
             else if stopSend = false then
                 receiveCounter <- (receiveCounter + 1)
                 let orgRatio = s / w
@@ -79,7 +81,6 @@ type PushSumFullNetworkWorkerActor(id: int, numberOfWorkers: int) =
                 s <- s / 2.0
                 w <- w / 2.0
                 if stopSend = false then 
-                    let nextWorkerID = Random().Next(numberOfWorkers) + 1
-                    mediator <! (new Send("/user/recorder", new PrintRumor(Actor.Context.Self.Path.Name, s, w, receiveCounter), true))
-                    mediator <! (new Send("/user/worker_" + nextWorkerID.ToString(), new Rumor(s, w), true))
+                    let nextWorkerID = Random().Next(numberOfWorkers - 1)
+                    mediator <! (new Send("/user/worker_" + (addrs.[nextWorkerID]).ToString(), new Rumor(s, w), true))
         | _ -> printfn "unknown message"

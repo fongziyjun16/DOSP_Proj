@@ -8,7 +8,7 @@ open Akka.Configuration
 open Msgs
 open Actors
 
-let numberOfWorkers = 10
+let numberOfWorkers = 8
 let sysName = "PushSumFullNetworkSystem"
 
 [<EntryPoint>]
