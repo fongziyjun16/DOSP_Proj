@@ -30,17 +30,17 @@ type RecorderActor(numberOfWorkers: int) =
             stopWatch.Start()
             mediator <! (new Send("/user/worker_" + (Random().Next(numberOfWorkers) + 1).ToString(), new Rumor(), true))
         | :? GetRumor as msg ->
-            if stopTellingCounter <> numberOfWorkers then
+            if stopTellingCounter < numberOfWorkers then
                 stopTellingCounter <- (stopTellingCounter + 1)
             else 
                 if stopFlg = false then
                     stopFlg <- true
                     realTimeEnd <- DateTime.Now
                     stopWatch.Stop()
-                    printfn "stop rumor. real time span: %A ; process run how long: %A" 
-                            (realTimeEnd.Subtract(realTimeStart).Milliseconds) 
-                            stopWatch.Elapsed.Milliseconds
-        | :? ClusterEvent.IMemberEvent as msg -> ()
+                    let realTime = realTimeEnd.Subtract(realTimeStart)
+                    printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (realTime.Minutes) (realTime.Seconds) (realTime.Milliseconds)
+                    let runTime = stopWatch.Elapsed
+                    printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
         | _ -> printfn "unknown message"
 
 

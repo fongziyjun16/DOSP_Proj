@@ -8,7 +8,7 @@ open Msgs
 open Actors
 
 let numberOfWorkers = 10000
-let times = 10
+let times = 41
 let systemName = "GossipFullNetworkSystem"
 
 [<EntryPoint>]
