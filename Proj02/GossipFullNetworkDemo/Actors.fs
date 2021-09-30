@@ -18,11 +18,9 @@ type RecorderActor(numberOfWorkers: int) =
     let mutable realTimeEnd = new DateTime()
     let stopWatch = new Diagnostics.Stopwatch()
 
-    let Cluster = Akka.Cluster.Cluster.Get(Actor.Context.System)
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
     override x.PreStart() =
-        Cluster.Subscribe(Actor.Context.Self, ClusterEvent.InitialStateAsEvents, [| typeof<ClusterEvent.IMemberEvent> |])
         mediator <! (new Put(Actor.Context.Self))
 
     override x.OnReceive message =
@@ -45,36 +43,33 @@ type RecorderActor(numberOfWorkers: int) =
         | :? ClusterEvent.IMemberEvent as msg -> ()
         | _ -> printfn "unknown message"
 
-    override x.PostStop() =
-        Cluster.Unsubscribe(Actor.Context.Self)
 
 type FullNetworkWorkerActor(id: int, numberOfWorkers: int, rumorTimes: int) =
     inherit Actor()
 
-    let addrs = new Collections.Generic.List<int>()
     let mutable rumorCounter = 0
 
-    let Cluster = Akka.Cluster.Cluster.Get(Actor.Context.System)
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
     override x.PreStart() =
-        Cluster.Subscribe(Actor.Context.Self, ClusterEvent.InitialStateAsEvents, [| typeof<ClusterEvent.IMemberEvent> |])
         mediator <! (new Put(Actor.Context.Self))
-        for i in 1 .. numberOfWorkers do
-            if i <> id then
-                addrs.Add(i)
 
     override x.OnReceive message =
         match box message with
         | :? Rumor as msg ->
             if rumorCounter < rumorTimes then
                 rumorCounter <- (rumorCounter + 1)
-                let nextID = (addrs.[Random().Next(numberOfWorkers - 1)])
-                mediator <! (new Send("/user/worker_" + nextID.ToString(), msg, true))
+                mediator <! (new Send("/user/worker_" + (x.GetRandomNeighbor()).ToString(), msg, true))
                 mediator <! (new Send("/user/recorder", new GetRumor(), true))
-        | :? ClusterEvent.IMemberEvent as msg -> ()
         | _ -> printfn "unknown message"
 
-    override x.PostStop() =
-        Cluster.Unsubscribe(Actor.Context.Self)
+    member x.GetRandomNeighbor() =
+        let random = new Random()
+        if id = 1 then 
+            random.Next(2, numberOfWorkers + 1)
+        else if id = numberOfWorkers then 
+            random.Next(1, numberOfWorkers)
+        else 
+            let candidates = [| random.Next(1,id); random.Next(id + 1, numberOfWorkers) |]
+            candidates.[random.Next(0, 2)]
         
