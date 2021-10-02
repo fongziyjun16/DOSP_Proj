@@ -28,17 +28,18 @@ type RecorderActor(gridStructure: GridStructure) =
             stopWatch.Start()
             mediator <! (new Send("/user/" + x.GetRandomWorker(), new Rumor(), true))
         | :? EndRumor as msg ->
-            if allGetRumorFlg = false then
-                if getRumorCounter < (gridStructure.LENGTH * gridStructure.WIDTH * gridStructure.HEIGHT) then
+            let totalNumberOfActors = gridStructure.LENGTH * gridStructure.WIDTH * gridStructure.HEIGHT
+            while allGetRumorFlg = false do
+                if getRumorCounter < totalNumberOfActors then
                     getRumorCounter <- (getRumorCounter + 1)
-                else
-                    allGetRumorFlg <- true
-                    realTimeEnd <- DateTime.Now
-                    stopWatch.Stop()
-                    let realTime = realTimeEnd.Subtract(realTimeStart)
-                    printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (realTime.Minutes) (realTime.Seconds) (realTime.Milliseconds)
-                    let runTime = stopWatch.Elapsed
-                    printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
+                    if getRumorCounter = totalNumberOfActors then
+                        allGetRumorFlg <- true
+                        realTimeEnd <- DateTime.Now
+                        stopWatch.Stop()
+                        let realTime = realTimeEnd.Subtract(realTimeStart)
+                        printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (realTime.Minutes) (realTime.Seconds) (realTime.Milliseconds)
+                        let runTime = stopWatch.Elapsed
+                        printfn "run time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
 
         | _ -> printfn "unknown message"
 

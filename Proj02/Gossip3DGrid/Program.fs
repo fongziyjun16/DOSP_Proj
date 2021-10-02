@@ -9,9 +9,9 @@ open Actors
 
 let getRumorLimit = 10
 let sysName = "Gossip3DGridSystem"
-let lenght = 3
-let width = 3
-let height = 3
+let lenght = 10
+let width = 10
+let height = 10
 
 [<EntryPoint>]
 let main argv =
@@ -26,7 +26,7 @@ let main argv =
                                     }
                                 }
                                 cluster {
-                                    seed-nodes = [""akka.tcp://PushSumFullNetworkSystem@localhost:9090""]
+                                    seed-nodes = [""akka.tcp://Gossip3DGridSystem@localhost:9090""]
                                 }
                             }
                         ")
