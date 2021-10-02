@@ -1,10 +1,32 @@
 ﻿module Actors
 
 open System
+open Akka.Actor
 open Akka.FSharp
 open Akka.Cluster.Tools.PublishSubscribe
 
 open Msgs
+
+type MotivatorActor(gridStructure: GridStructure) =
+    inherit Actor()
+
+    let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
+
+    override x.PreStart() =
+        mediator <! (new Put(Actor.Context.Self))
+
+    override x.OnReceive message =
+        match box message with
+        | :? StartRumor as msg ->
+            while Async.RunSynchronously((mediator <? (new Send("/user/recorder", new AskStopFlg(), true))), -1) = false do
+                mediator <! (new Send("/user/" + x.GetRandomWorker(), new Rumor(), true))
+        | _ -> printfn "unknown message"
+
+    member x.GetRandomWorker() =
+        let random = new Random()
+        "worker_" + random.Next(gridStructure.LENGTH).ToString() + "_" +
+                    random.Next(gridStructure.WIDTH).ToString() + "_" +
+                    random.Next(gridStructure.HEIGHT).ToString()
 
 type RecorderActor(gridStructure: GridStructure) =
     inherit Actor()
@@ -16,6 +38,7 @@ type RecorderActor(gridStructure: GridStructure) =
     let mutable realTimeEnd = new DateTime()
     let mutable stopWatch = new Diagnostics.Stopwatch()
 
+    let motivator= Actor.Context.ActorOf(Props(typeof<MotivatorActor>, [| gridStructure :> obj |]), "motivator")
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
     override x.PreStart() =
@@ -26,13 +49,14 @@ type RecorderActor(gridStructure: GridStructure) =
         | :? StartRumor as msg ->
             realTimeStart <- DateTime.Now
             stopWatch.Start()
-            mediator <! (new Send("/user/" + x.GetRandomWorker(), new Rumor(), true))
+            mediator <! (new Send("/user/recorder/motivator", msg, true))
         | :? EndRumor as msg ->
             let totalNumberOfActors = gridStructure.LENGTH * gridStructure.WIDTH * gridStructure.HEIGHT
-            while allGetRumorFlg = false do
-                if getRumorCounter < totalNumberOfActors then
+            if allGetRumorFlg = false then
+                if getRumorCounter < totalNumberOfActors then                                          
                     getRumorCounter <- (getRumorCounter + 1)
                     if getRumorCounter = totalNumberOfActors then
+                        Actor.Context.Stop(motivator)
                         allGetRumorFlg <- true
                         realTimeEnd <- DateTime.Now
                         stopWatch.Stop()
@@ -40,7 +64,8 @@ type RecorderActor(gridStructure: GridStructure) =
                         printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (realTime.Minutes) (realTime.Seconds) (realTime.Milliseconds)
                         let runTime = stopWatch.Elapsed
                         printfn "run time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
-
+        | :? AskStopFlg as msg ->
+            Actor.Context.Sender <! allGetRumorFlg
         | _ -> printfn "unknown message"
 
     member x.GetRandomWorker() =

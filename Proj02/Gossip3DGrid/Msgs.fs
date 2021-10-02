@@ -35,3 +35,11 @@ type Rumor =
 type EndRumor =
     struct
     end
+
+type AskStopFlg =
+    struct
+        val STOP_FLG: bool
+        new (stopFlg: bool) = {
+            STOP_FLG = stopFlg
+        }
+    end

@@ -9,7 +9,7 @@ open Actors
 
 let getRumorLimit = 10
 let sysName = "Gossip3DGridSystem"
-let lenght = 10
+let lenght = 100
 let width = 10
 let height = 10
 
