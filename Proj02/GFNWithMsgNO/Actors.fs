@@ -77,9 +77,11 @@ type FullNetworkWorkerActor(id: int, numberOfWorkers: int, rumorTimes: int) =
         | :? Rumor as msg ->
             if rumorCounter < rumorTimes then
                 rumorCounter <- (rumorCounter + 1)
-                let nextRumor = new Rumor(Async.RunSynchronously(mediator <? (new Send("/user/recorder", new GetRumorNO(), true)), -1))
-                mediator <! (new Send("/user/worker_" + (x.GetRandomNeighbor()).ToString(), nextRumor, true))
-                mediator <! (new Send("/user/recorder", new GetRumor(), true))
+                let randomNumberOfNeighbors = 1
+                for i in 1 .. randomNumberOfNeighbors do
+                    let nextRumor = new Rumor(Async.RunSynchronously(mediator <? (new Send("/user/recorder", new GetRumorNO(), true)), -1))
+                    mediator <! (new Send("/user/worker_" + (x.GetRandomNeighbor()).ToString(), nextRumor, true))
+                    mediator <! (new Send("/user/recorder", new GetRumor(), true))
             else
                 let state: GetState = Async.RunSynchronously(mediator <? (new Send("/user/recorder", new GetState(), true)), -1)
                 if state.ALL_GET_RUMOR_FLG = false && state.LAST_RUMOR_MSG_NO = msg.NO then
