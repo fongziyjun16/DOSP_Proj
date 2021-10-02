@@ -8,6 +8,25 @@ open Akka.Cluster.Tools.PublishSubscribe
 
 open Msgs
 
+type MotivatorActor(numberOfWorkers: int) =
+    inherit Actor()
+
+    let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
+
+    override x.PreStart() =
+        mediator <! (new Put(Actor.Context.Self))
+
+    override x.OnReceive message =
+        match box message with
+        | :? StartRumor as msg ->
+            while Async.RunSynchronously((mediator <? (new Send("/user/recorder", new AskStopFlg(), true))), -1) = false do
+                mediator <! (new Send("/user/" + x.GetRandomWorker(), new Rumor(), true))
+        | _ -> printfn "unknown message"
+
+    member x.GetRandomWorker() =
+        let random = new Random()
+        "worker_" + random.Next(numberOfWorkers).ToString()
+
 type RecorderActor(numberOfWorkers: int) =
     inherit Actor()
     
@@ -18,6 +37,7 @@ type RecorderActor(numberOfWorkers: int) =
     let mutable realTimeEnd = new DateTime()
     let stopWatch = new Diagnostics.Stopwatch()
 
+    let motivator= Actor.Context.ActorOf(Props(typeof<MotivatorActor>, [| numberOfWorkers :> obj |]), "motivator")
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
     override x.PreStart() =
@@ -28,21 +48,23 @@ type RecorderActor(numberOfWorkers: int) =
         | :? StartRumor as msg ->
             realTimeStart <- DateTime.Now
             stopWatch.Start()
-            mediator <! (new Send("/user/worker_" + (Random().Next(numberOfWorkers) + 1).ToString(), new Rumor(), true))
+            mediator <! (new Send("/user/recorder/motivator", msg, true))
         | :? GetRumor as msg ->
-            if stopTellingCounter < numberOfWorkers then
-                stopTellingCounter <- (stopTellingCounter + 1)
-            else 
-                if stopFlg = false then
-                    stopFlg <- true
-                    realTimeEnd <- DateTime.Now
-                    stopWatch.Stop()
-                    let realTime = realTimeEnd.Subtract(realTimeStart)
-                    printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (realTime.Minutes) (realTime.Seconds) (realTime.Milliseconds)
-                    let runTime = stopWatch.Elapsed
-                    printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
+            if stopFlg = false then
+                if stopTellingCounter < numberOfWorkers then
+                    stopTellingCounter <- (stopTellingCounter + 1)
+                    if stopTellingCounter = numberOfWorkers then
+                        Actor.Context.Stop(motivator)
+                        stopFlg <- true
+                        realTimeEnd <- DateTime.Now
+                        stopWatch.Stop()
+                        let realTime = realTimeEnd.Subtract(realTimeStart)
+                        printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (realTime.Minutes) (realTime.Seconds) (realTime.Milliseconds)
+                        let runTime = stopWatch.Elapsed
+                        printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
+        | :? AskStopFlg as msg ->
+            Actor.Context.Sender <! stopFlg
         | _ -> printfn "unknown message"
-
 
 type FullNetworkWorkerActor(id: int, numberOfWorkers: int, rumorTimes: int) =
     inherit Actor()

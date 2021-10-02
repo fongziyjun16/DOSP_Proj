@@ -7,7 +7,7 @@ open Akka.Configuration
 open Msgs
 open Actors
 
-let numberOfWorkers = 10000
+let numberOfWorkers = 1_000_000
 let times = 41
 let systemName = "GossipFullNetworkSystem"
 
