@@ -26,6 +26,10 @@ type NumberOfActorGetRumor =
             x.NUMBER <- number
     end
 
+type GetRumorNO = 
+    struct
+    end
+
 type ReqNewRumorNO = 
     struct
     end

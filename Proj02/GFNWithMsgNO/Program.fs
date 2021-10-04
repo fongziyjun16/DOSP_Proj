@@ -10,7 +10,7 @@ open Actors
 // Gossip Full Network
 // Each Message with NO
 
-let numberOfWorkers = 10000
+let numberOfWorkers = 100000
 let times = 10
 let systemName = "GFNSystem"
 
@@ -22,12 +22,12 @@ let main argv =
                                 actor.provider = cluster
                                 remote {
                                     dot-netty.tcp {
-                                        port = 9090
+                                        port = 9091
                                         hostname = localhost
                                     }
                                 }
                                 cluster {
-                                    seed-nodes = [""akka.tcp://GFNSystem@localhost:9090""]
+                                    seed-nodes = [""akka.tcp://GFNSystem@localhost:9091""]
                                 }
                             }
                         ")

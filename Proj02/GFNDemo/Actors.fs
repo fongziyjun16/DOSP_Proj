@@ -7,11 +7,34 @@ open Akka.Cluster.Tools.PublishSubscribe
 
 open Msgs
 
+type RumorNOManagerActor() =
+    inherit Actor()
+    
+    let mutable rumorNO = 0
+
+    let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
+
+    override x.PreStart() =
+        mediator <! new Put(Actor.Context.Self)
+
+    override x.OnReceive message = 
+        match box message with
+        | :? GetRumorNO as msg ->
+            Actor.Context.Sender <! rumorNO
+        | :? ReqNewRumorNO as msg ->
+            Actor.Context.Sender <! x.GetRumorNOWithIncr()
+        | _ -> printfn "unknown message"
+
+    member x.GetRumorNOWithIncr() =
+        rumorNO <- (rumorNO + 1)
+        rumorNO
+
 type RecorderActor(numberOfWorkers: int) =
     inherit Actor()
 
     let mutable round = 0
-    let mutable rumorNO = 0
+    // let mutable rumorNO = 0
+    let rumorNOManager = Actor.Context.ActorOf(Props(typeof<RumorNOManagerActor>), "rumorNOManager")
     let mutable numberOfGetRumor = 0
 
     let mutable realTimeStart = DateTime.Now
@@ -37,29 +60,29 @@ type RecorderActor(numberOfWorkers: int) =
                     eventManager.Publish(new AllGetRumor())
                     realTimeEnd <- DateTime.Now
                     stopWatch.Stop()
-                    printfn "total rounds: %d, rumorNO: %d" round rumorNO
+                    printfn "total rounds: %d, rumorNO: %d" round (x.GetRumorNO())
                     let realTime = realTimeEnd.Subtract(realTimeStart)
                     printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (realTime.Minutes) (realTime.Seconds) (realTime.Milliseconds)
                     let runTime = stopWatch.Elapsed
                     printfn "run time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
         | :? ReqNewRoundDissemination as msg ->
-            if numberOfGetRumor < numberOfWorkers && msg.NO = rumorNO then
+            if numberOfGetRumor < numberOfWorkers && msg.NO = (x.GetRumorNO()) then
                 x.NewRoundDissemination()
         | :? ReqNewRumorNO as msg ->
             Actor.Context.Sender <! x.GetRumorNOWithIncr()
-        | :? NumberOfActorGetRumor as msg ->
-            Actor.Context.Sender <! numberOfGetRumor
         | _ -> printfn "unkown message"
 
+    member x.GetRumorNO() =
+        Async.RunSynchronously(rumorNOManager <? new GetRumorNO(), -1)
+
     member x.GetRumorNOWithIncr() =
-        rumorNO <- (rumorNO + 1)
-        rumorNO
+        Async.RunSynchronously(rumorNOManager <? new ReqNewRumorNO(), -1)
     
     member x.NewRoundDissemination() =
         round <- (round + 1)
         mediator <! new Send("/user/worker_" + (Random().Next(numberOfWorkers) + 1).ToString(), new Rumor(x.GetRumorNOWithIncr()), true)
 
-type TaskProcessorActor(id: int, numberOfWorkers: int, rumorLimit: int) =
+type TaskProcessorActor(id: int, numberOfWorkers: int) =
     inherit Actor()
 
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
@@ -71,7 +94,7 @@ type TaskProcessorActor(id: int, numberOfWorkers: int, rumorLimit: int) =
         match box message with
         | :? Rumor as msg ->
             while Async.RunSynchronously(Actor.Context.Parent <? new SingleActorStopSendingFlg(), -1) = false do
-                msg.SetRumorNO(Async.RunSynchronously(mediator <? new Send("/user/recorder", new ReqNewRumorNO(), true), -1))
+                msg.SetRumorNO(Async.RunSynchronously(mediator <? new Send("/user/recorder/rumorNOManager", new ReqNewRumorNO(), true), -1))
                 mediator <! new Send("/user/worker_" + x.GetRandomNeighbor().ToString(), msg, true)
             // printfn "stop"
         | _ -> printfn "unkown message"
@@ -94,7 +117,7 @@ type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
     let mutable numberOfGetRumor = 0;
 
     let mutable taskProcessorWorkingFlg = false
-    let taskProcessor = Actor.Context.ActorOf(Props(typeof<TaskProcessorActor>, [| id :> obj; numberOfWorkers :> obj; rumorLimit :> obj |]), "taskProcessor")
+    let taskProcessor = Actor.Context.ActorOf(Props(typeof<TaskProcessorActor>, [| id :> obj; numberOfWorkers :> obj |]), "taskProcessor")
     
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
@@ -114,8 +137,8 @@ type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
                     taskProcessor <! msg
                 if numberOfGetRumor = numberOfWorkers then
                     stopSendingFlg <- true
-            else
-                mediator <! new Send("/user/recorder", new ReqNewRoundDissemination(msg.NO), true)
+                    Actor.Context.Stop(taskProcessor)
+            else mediator <! new Send("/user/recorder", new ReqNewRoundDissemination(msg.NO), true)
         | :? SingleActorStopSendingFlg as msg ->
             Actor.Context.Sender <! stopSendingFlg
         | :? AllGetRumor as msg ->

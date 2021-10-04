@@ -44,7 +44,7 @@ type RecorderActor(numberOfWorkers: int) =
                         let realTime = realTimeEnd.Subtract(realTimeStart)
                         printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (realTime.Minutes) (realTime.Seconds) (realTime.Milliseconds)
                         let runTime = stopWatch.Elapsed
-                        printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
+                        printfn "run time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
         | :? GetRumorNO as msg ->
             Actor.Context.Sender <! x.GetRumorMsgNoWithIncr()
         | :? GetState as msg ->
