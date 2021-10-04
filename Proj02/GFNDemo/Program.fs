@@ -6,7 +6,7 @@ open Akka.Configuration
 open Msgs
 open Actors
 
-let numberOfWorkers = 1000
+let numberOfWorkers = 100
 let rumorLimit = 10
 let systemName = "GFNSystem"
 

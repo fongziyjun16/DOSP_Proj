@@ -7,34 +7,9 @@ open Akka.Cluster.Tools.PublishSubscribe
 
 open Msgs
 
-type RumorNOManagerActor() =
-    inherit Actor()
-    
-    let mutable rumorNO = 0
-
-    let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
-
-    override x.PreStart() =
-        mediator <! new Put(Actor.Context.Self)
-
-    override x.OnReceive message = 
-        match box message with
-        | :? GetRumorNO as msg ->
-            Actor.Context.Sender <! rumorNO
-        | :? ReqNewRumorNO as msg ->
-            Actor.Context.Sender <! x.GetRumorNOWithIncr()
-        | _ -> printfn "unknown message"
-
-    member x.GetRumorNOWithIncr() =
-        rumorNO <- (rumorNO + 1)
-        rumorNO
-
 type RecorderActor(numberOfWorkers: int) =
     inherit Actor()
 
-    let mutable round = 0
-    // let mutable rumorNO = 0
-    let rumorNOManager = Actor.Context.ActorOf(Props(typeof<RumorNOManagerActor>), "rumorNOManager")
     let mutable numberOfGetRumor = 0
 
     let mutable realTimeStart = DateTime.Now
@@ -52,38 +27,47 @@ type RecorderActor(numberOfWorkers: int) =
         match box message with
         | :? StartRumor as msg ->
             stopWatch.Start()
-            x.NewRoundDissemination()
+            mediator <! new Send("/user/worker_" + (Random().Next(numberOfWorkers) + 1).ToString(), new Rumor(), true)
         | :? EndRumor as msg ->
             if numberOfGetRumor < numberOfWorkers then
                 numberOfGetRumor <- (numberOfGetRumor + 1)
+                let percentage = (double) numberOfGetRumor / (double) numberOfWorkers * 100.0
+                if percentage / 10.0 > 1.0 then
+                    printfn "%f %%" percentage
                 if numberOfGetRumor = numberOfWorkers then
                     eventManager.Publish(new AllGetRumor())
                     realTimeEnd <- DateTime.Now
                     stopWatch.Stop()
-                    printfn "total rounds: %d, rumorNO: %d" round (x.GetRumorNO())
                     let realTime = realTimeEnd.Subtract(realTimeStart)
                     printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (realTime.Minutes) (realTime.Seconds) (realTime.Milliseconds)
                     let runTime = stopWatch.Elapsed
                     printfn "run time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
-        | :? ReqNewRoundDissemination as msg ->
-            if numberOfGetRumor < numberOfWorkers && msg.NO = (x.GetRumorNO()) then
-                x.NewRoundDissemination()
-        | :? ReqNewRumorNO as msg ->
-            Actor.Context.Sender <! x.GetRumorNOWithIncr()
+        | :? string as msg ->
+            printfn "%s" msg
         | _ -> printfn "unkown message"
 
-    member x.GetRumorNO() =
-        Async.RunSynchronously(rumorNOManager <? new GetRumorNO(), -1)
+type SwitchActor() =
+    inherit Actor()
 
-    member x.GetRumorNOWithIncr() =
-        Async.RunSynchronously(rumorNOManager <? new ReqNewRumorNO(), -1)
-    
-    member x.NewRoundDissemination() =
-        round <- (round + 1)
-        mediator <! new Send("/user/worker_" + (Random().Next(numberOfWorkers) + 1).ToString(), new Rumor(x.GetRumorNOWithIncr()), true)
+    let mutable switch = true
+
+    let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
+
+    override x.PreStart() =
+        mediator <! new Put(Actor.Context.Self)
+
+    override x.OnReceive message = 
+        match box message with
+        | :? GetSwitch as msg ->
+            Actor.Context.Sender <! switch
+        | :? SetSwitch as msg ->
+            switch <- msg.VALUE
+        | _ -> printfn "unkown message"
 
 type TaskProcessorActor(id: int, numberOfWorkers: int) =
     inherit Actor()
+
+    let switch = Actor.Context.ActorSelection(Actor.Context.Parent.Path.ToStringWithAddress() + "/switch")
 
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
@@ -93,11 +77,15 @@ type TaskProcessorActor(id: int, numberOfWorkers: int) =
     override x.OnReceive message = 
         match box message with
         | :? Rumor as msg ->
-            while Async.RunSynchronously(Actor.Context.Parent <? new SingleActorStopSendingFlg(), -1) = false do
-                msg.SetRumorNO(Async.RunSynchronously(mediator <? new Send("/user/recorder/rumorNOManager", new ReqNewRumorNO(), true), -1))
-                mediator <! new Send("/user/worker_" + x.GetRandomNeighbor().ToString(), msg, true)
-            // printfn "stop"
+            let mutable switchFlg = x.GetSwitch()
+            while switchFlg do
+                let neighbor = x.GetRandomNeighbor().ToString()
+                mediator <! new Send("/user/worker_" + neighbor, new Rumor(), true)
+                switchFlg <- x.GetSwitch()
         | _ -> printfn "unkown message"
+    
+    member x.GetSwitch() = 
+        Async.RunSynchronously(switch <? new GetSwitch(), -1)
 
     member x.GetRandomNeighbor() =
         let random = new Random()
@@ -112,13 +100,13 @@ type TaskProcessorActor(id: int, numberOfWorkers: int) =
 type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
     inherit Actor()
 
-    let mutable stopSendingFlg = false
     let mutable getRumorFlg = false
     let mutable numberOfGetRumor = 0;
 
     let mutable taskProcessorWorkingFlg = false
     let taskProcessor = Actor.Context.ActorOf(Props(typeof<TaskProcessorActor>, [| id :> obj; numberOfWorkers :> obj |]), "taskProcessor")
-    
+    let switch = Actor.Context.ActorOf(Props(typeof<SwitchActor>), "switch")
+
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
     override x.PreStart() =
@@ -136,13 +124,9 @@ type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
                     taskProcessorWorkingFlg <- true
                     taskProcessor <! msg
                 if numberOfGetRumor = numberOfWorkers then
-                    stopSendingFlg <- true
-                    Actor.Context.Stop(taskProcessor)
-            else mediator <! new Send("/user/recorder", new ReqNewRoundDissemination(msg.NO), true)
-        | :? SingleActorStopSendingFlg as msg ->
-            Actor.Context.Sender <! stopSendingFlg
+                    switch <! new SetSwitch(false)
         | :? AllGetRumor as msg ->
-            stopSendingFlg <- true
+            switch <! new SetSwitch(false)
         | _ -> printfn "unkown message"
 
 

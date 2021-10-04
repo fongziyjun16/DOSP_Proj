@@ -6,35 +6,21 @@ type StartRumor =
 
 type Rumor =
     struct
-        val mutable NO: int
-        new (no: int) = {
-            NO = no;
-        }
-
-        member x.SetRumorNO(rumorNO: int) =
-            x.NO <- rumorNO
     end
 
-type NumberOfActorGetRumor =
+type GetSwitch = 
     struct
-        val mutable NUMBER: int
-        new (number: int) = {
-            NUMBER = number;
-        }
-
-        member x.SetNumber(number: int) =
-            x.NUMBER <- number
     end
 
-type GetRumorNO = 
+type SetSwitch = 
     struct
+        val VALUE: bool
+        new (value: bool) = {
+            VALUE = value
+        }
     end
 
 type ReqNewRumorNO = 
-    struct
-    end
-
-type SingleActorStopSendingFlg =
     struct
     end
 
@@ -44,12 +30,4 @@ type EndRumor =
 
 type AllGetRumor =
     struct
-    end
-
-type ReqNewRoundDissemination =
-    struct
-        val NO: int
-        new (no: int) = {
-            NO = no
-        }
     end
