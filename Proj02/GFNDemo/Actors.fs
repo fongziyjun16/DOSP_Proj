@@ -112,6 +112,8 @@ type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
                 if taskProcessorWorkingFlg = false then
                     taskProcessorWorkingFlg <- true
                     taskProcessor <! msg
+                if numberOfGetRumor = numberOfWorkers then
+                    stopSendingFlg <- true
             else
                 mediator <! new Send("/user/recorder", new ReqNewRoundDissemination(msg.NO), true)
         | :? SingleActorStopSendingFlg as msg ->
