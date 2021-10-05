@@ -97,12 +97,29 @@ type TaskWorkerActor(id: int, numberOfWorkers: int) =
 
     override x.OnReceive message =
         match box message with
-        | :? string as msg ->
-            printfn "%s" msg
+        | :? Rumor as msg ->
+            while x.GetSwitch() do
+                let neighbor = x.GetRandomNeighbor()
+                mediator <! new Send("/user/worker_" + neighbor.ToString(), msg, true) |> ignore
         | _ -> printfn "unknown message"
+
+    member x.GetRandomNeighbor() =
+        let mutable flg = false
+        let mutable randomNumber = 0
+        while flg = false do
+            randomNumber <- Random().Next(1, numberOfWorkers + 1)
+            if randomNumber <> id then
+                flg <- true
+        randomNumber
+    
+    member x.GetSwitch() = 
+        let switchWorker = Actor.Context.ActorSelection(Actor.Context.Parent.Path.ToStringWithAddress() + "/switchWorker")
+        Async.RunSynchronously(switchWorker <? new GetSwitch(), -1)
 
 type PSFNWorkerActor(id: int, numberOfWorkers: int) =
     inherit Actor()
+
+    let mutable consecutiveTimes = 0;
 
     let mutable s = (double) id
     let mutable w = 1.0
@@ -118,6 +135,28 @@ type PSFNWorkerActor(id: int, numberOfWorkers: int) =
         match box message with
         | :? StartRumor as msg ->
             taskWorker <! new Rumor(s, w)
+        | :? Rumor as msg ->
+            switchWorker <! new SetSwitch(false)
+            
+            let orgRatio = s / w
+            s <- (s + msg.S)
+            w <- (w + msg.W)
+            let newRatio = s / w
+            if consecutiveTimes = 0 then
+                consecutiveTimes <- (consecutiveTimes + 1)
+            else 
+                if Math.Abs(orgRatio - newRatio) / orgRatio < Math.Pow(10.0, -10.0) then
+                    consecutiveTimes <- (consecutiveTimes + 1)
+                    if consecutiveTimes = 3 then
+                        mediator <! new Send("/user/recorder", new GetRumor(), true) 
+                else
+                    consecutiveTimes <- 0
+
+            if consecutiveTimes <> 3 then
+                s <- s / 2.0
+                w <- w / 2.0
+                taskWorker <! new Rumor(s, w)
+                
         | :? AllStop as msg ->
             switchWorker <! new SetSwitch(false)
         | _ -> printfn "unknown message"
