@@ -13,3 +13,15 @@ type Rumor =
             W = w
         }
     end
+
+type GetSwitch =
+    struct
+    end
+
+type SetSwitch =
+    struct
+        val SWITCH: bool
+        new (switch: bool) = {
+            SWITCH = switch
+        }
+    end
