@@ -7,6 +7,20 @@ open Akka.Cluster.Tools.PublishSubscribe
 
 open Msgs
 
+type PrinterActor() =
+    inherit Actor()
+
+    let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
+
+    override on.PreStart() =
+        mediator <! new Put(Actor.Context.Self)
+
+    override on.OnReceive message =
+        match box message with
+        | :? string as msg ->
+            printfn "%s" msg
+        | _ -> printfn "unknown message"
+
 type RecorderActor(numberOfWorkers: int) =
     inherit Actor()
 
@@ -19,10 +33,10 @@ type RecorderActor(numberOfWorkers: int) =
     let eventManager = Actor.Context.System.EventStream
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
-    override on.PreStart() =
+    override x.PreStart() =
         mediator <! new Put(Actor.Context.Self)
 
-    override on.OnReceive message =
+    override x.OnReceive message =
         match box message with
         | :? StartRumor as msg ->
             realTimeStart <- DateTime.Now
@@ -32,21 +46,29 @@ type RecorderActor(numberOfWorkers: int) =
         | :? GetRumor as msg ->
             getRumorCounter <- (getRumorCounter + 1)
 
-(*            let percentage = ((double) getRumorCounter / (double) numberOfWorkers) * 100.0
-            if percentage / 10.0 > 1.0 then
-                printfn "%f %%" percentage
-*)
+            x.ReportPercentage()
+
             if getRumorCounter = numberOfWorkers then
                 eventManager.Publish(new AllStop())
                 realTimeEnd <- DateTime.Now
                 stopWatch.Stop()
-                let realTime = realTimeEnd.Subtract(realTimeStart)
-                printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (realTime.Minutes) (realTime.Seconds) (realTime.Milliseconds)
-                let runTime = stopWatch.Elapsed
-                printfn "run time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
-        | :? string as msg ->
-            printfn "%s" msg
+                x.ReportTime()
         | _ -> printfn "unknown message"
+
+    member x.ReportPercentage() =
+        let percentage = ((double) getRumorCounter / (double) numberOfWorkers) * 100.0
+        if percentage % 20.0 = 0.0 then
+            mediator <! new Send("/user/printer", percentage.ToString() + " %", true)
+    
+    member x.ReportTime() =
+        let realTime = realTimeEnd.Subtract(realTimeStart)
+        // printfn "real time -- minutes: %d seconds: %d milliseconds: %d" (realTime.Minutes) (realTime.Seconds) (realTime.Milliseconds)
+        let realTimeInfo = "real time -- minutes: " + (realTime.Minutes).ToString() + " seconds: " + (realTime.Seconds).ToString() + " milliseconds: " + (realTime.Milliseconds).ToString()
+        mediator <! new Send("/user/printer", realTimeInfo, true)
+        let runTime = stopWatch.Elapsed
+        // printfn "run time -- minutes: %d seconds: %d milliseconds: %d" (runTime.Minutes) (runTime.Seconds) (runTime.Milliseconds)
+        let runTimeInfo = "run time -- minutes: " + (runTime.Minutes).ToString() + " seconds: " + (runTime.Seconds).ToString() + " milliseconds: " + (runTime.Milliseconds).ToString()
+        mediator <! new Send("/user/printer", runTimeInfo, true)
 
 type SwitchWorker() =
     inherit Actor()
