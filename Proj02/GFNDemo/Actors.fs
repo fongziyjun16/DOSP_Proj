@@ -41,6 +41,7 @@ type RecorderActor(numberOfWorkers: int) =
             realTimeStart <- DateTime.Now
             stopWatch.Start()
             let startID = Random().Next(1, numberOfWorkers + 1)
+            printfn "startID: %d" startID
             mediator <! new Send("/user/worker_" + startID.ToString(), msg, true)
         | :? GetRumor as msg ->
             getRumorCounter <- (getRumorCounter + 1)
@@ -100,7 +101,8 @@ type TaskWorkerActor(id: int, numberOfWorkers: int) =
         | :? Rumor as msg ->
             while x.GetSwitch() do
                 let neighbor = x.GetRandomNeighbor()
-                mediator <! new Send("/user/worker_" + neighbor.ToString(), new Rumor(), true) |> ignore
+                mediator <! new Send("/user/worker_" + neighbor.ToString(), new Rumor(), true)
+                // mediator <! new Send("/user/printer", id.ToString() + " -> " + neighbor.ToString(), true)
         | _ -> printfn "unknown message"
 
     member x.GetSwitch() = 
@@ -119,6 +121,7 @@ type TaskWorkerActor(id: int, numberOfWorkers: int) =
 type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
     inherit Actor()
 
+    let mutable taskWorkerStart = false
     let mutable getRumorCounter = 0;
 
     let taskWorker = Actor.Context.ActorOf(Props(typeof<TaskWorkerActor>, [| id :> obj; numberOfWorkers :> obj |]), "taskWorker")
@@ -136,6 +139,7 @@ type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
         | :? Rumor as msg ->
             if getRumorCounter < rumorLimit then
                 getRumorCounter <- (getRumorCounter + 1)
+                x.StartTaskWorker()
                 if getRumorCounter = 1 then
                     x.ReportRumor()
                 else if getRumorCounter = rumorLimit then
@@ -146,3 +150,8 @@ type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
 
     member x.ReportRumor() =
         mediator <! new Send("/user/recorder", new GetRumor(), true)
+
+    member x.StartTaskWorker() =
+        if taskWorkerStart = false then
+            taskWorkerStart <- true
+            taskWorker <! new Rumor()
