@@ -1,33 +1,33 @@
 ﻿module Msgs
 
-type StartRumor = 
+type StartRumor =
     struct
     end
 
-type Rumor =
+type Rumor = 
     struct
     end
 
-type GetSwitch = 
+type GetRumor =
     struct
-    end
-
-type SetSwitch = 
-    struct
-        val VALUE: bool
-        new (value: bool) = {
-            VALUE = value
+        val ID: int
+        new (id: int) ={
+            ID = id
         }
     end
 
-type ReqNewRumorNO = 
+type GetSwitch =
     struct
     end
 
-type EndRumor =
+type SetSwitch =
     struct
+        val SWITCH: bool
+        new (switch: bool) = {
+            SWITCH = switch
+        }
     end
 
-type AllGetRumor =
+type AllStop =
     struct
     end
