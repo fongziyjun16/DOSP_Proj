@@ -30,7 +30,6 @@ type RecorderActor(numberOfWorkers: int) =
     let mutable realTimeEnd = DateTime.Now
     let stopWatch = new Diagnostics.Stopwatch()
 
-    let eventManager = Actor.Context.System.EventStream
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
     override x.PreStart() =
@@ -49,11 +48,16 @@ type RecorderActor(numberOfWorkers: int) =
             x.ReportPercentage()
 
             if getRumorCounter = numberOfWorkers then
-                eventManager.Publish(new AllStop())
                 realTimeEnd <- DateTime.Now
                 stopWatch.Stop()
                 x.ReportTime()
+                x.AllStop()
         | _ -> printfn "unknown message"
+
+    member x.AllStop() =
+        let stopMsg = new AllStop()
+        for i in 1 .. numberOfWorkers do
+            mediator <! new Send("/user/worker_" + i.ToString(), stopMsg, true)
 
     member x.ReportPercentage() =
         let percentage = ((double) getRumorCounter / (double) numberOfWorkers) * 100.0
@@ -96,13 +100,11 @@ type TaskWorkerActor(id: int, numberOfWorkers: int) =
         | :? Rumor as msg ->
             while x.GetSwitch() do
                 let neighbor = x.GetRandomNeighbor()
-                // mediator <! new Send("/user/recorder", id.ToString() + " -> " + neighbor.ToString(), true) |> ignore
                 mediator <! new Send("/user/worker_" + neighbor.ToString(), new Rumor(), true) |> ignore
         | _ -> printfn "unknown message"
 
     member x.GetSwitch() = 
         let switchWorker = Actor.Context.ActorSelection(Actor.Context.Parent.Path.ToStringWithAddress() + "/switchWorker")
-        // Async.RunSynchronously(mediator <? new Send("/user/worker_" + id.ToString() + "/switchWorker", new GetSwitch(), true), -1)
         Async.RunSynchronously(switchWorker <? new GetSwitch(), -1)
 
     member x.GetRandomNeighbor() =

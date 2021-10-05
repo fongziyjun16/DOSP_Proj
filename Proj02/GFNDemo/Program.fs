@@ -6,7 +6,7 @@ open Akka.Configuration
 open Msgs
 open Actors
 
-let numberOfWorkers = 100000
+let numberOfWorkers = 10000
 let rumorLimit = 10
 let systemName = "GFNSystem"
 
@@ -30,15 +30,13 @@ let main argv =
     
     let GFNSystem = System.create systemName (configuration)
 
-    let eventManager = GFNSystem.EventStream
 
     let recorder = GFNSystem.ActorOf(Props(typeof<RecorderActor>, [| numberOfWorkers :> obj |]), "recorder")
 
     let printer = GFNSystem.ActorOf(Props(typeof<PrinterActor>), "printer")
 
     for i in 1 .. numberOfWorkers do
-        let worker = GFNSystem.ActorOf(Props(typeof<GFNWorkerActor>, [| i :> obj; numberOfWorkers :> obj; rumorLimit :> obj |]), "worker_" + i.ToString())
-        eventManager.Subscribe(worker, typeof<AllStop>) |> ignore
+        GFNSystem.ActorOf(Props(typeof<GFNWorkerActor>, [| i :> obj; numberOfWorkers :> obj; rumorLimit :> obj |]), "worker_" + i.ToString()) |> ignore
 
     recorder <! new StartRumor()
 
