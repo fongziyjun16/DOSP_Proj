@@ -21,7 +21,7 @@ type PrinterActor() =
             printfn "%s" msg
         | _ -> printfn "unknown message"
 
-type RecorderActor() =
+type RecorderActor(numberOfWorkers: int) =
     inherit Actor()
 
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
@@ -35,7 +35,7 @@ type RecorderActor() =
             printfn "%s" msg
         | _ -> printfn "unknown message"
 
-type GPSWorkerActor() =
+type PSFNWorkerActor(id: int, numberOfWorkers: int) =
     inherit Actor()
 
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator

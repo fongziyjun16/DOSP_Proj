@@ -1,5 +1,9 @@
 ﻿module Msgs
 
+type StartRumor =
+    struct
+    end
+
 type Rumor =
     struct
         val S: double
