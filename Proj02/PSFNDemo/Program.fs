@@ -7,7 +7,7 @@ open Msgs
 open Actors
 
 let systemName = "PSFNSystem"
-let numberOfWorkers = 100
+let numberOfWorkers = 16
 
 [<EntryPoint>]
 let main argv =
