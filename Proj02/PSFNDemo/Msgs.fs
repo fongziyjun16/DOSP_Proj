@@ -30,6 +30,10 @@ type Calculation =
     struct
     end
 
+type OneRoundGet =
+    struct
+    end
+
 type Termination =
     struct
         val ID: int

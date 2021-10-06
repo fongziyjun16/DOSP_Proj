@@ -21,35 +21,16 @@ type PrinterActor() =
             printfn "%s" msg
         | _ -> printfn "unknown message"
 
-type TaskControllerActor() =
-    inherit Actor()
-
-    let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
-
-    override x.PreStart() =
-        mediator <! new Put(Actor.Context.Self)
-
-    override x.OnReceive message =
-        match box message with
-        | :? StartTask as msg ->
-            while x.isContinueTask() do
-                mediator <! new Send("/user/broadCastRouter", new SendOut(), true)
-                mediator <! new Send("/user/broadCastRouter", new Calculation(), true)
-        | _ -> printfn "unknown message"
-
-    member x.isContinueTask() =
-        Async.RunSynchronously(mediator <? new Send("/user/recorder", new CheckIsContinue(), true), -1)
-
 type RecorderActor(numberOfWorkers: int) =
     inherit Actor()
 
+    let mutable roundGetCounter = 0;
     let mutable getRumorCounter = 0;
 
     let mutable realTimeStart = DateTime.Now
     let mutable realTimeEnd = DateTime.Now
     let stopWatch = new Diagnostics.Stopwatch()
 
-    let taskController = Actor.Context.ActorOf(Props(typeof<TaskControllerActor>), "taskController")
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
     override x.PreStart() =
@@ -60,7 +41,7 @@ type RecorderActor(numberOfWorkers: int) =
         | :? Start as msg ->
             realTimeStart <- DateTime.Now
             stopWatch.Start()
-            taskController <! new StartTask()
+            mediator <! new Send("/user/broadCastRouter", new SendOut(), true)
         | :? Termination as msg ->
             getRumorCounter <- (getRumorCounter + 1)
 
@@ -70,11 +51,14 @@ type RecorderActor(numberOfWorkers: int) =
                 realTimeEnd <- DateTime.Now
                 stopWatch.Stop()
                 x.ReportTime()
-        | :? CheckIsContinue as msg ->
-            if getRumorCounter < numberOfWorkers then
-                Actor.Context.Sender <! true
-            else
-                Actor.Context.Sender <! false
+        | :? OneRoundGet as msg ->
+            if roundGetCounter < numberOfWorkers then
+                roundGetCounter <- (roundGetCounter + 1)
+                if roundGetCounter = numberOfWorkers then
+                    roundGetCounter <- 0
+                    mediator <! new Send("/user/broadCastRouter", new Calculation(), true)
+                    if getRumorCounter < numberOfWorkers then
+                        mediator <! new Send("/user/broadCastRouter", new SendOut(), true)
         | _ -> printfn "unknown message"
 
     member x.ReportPercentage(id) =
@@ -110,6 +94,7 @@ type PSFNWorkerActor(id: int, numberOfWorkers: int) =
     override x.OnReceive message =
         match box message with
         | :? SendOut as msg ->
+            printfn "sendout"
             if consecutiveTimes < 3 then
                 orgS <- (orgS / 2.0)
                 orgW <- (orgW / 2.0)
@@ -122,6 +107,7 @@ type PSFNWorkerActor(id: int, numberOfWorkers: int) =
             if consecutiveTimes < 3 then
                 newS <- newS + msg.S
                 newW <- newW + msg.W
+                mediator <! new Send("/user/randomRouter", new OneRoundGet(), true)
         | :? Calculation as msg ->
             if consecutiveTimes < 3 then
                 let orgRatio = orgS / orgW
