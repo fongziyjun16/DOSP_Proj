@@ -1,6 +1,18 @@
 ﻿module Msgs
 
-type StartRumor =
+type Start =
+    struct
+    end
+
+type StartTask =
+    struct
+    end
+
+type SendOut =
+    struct
+    end
+
+type CheckIsContinue =
     struct
     end
 
@@ -14,26 +26,14 @@ type Rumor =
         }
     end
 
-type GetRumor =
+type Calculation =
+    struct
+    end
+
+type Termination =
     struct
         val ID: int
         new (id: int) ={
             ID = id
         }
-    end
-
-type GetSwitch =
-    struct
-    end
-
-type SetSwitch =
-    struct
-        val SWITCH: bool
-        new (switch: bool) = {
-            SWITCH = switch
-        }
-    end
-
-type AllStop =
-    struct
     end

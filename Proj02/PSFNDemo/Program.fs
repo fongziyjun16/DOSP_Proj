@@ -1,13 +1,14 @@
 ﻿open System
 open Akka.Actor
 open Akka.FSharp
+open Akka.Routing
 open Akka.Configuration
 
 open Msgs
 open Actors
 
 let systemName = "PSFNSystem"
-let numberOfWorkers = 16
+let numberOfWorkers = 10
 
 [<EntryPoint>]
 let main argv =
@@ -33,10 +34,17 @@ let main argv =
     
     PSFNSystem.ActorOf(Props(typeof<PrinterActor>), "printer") |> ignore
     
+    let workerList = new Collections.Generic.List<string>()
+
     for i in 1 .. numberOfWorkers do
-        PSFNSystem.ActorOf(Props(typeof<PSFNWorkerActor>, [| i :> obj; numberOfWorkers :> obj |]), "worker_" + i.ToString()) |> ignore
-    
-    recorder <! new StartRumor()
+        let name = "worker_" + i.ToString()
+        PSFNSystem.ActorOf(Props(typeof<PSFNWorkerActor>, [| i :> obj; numberOfWorkers :> obj |]), name) |> ignore
+        workerList.Add("/user/" + name)
+
+    PSFNSystem.ActorOf(Props.Empty.WithRouter(new BroadcastGroup(workerList)), "broadCastRouter") |> ignore
+    PSFNSystem.ActorOf(Props.Empty.WithRouter(new RandomGroup(workerList)), "randomRouter") |> ignore
+
+    recorder <! new Start()
 
     Console.Read() |> ignore
     0 // return an integer exit code

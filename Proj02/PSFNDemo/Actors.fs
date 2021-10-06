@@ -21,6 +21,25 @@ type PrinterActor() =
             printfn "%s" msg
         | _ -> printfn "unknown message"
 
+type TaskControllerActor() =
+    inherit Actor()
+
+    let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
+
+    override x.PreStart() =
+        mediator <! new Put(Actor.Context.Self)
+
+    override x.OnReceive message =
+        match box message with
+        | :? StartTask as msg ->
+            while x.isContinueTask() do
+                mediator <! new Send("/user/broadCastRouter", new SendOut(), true)
+                mediator <! new Send("/user/broadCastRouter", new Calculation(), true)
+        | _ -> printfn "unknown message"
+
+    member x.isContinueTask() =
+        Async.RunSynchronously(mediator <? new Send("/user/recorder", new CheckIsContinue(), true), -1)
+
 type RecorderActor(numberOfWorkers: int) =
     inherit Actor()
 
@@ -30,6 +49,7 @@ type RecorderActor(numberOfWorkers: int) =
     let mutable realTimeEnd = DateTime.Now
     let stopWatch = new Diagnostics.Stopwatch()
 
+    let taskController = Actor.Context.ActorOf(Props(typeof<TaskControllerActor>), "taskController")
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
     override x.PreStart() =
@@ -37,14 +57,11 @@ type RecorderActor(numberOfWorkers: int) =
 
     override x.OnReceive message =
         match box message with
-        | :? StartRumor as msg ->
+        | :? Start as msg ->
             realTimeStart <- DateTime.Now
             stopWatch.Start()
-            let startID = Random().Next(1, numberOfWorkers + 1)
-            printfn "startID: %d" startID
-            // mediator <! new Send("/user/printer", "startID: " + startID.ToString(), true)
-            mediator <! new Send("/user/worker_" + startID.ToString(), msg, true)
-        | :? GetRumor as msg ->
+            taskController <! new StartTask()
+        | :? Termination as msg ->
             getRumorCounter <- (getRumorCounter + 1)
 
             x.ReportPercentage(msg.ID)
@@ -53,18 +70,17 @@ type RecorderActor(numberOfWorkers: int) =
                 realTimeEnd <- DateTime.Now
                 stopWatch.Stop()
                 x.ReportTime()
-                x.AllStop()
+        | :? CheckIsContinue as msg ->
+            if getRumorCounter < numberOfWorkers then
+                Actor.Context.Sender <! true
+            else
+                Actor.Context.Sender <! false
         | _ -> printfn "unknown message"
-
-    member x.AllStop() =
-        let stopMsg = new AllStop()
-        for i in 1 .. numberOfWorkers do
-            mediator <! new Send("/user/worker_" + i.ToString(), stopMsg, true)
 
     member x.ReportPercentage(id) =
         let percentage = ((double) getRumorCounter / (double) numberOfWorkers) * 100.0
-        if percentage % 1.0 = 0.0 then
-            mediator <! new Send("/user/printer", "id: " + id.ToString() + " " + percentage.ToString() + " %", true)
+        if percentage % 10.0 = 0.0 then
+            mediator <! new Send("/user/printer", percentage.ToString() + " %", true)
     
     member x.ReportTime() =
         let realTime = realTimeEnd.Subtract(realTimeStart)
@@ -76,59 +92,16 @@ type RecorderActor(numberOfWorkers: int) =
         let runTimeInfo = "run time -- minutes: " + (runTime.Minutes).ToString() + " seconds: " + (runTime.Seconds).ToString() + " milliseconds: " + (runTime.Milliseconds).ToString()
         mediator <! new Send("/user/printer", runTimeInfo, true)
 
-type SwitchWorker() =
-    inherit Actor()
-
-    let mutable switch = true
-
-    override x.OnReceive message =
-        match box message with
-        | :? GetSwitch as msg ->
-            Actor.Context.Sender <! switch
-        | :? SetSwitch as msg ->
-            switch <- msg.SWITCH
-        | _ -> printfn "unknown message"
-
-type TaskWorkerActor(id: int, numberOfWorkers: int) =
-    inherit Actor()
-
-    let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
-
-    override x.PreStart() =
-        mediator <! new Put(Actor.Context.Self)
-
-    override x.OnReceive message =
-        match box message with
-        | :? Rumor as msg ->
-            while x.GetSwitch() do 
-                let neighbor = x.GetRandomNeighbor()
-                mediator <! new Send("/user/worker_" + neighbor.ToString(), new Rumor(msg.S, msg.W), true)
-                // mediator <! new Send("/user/printer", id.ToString() + " -> " + neighbor.ToString(), true)
-        | _ -> printfn "unknown message"
-
-    member x.GetRandomNeighbor() =
-        let mutable flg = false
-        let mutable randomNumber = 0
-        while flg = false do
-            randomNumber <- Random().Next(1, numberOfWorkers + 1)
-            if randomNumber <> id then
-                flg <- true
-        randomNumber
-    
-    member x.GetSwitch() = 
-        let switchWorker = Actor.Context.ActorSelection(Actor.Context.Parent.Path.ToStringWithAddress() + "/switchWorker")
-        Async.RunSynchronously(switchWorker <? new GetSwitch(), -1)
-
 type PSFNWorkerActor(id: int, numberOfWorkers: int) =
     inherit Actor()
 
     let mutable consecutiveTimes = 0;
 
-    let mutable s = (double) id
-    let mutable w = 1.0
+    let mutable orgS = (double) id
+    let mutable orgW = 1.0
+    let mutable newS = 0.0
+    let mutable newW = 0.0
 
-    let taskWorker = Actor.Context.ActorOf(Props(typeof<TaskWorkerActor>, [| id :> obj; numberOfWorkers :> obj |]), "taskWorker")
-    let switchWorker = Actor.Context.ActorOf(Props(typeof<SwitchWorker>), "switchWorker")
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
     override x.PreStart() =
@@ -136,38 +109,29 @@ type PSFNWorkerActor(id: int, numberOfWorkers: int) =
 
     override x.OnReceive message =
         match box message with
-        | :? StartRumor as msg ->
-             x.SendOut()
+        | :? SendOut as msg ->
+            if consecutiveTimes < 3 then
+                orgS <- (orgS / 2.0)
+                orgW <- (orgW / 2.0)
+
+                newS <- orgS
+                newW <- orgW
+
+                mediator <! new Send("/user/randomRouter", new Rumor(orgS, orgW), true)
         | :? Rumor as msg ->
-            switchWorker <! new SetSwitch(false)
-            if consecutiveTimes <> 3 then
-            
-                let orgRatio = s / w
-                s <- (s + msg.S)
-                w <- (w + msg.W)
-                let newRatio = s / w
+            if consecutiveTimes < 3 then
+                newS <- newS + msg.S
+                newW <- newW + msg.W
+        | :? Calculation as msg ->
+            if consecutiveTimes < 3 then
+                let orgRatio = orgS / orgW
+                let newRatio = newS / orgW
                 let changes = Math.Abs(orgRatio - newRatio) / orgRatio
-                // mediator <! new Send("/user/printer", id.ToString() + " get new one changes " + (changes * 100.0).ToString() + " %", true)
                 if changes <= Math.Pow(10.0, -10.0) then
                     consecutiveTimes <- (consecutiveTimes + 1)
                     if consecutiveTimes = 3 then
-                        x.ReportRumor()
+                        mediator <! new Send("/user/recorder", new Termination(id), true)
+                        mediator <! new Send("/user/worker_" + id.ToString(), new Termination(id), true)
                 else
                     consecutiveTimes <- 0
-
-                if consecutiveTimes <> 3 then
-                    x.SendOut()
-                
-        | :? AllStop as msg ->
-            switchWorker <! new SetSwitch(false)
         | _ -> printfn "unknown message"
-
-    member x.ReportRumor() =
-        mediator <! new Send("/user/recorder", new GetRumor(id), true)
-
-    member x.SendOut() =
-        switchWorker <! new SetSwitch(true)
-        s <- s / 2.0
-        w <- w / 2.0
-        taskWorker <! new Rumor(s, w)
-
