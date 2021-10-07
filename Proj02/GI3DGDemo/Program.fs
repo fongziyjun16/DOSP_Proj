@@ -49,7 +49,7 @@ let main argv =
             for k in 1 .. height do
                 let position = new Position(i, j, k)
                 let name = "worker_" + i.ToString() + "_" + j.ToString() + "_" + k.ToString()
-                GI3DGSystem.ActorOf(Props(typeof<GFNWorkerActor>, [| position :> obj; structure :> obj; rumorLimit :> obj |]), name) |> ignore
+                GI3DGSystem.ActorOf(Props(typeof<GI3DWorkerActor>, [| position :> obj; structure :> obj; rumorLimit :> obj |]), name) |> ignore
                 workerList.Add("/user/" + name)
 
     let mediator = DistributedPubSub.Get(GI3DGSystem).Mediator

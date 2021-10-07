@@ -120,7 +120,7 @@ type TaskWorkerActor(position: Position, structure: Structure) =
                 neighbor <- "worker_" + neighborPosition.X.ToString() + "_" + neighborPosition.Y.ToString() + "_" + neighborPosition.Z.ToString()
         neighbor
 
-type GFNWorkerActor(position: Position, structure: Structure, rumorLimit: int) =
+type GI3DWorkerActor(position: Position, structure: Structure, rumorLimit: int) =
     inherit Actor()
 
     let mutable taskWorkerStart = false
