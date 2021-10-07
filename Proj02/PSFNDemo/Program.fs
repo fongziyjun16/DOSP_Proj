@@ -3,12 +3,13 @@ open Akka.Actor
 open Akka.FSharp
 open Akka.Routing
 open Akka.Configuration
+open Akka.Cluster.Tools.PublishSubscribe
 
 open Msgs
 open Actors
 
 let systemName = "PSFNSystem"
-let numberOfWorkers = 10
+let numberOfWorkers = 100000
 
 [<EntryPoint>]
 let main argv =
@@ -38,11 +39,16 @@ let main argv =
 
     for i in 1 .. numberOfWorkers do
         let name = "worker_" + i.ToString()
-        PSFNSystem.ActorOf(Props(typeof<PSFNWorkerActor>, [| i :> obj; numberOfWorkers :> obj |]), name) |> ignore
+        PSFNSystem.ActorOf(Props(typeof<PSFNWorkerActor>, [| i :> obj |]), name) |> ignore
         workerList.Add("/user/" + name)
 
-    PSFNSystem.ActorOf(Props.Empty.WithRouter(new BroadcastGroup(workerList)), "broadCastRouter") |> ignore
-    PSFNSystem.ActorOf(Props.Empty.WithRouter(new RandomGroup(workerList)), "randomRouter") |> ignore
+    let mediator = DistributedPubSub.Get(PSFNSystem).Mediator
+
+    let broadcastRouter = PSFNSystem.ActorOf(Props.Empty.WithRouter(new BroadcastGroup(workerList)), "broadCastRouter")
+    mediator <! new Put(broadcastRouter)
+
+    let randomRouter = PSFNSystem.ActorOf(Props.Empty.WithRouter(new RandomGroup(workerList)), "randomRouter")
+    mediator <! new Put(randomRouter)
 
     recorder <! new Start()
 
