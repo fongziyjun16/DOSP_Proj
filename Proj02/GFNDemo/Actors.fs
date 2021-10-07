@@ -66,48 +66,24 @@ type RecorderActor(numberOfWorkers: int) =
         let runTimeInfo = "run time -- minutes: " + (runTime.Minutes).ToString() + " seconds: " + (runTime.Seconds).ToString() + " milliseconds: " + (runTime.Milliseconds).ToString()
         mediator <! new Send("/user/printer", runTimeInfo, true)
 
-type SwitchWorker() =
-    inherit Actor()
-
-    let mutable switch = true
-
-    override on.OnReceive message =
-        match box message with
-        | :? GetSwitch as msg ->
-            Actor.Context.Sender <! switch
-        | :? SetSwitch as msg ->
-            switch <- msg.SWITCH
-        | _ -> printfn "unknown message"
-
-type TaskWorkerActor() =
-    inherit Actor()
-
-    let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
-
-    override on.PreStart() =
-        mediator <! new Put(Actor.Context.Self)
-
-    override x.OnReceive message =
-        match box message with
-        | :? Rumor as msg ->
-            while x.GetSwitch() do
-                mediator <! new Send("/user/randomRouter", new Rumor(), true)
-                // mediator <! new Send("/user/printer", id.ToString() + " -> " + neighbor.ToString(), true)
-        | _ -> printfn "unknown message"
-
-    member x.GetSwitch() = 
-        let switchWorker = Actor.Context.ActorSelection(Actor.Context.Parent.Path.ToStringWithAddress() + "/switchWorker")
-        Async.RunSynchronously(switchWorker <? new GetSwitch(), -1)
-
 type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
     inherit Actor()
 
-    let mutable taskWorkerStart = false
+    let mutable switch = true
     let mutable getRumorCounter = 0;
 
-    let taskWorker = Actor.Context.ActorOf(Props(typeof<TaskWorkerActor>), "taskWorker")
-    let switchWorker = Actor.Context.ActorOf(Props(typeof<SwitchWorker>), "switchWorker")
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
+
+    let sendOut(msg: Rumor) =
+        let mutable counter = 0
+        async {
+            while switch do
+                mediator <! new Send("/user/randomRouter", msg, true)
+                counter <- (counter + 1)
+                if counter = rumorLimit then
+                    counter <- 0
+                    do! Async.Sleep(1)
+        }
 
     override x.PreStart() =
         mediator <! new Put(Actor.Context.Self)
@@ -115,24 +91,22 @@ type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
     override x.OnReceive message =
         match box message with
         | :? StartRumor as msg ->
-            taskWorker <! new Rumor()
+            x.StartTaskWorker()
             x.ReportRumor()
         | :? Rumor as msg ->
             if getRumorCounter < rumorLimit then
                 getRumorCounter <- (getRumorCounter + 1)
-                x.StartTaskWorker()
                 if getRumorCounter = 1 then
                     x.ReportRumor()
+                    x.StartTaskWorker()
                 else if getRumorCounter = rumorLimit then
-                    switchWorker <! new SetSwitch(false)
+                    switch <- false
         | :? AllStop as msg ->
-            switchWorker <! new SetSwitch(false)
+            switch <- false
         | _ -> printfn "unknown message"
 
     member x.ReportRumor() =
         mediator <! new Send("/user/recorder", new GetRumor(), true)
 
     member x.StartTaskWorker() =
-        if taskWorkerStart = false then
-            taskWorkerStart <- true
-            taskWorker <! new Rumor()
+        sendOut(new Rumor()) |> Async.StartAsTask |> ignore

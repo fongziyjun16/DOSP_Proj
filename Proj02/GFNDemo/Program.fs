@@ -8,8 +8,8 @@ open Akka.Cluster.Tools.PublishSubscribe
 open Msgs
 open Actors
 
-let numberOfWorkers = 10
-let rumorLimit = 10
+let numberOfWorkers = 10000
+let rumorLimit = 20
 let systemName = "GFNSystem"
 
 [<EntryPoint>]
