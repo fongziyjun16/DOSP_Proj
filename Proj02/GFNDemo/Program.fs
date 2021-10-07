@@ -46,7 +46,7 @@ let main argv =
 
     let mediator = DistributedPubSub.Get(GFNSystem).Mediator
 
-    let broadcastRouter = GFNSystem.ActorOf(Props.Empty.WithRouter(new BroadcastGroup(workerList)), "broadCastRouter")
+    let broadcastRouter = GFNSystem.ActorOf(Props.Empty.WithRouter(new BroadcastGroup(workerList)), "broadcastRouter")
     mediator <! new Put(broadcastRouter)
 
     let randomRouter = GFNSystem.ActorOf(Props.Empty.WithRouter(new RandomGroup(workerList)), "randomRouter")
