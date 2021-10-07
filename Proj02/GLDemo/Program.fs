@@ -41,7 +41,7 @@ let main argv =
 
     for i in 1 .. numberOfWorkers do
         let name = "worker_" + i.ToString()
-        GLSystem.ActorOf(Props(typeof<GFNWorkerActor>, [| i :> obj; numberOfWorkers :> obj; rumorLimit :> obj |]), name) |> ignore
+        GLSystem.ActorOf(Props(typeof<GLWorkerActor>, [| i :> obj; numberOfWorkers :> obj; rumorLimit :> obj |]), name) |> ignore
         workerList.Add("/user/" + name)
 
     let mediator = DistributedPubSub.Get(GLSystem).Mediator

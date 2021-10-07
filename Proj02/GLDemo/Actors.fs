@@ -114,7 +114,7 @@ type TaskWorkerActor(id: int, numberOfWorkers: int) =
                 neighbor <- (neighbor + (id + 1).ToString())
         neighbor
 
-type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
+type GLWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
     inherit Actor()
 
     let mutable neighborDone = 0
