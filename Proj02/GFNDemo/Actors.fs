@@ -109,7 +109,7 @@ type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
     let mutable taskWorkerStart = false
     let mutable getRumorCounter = 0;
 
-    let taskWorker = Actor.Context.ActorOf(Props(typeof<TaskWorkerActor>, [| id :> obj; numberOfWorkers :> obj |]), "taskWorker")
+    let taskWorker = Actor.Context.ActorOf(Props(typeof<TaskWorkerActor>), "taskWorker")
     let switchWorker = Actor.Context.ActorOf(Props(typeof<SwitchWorker>), "switchWorker")
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
