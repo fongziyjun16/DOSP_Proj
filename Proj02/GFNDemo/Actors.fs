@@ -43,9 +43,7 @@ type RecorderActor(numberOfWorkers: int) =
             mediator <! new Send("/user/randomRouter", msg, true)
         | :? GetRumor as msg ->
             getRumorCounter <- (getRumorCounter + 1)
-
             x.ReportPercentage()
-
             if getRumorCounter = numberOfWorkers then
                 realTimeEnd <- DateTime.Now
                 stopWatch.Stop()
