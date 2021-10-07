@@ -42,7 +42,7 @@ type RecorderActor(numberOfWorkers: int) =
         | :? Start as msg ->
             realTimeStart <- DateTime.Now
             stopWatch.Start()
-            mediator <! new Send("/user/broadCastRouter", new SendOut(), true)
+            mediator <! new Send("/user/broadcastRouter", new SendOut(), true)
         | :? Termination as msg ->
             numberOfWorking <- (numberOfWorking - 1)
             getRumorCounter <- (getRumorCounter + 1)
@@ -57,10 +57,10 @@ type RecorderActor(numberOfWorkers: int) =
             if singleRumorGetCounter < numberOfWorking then
                 singleRumorGetCounter <- (singleRumorGetCounter + 1)
                 if singleRumorGetCounter = numberOfWorking then
-                    mediator <! new Send("/user/broadCastRouter", new Calculation(), true)
+                    mediator <! new Send("/user/broadcastRouter", new Calculation(), true)
                     if getRumorCounter < numberOfWorkers then
                         x.CountRounds()
-                        mediator <! new Send("/user/broadCastRouter", new SendOut(), true)
+                        mediator <! new Send("/user/broadcastRouter", new SendOut(), true)
         | _ -> printfn "unknown message"
 
     member x.ReportPercentage(id) =

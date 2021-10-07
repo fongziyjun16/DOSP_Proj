@@ -44,7 +44,7 @@ let main argv =
 
     let mediator = DistributedPubSub.Get(PSFNSystem).Mediator
 
-    let broadcastRouter = PSFNSystem.ActorOf(Props.Empty.WithRouter(new BroadcastGroup(workerList)), "broadCastRouter")
+    let broadcastRouter = PSFNSystem.ActorOf(Props.Empty.WithRouter(new BroadcastGroup(workerList)), "broadcastRouter")
     mediator <! new Put(broadcastRouter)
 
     let randomRouter = PSFNSystem.ActorOf(Props.Empty.WithRouter(new RandomGroup(workerList)), "randomRouter")
