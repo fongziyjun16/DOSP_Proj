@@ -40,9 +40,7 @@ type RecorderActor(numberOfWorkers: int) =
         | :? StartRumor as msg ->
             realTimeStart <- DateTime.Now
             stopWatch.Start()
-            let startID = Random().Next(1, numberOfWorkers + 1)
-            printfn "startID: %d" startID
-            mediator <! new Send("/user/worker_" + startID.ToString(), msg, true)
+            mediator <! new Send("/user/randomRouter", msg, true)
         | :? GetRumor as msg ->
             getRumorCounter <- (getRumorCounter + 1)
 
