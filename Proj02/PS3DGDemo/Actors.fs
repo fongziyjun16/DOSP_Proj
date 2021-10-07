@@ -20,8 +20,10 @@ type PrinterActor() =
             printfn "%s" msg
         | _ -> printfn "unknown message"
 
-type RecorderActor(numberOfWorkers: int) =
+type RecorderActor(structure: Structure) =
     inherit Actor()
+
+    let numberOfWorkers = structure.LENGTH * structure.WIDTH * structure.HEIGHT
 
     let mutable roundsCounter = 0
     let mutable singleRumorGetCounter = 0
@@ -47,7 +49,7 @@ type RecorderActor(numberOfWorkers: int) =
             numberOfWorking <- (numberOfWorking - 1)
             getRumorCounter <- (getRumorCounter + 1)
 
-            x.ReportPercentage(msg.ID)
+            x.ReportPercentage(msg.NAME)
 
             if getRumorCounter = numberOfWorkers then
                 realTimeEnd <- DateTime.Now
@@ -63,7 +65,7 @@ type RecorderActor(numberOfWorkers: int) =
                         mediator <! new Send("/user/broadcastRouter", new SendOut(), true)
         | _ -> printfn "unknown message"
 
-    member x.ReportPercentage(id) =
+    member x.ReportPercentage(name) =
         let percentage = ((double) getRumorCounter / (double) numberOfWorkers) * 100.0
         if percentage % 10.0 = 0.0 then
             mediator <! new Send("/user/printer", percentage.ToString() + " %", true)
@@ -82,15 +84,20 @@ type RecorderActor(numberOfWorkers: int) =
     member x.CountRounds() =
         singleRumorGetCounter <- 0
         roundsCounter <- (roundsCounter + 1)
-        
 
-
-type PS3DWorkerActor(id: int) =
+type PS3DWorkerActor(position: Position, structure: Structure, no: int) =
     inherit Actor()
+
+    let name = "worker_" + position.X.ToString() + "_" + position.Y.ToString() + "_" + position.Z.ToString()
+
+    let directions = [| new Position(1, 0, 0); new Position(0, 1, 0); 
+                        new Position(0, 0, 1); new Position(-1, 0, 0); 
+                        new Position(0, -1, 0); new Position(0, 0, -1) 
+                     |]
 
     let mutable consecutiveTimes = 0;
 
-    let mutable orgS = (double) id
+    let mutable orgS = (double) no
     let mutable orgW = 1.0
     let mutable newS = 0.0
     let mutable newW = 0.0
@@ -111,8 +118,8 @@ type PS3DWorkerActor(id: int) =
                 newW <- orgW
 
                 let rumor = new Rumor(orgS, orgW)
-                mediator <! new Send("/user/randomRouter", rumor, true)
-                mediator <! new Send("/user/worker_" + id.ToString(), rumor, true)
+                mediator <! new Send("/user/" + x.GetRandomNeighbor(), rumor, true)
+                mediator <! new Send("/user/" + name, rumor, true)
         | :? Rumor as msg ->
             if consecutiveTimes < 3 then
                 newS <- newS + msg.S
@@ -126,7 +133,20 @@ type PS3DWorkerActor(id: int) =
                 if changes <= Math.Pow(10.0, -10.0) then
                     consecutiveTimes <- (consecutiveTimes + 1)
                     if consecutiveTimes = 3 then
-                        mediator <! new Send("/user/recorder", new Termination(id), true)
+                        mediator <! new Send("/user/recorder", new Termination(name), true)
                 else
                     consecutiveTimes <- 0
         | _ -> printfn "unknown message"
+
+    member x.GetRandomNeighbor() = 
+        let mutable getFlg = false
+        let mutable neighbor = ""
+        while getFlg = false do
+            let direction = directions.[Random().Next(6)]
+            let neighborPosition = new Position(position.X + direction.X, position.Y + direction.Y, position.Z + direction.Z)
+            if neighborPosition.X >= 1 && neighborPosition.X <= structure.LENGTH &&
+                neighborPosition.Y >= 1 && neighborPosition.Y <= structure.WIDTH &&
+                neighborPosition.Z >= 1 && neighborPosition.Z <= structure.HEIGHT then
+                getFlg <- true
+                neighbor <- "worker_" + neighborPosition.X.ToString() + "_" + neighborPosition.Y.ToString() + "_" + neighborPosition.Z.ToString()
+        neighbor

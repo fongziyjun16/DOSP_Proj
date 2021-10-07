@@ -60,8 +60,8 @@ type OneRoundGet =
 
 type Termination =
     struct
-        val ID: int
-        new (id: int) ={
-            ID = id
+        val NAME: string
+        new (name: string) ={
+            NAME = name
         }
     end
