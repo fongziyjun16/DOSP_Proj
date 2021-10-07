@@ -83,7 +83,7 @@ type SwitchWorker() =
             switch <- msg.SWITCH
         | _ -> printfn "unknown message"
 
-type TaskWorkerActor(id: int, numberOfWorkers: int) =
+type TaskWorkerActor() =
     inherit Actor()
 
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
