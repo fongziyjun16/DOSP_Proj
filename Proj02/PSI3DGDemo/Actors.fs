@@ -119,6 +119,7 @@ type PS3DWorkerActor(position: Position, structure: Structure, no: int) =
 
                 let rumor = new Rumor(orgS, orgW)
                 mediator <! new Send("/user/" + x.GetRandomNeighbor(), rumor, true)
+                mediator <! new Send("/user/randomRouter", rumor, true)
                 mediator <! new Send("/user/" + name, rumor, true)
         | :? Rumor as msg ->
             if consecutiveTimes < 3 then
