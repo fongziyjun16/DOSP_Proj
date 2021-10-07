@@ -57,6 +57,9 @@ let main argv =
     let broadcastRouter = PS3DSystem.ActorOf(Props.Empty.WithRouter(new BroadcastGroup(workerList)), "broadcastRouter")
     mediator <! new Put(broadcastRouter)
 
+    let randomRouter = PS3DSystem.ActorOf(Props.Empty.WithRouter(new RandomGroup(workerList)), "randomRouter")
+    mediator <! new Put(randomRouter)
+
     recorder <! new Start()
 
     Console.Read() |> ignore
