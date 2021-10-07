@@ -70,6 +70,7 @@ type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
     inherit Actor()
 
     let mutable switch = true
+    let mutable startSendOut = false
     let mutable getRumorCounter = 0;
 
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
@@ -109,4 +110,6 @@ type GFNWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
         mediator <! new Send("/user/recorder", new GetRumor(), true)
 
     member x.StartTaskWorker() =
-        sendOut(new Rumor()) |> Async.StartAsTask |> ignore
+        if startSendOut = false then
+            startSendOut <- true
+            sendOut(new Rumor()) |> Async.StartAsTask |> ignore
