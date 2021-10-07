@@ -1,12 +1,14 @@
 ﻿open System
 open Akka.Actor
 open Akka.FSharp
+open Akka.Routing
 open Akka.Configuration
+open Akka.Cluster.Tools.PublishSubscribe
 
 open Msgs
 open Actors
 
-let numberOfWorkers = 100
+let numberOfWorkers = 50
 let rumorLimit = 10
 let systemName = "GFNSystem"
 
@@ -33,10 +35,22 @@ let main argv =
 
     let recorder = GFNSystem.ActorOf(Props(typeof<RecorderActor>, [| numberOfWorkers :> obj |]), "recorder")
 
-    let printer = GFNSystem.ActorOf(Props(typeof<PrinterActor>), "printer")
+    GFNSystem.ActorOf(Props(typeof<PrinterActor>), "printer") |> ignore
+
+    let workerList = new Collections.Generic.List<string>()
 
     for i in 1 .. numberOfWorkers do
-        GFNSystem.ActorOf(Props(typeof<GFNWorkerActor>, [| i :> obj; numberOfWorkers :> obj; rumorLimit :> obj |]), "worker_" + i.ToString()) |> ignore
+        let name = "worker_" + i.ToString()
+        GFNSystem.ActorOf(Props(typeof<GFNWorkerActor>, [| i :> obj; numberOfWorkers :> obj; rumorLimit :> obj |]), name) |> ignore
+        workerList.Add("/user/" + name)
+
+    let mediator = DistributedPubSub.Get(GFNSystem).Mediator
+
+    let broadcastRouter = GFNSystem.ActorOf(Props.Empty.WithRouter(new BroadcastGroup(workerList)), "broadCastRouter")
+    mediator <! new Put(broadcastRouter)
+
+    let randomRouter = GFNSystem.ActorOf(Props.Empty.WithRouter(new RandomGroup(workerList)), "randomRouter")
+    mediator <! new Put(randomRouter)
 
     recorder <! new StartRumor()
 
