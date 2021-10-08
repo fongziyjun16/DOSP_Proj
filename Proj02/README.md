@@ -21,33 +21,8 @@
 
 4. Run the main application
    
-5. On the base of the fourth step, it will need you to type in the prefix and the number of leading zero to run
+5. See the result of running time and rounds number.
 
-   ![001](images/001.png)
-
-   ![002](images/002.png)
-
-6. Copying the decompressed folder mentioned above to another computer that can connect to the computer above (main application run on) 
-
-   - the next steps (about sub application that will join in main application to calculate) will run in Linux
-     - on Linux, .NET SDKs and .NET runtimes should be installed first
-
-7. Going to the folder on Linux and Typing in "dotnet run 192.168.17.131 10011 n 10"
-
-   - "192.168.17.131" should be replaced according to your situation
-   - "10010" should be replaced with an unused port on your operating system
-   - "n" meaning that what is going to run is sub application
-   - "10" meaning that there are 10 worker actors in sub application
-
-8. On the base of the seventh step, you will need to type in the IPv4 Address and the specific port  both of the main application 
-
-   ![003](images/003.png)
-
-   - Above image is from main application, when a sub application joins in main application, we can see related information displayed
-
-   ![004](images/004.png)
-
-   - Above image is from sub application, the information represents it connects to the main application
 
 ### Result Description
 
