@@ -8,9 +8,9 @@ open Akka.Cluster.Tools.PublishSubscribe
 open Msgs
 open Actors
 
-let length = 3
-let width = 5
-let height = 4
+let length = 10
+let width = 10
+let height = 100
 let numberOfWorkers = 10
 let rumorLimit = 10
 let systemName = "GI3DGSystem"
