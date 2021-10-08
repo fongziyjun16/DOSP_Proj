@@ -40,7 +40,7 @@ type RecorderActor(numberOfWorkers: int) =
         | :? StartRumor as msg ->
             realTimeStart <- DateTime.Now
             stopWatch.Start()
-            mediator <! new Send("/user/randomRouter", new StartRumor(false), true)
+            mediator <! new Send("/user/randomRouter", new StartRumor(), true)
         | :? GetRumor as msg ->
             getRumorCounter <- (getRumorCounter + 1)
             x.ReportPercentage()
@@ -51,7 +51,7 @@ type RecorderActor(numberOfWorkers: int) =
                 mediator <! new Send("/user/broadcastRouter", new AllStop(), true)
         | :? Motivation as msg ->
             if getRumorCounter < numberOfWorkers then
-                mediator <! new Send("/user/randomRouter", new StartRumor(true), true)
+                mediator <! new Send("/user/randomRouter", new StartRumor(), true)
         | _ -> printfn "unknown message"
 
     member x.ReportPercentage() =
@@ -69,61 +69,39 @@ type RecorderActor(numberOfWorkers: int) =
         let runTimeInfo = "run time -- minutes: " + (runTime.Minutes).ToString() + " seconds: " + (runTime.Seconds).ToString() + " milliseconds: " + (runTime.Milliseconds).ToString()
         mediator <! new Send("/user/printer", runTimeInfo, true)
 
-type SwitchWorker() =
-    inherit Actor()
-
-    let mutable switch = true
-
-    override on.OnReceive message =
-        match box message with
-        | :? GetSwitch as msg ->
-            Actor.Context.Sender <! switch
-        | :? SetSwitch as msg ->
-            switch <- msg.SWITCH
-        | _ -> printfn "unknown message"
-
-type TaskWorkerActor(id: int, numberOfWorkers: int) =
-    inherit Actor()
-
-    let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
-
-    override on.PreStart() =
-        mediator <! new Put(Actor.Context.Self)
-
-    override x.OnReceive message =
-        match box message with
-        | :? Rumor as msg ->
-            while x.GetSwitch() do
-                mediator <! new Send("/user/" + x.GetRandomNeighbor(), new Rumor(id), true)
-                // mediator <! new Send("/user/printer", id.ToString() + " -> " + neighbor.ToString(), true)
-        | _ -> printfn "unknown message"
-
-    member x.GetSwitch() = 
-        let switchWorker = Actor.Context.ActorSelection(Actor.Context.Parent.Path.ToStringWithAddress() + "/switchWorker")
-        Async.RunSynchronously(switchWorker <? new GetSwitch(), -1)
-
-    member x.GetRandomNeighbor() =
-        let mutable neighbor = "worker_"
-        if id = 1 then neighbor <- (neighbor + "2")
-        else if id = numberOfWorkers then neighbor <- (neighbor + (numberOfWorkers - 1).ToString())
-        else
-            let randomDirection = Random().Next(0, 2)
-            if randomDirection = 0 then
-                neighbor <- (neighbor + (id - 1).ToString())
-            else
-                neighbor <- (neighbor + (id + 1).ToString())
-        neighbor
-
 type GLWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
     inherit Actor()
 
-    let mutable neighborDone = 0
-    let mutable taskWorkerStart = false
+    let mutable switch = true
+    let mutable leftDone = false
+    let mutable rightDone = false
+    let mutable reportedGetRumor = false
     let mutable getRumorCounter = 0;
 
-    let taskWorker = Actor.Context.ActorOf(Props(typeof<TaskWorkerActor>, [| id :> obj; numberOfWorkers :> obj |]), "taskWorker")
-    let switchWorker = Actor.Context.ActorOf(Props(typeof<SwitchWorker>), "switchWorker")
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
+
+    let mutable startSendOut = false
+    let sendOut(msg: Rumor) =
+        let mutable counter = 0
+        async {
+            while switch do
+                let mutable neighbor = "worker_"
+                if id = 1 then neighbor <- (neighbor + "2")
+                else if id = numberOfWorkers then neighbor <- (neighbor + (numberOfWorkers - 1).ToString())
+                else
+                    let randomDirection = Random().Next(0, 2)
+                    if randomDirection = 0 then
+                        neighbor <- (neighbor + (id - 1).ToString())
+                    else
+                        neighbor <- (neighbor + (id + 1).ToString())
+
+                mediator <! new Send("/user/" + neighbor, new Rumor(id), true)
+                counter <- (counter + 1)
+                if counter = rumorLimit then
+                    counter <- 0
+                    do! Async.Sleep(1)
+            startSendOut <- false
+        }
 
     override x.PreStart() =
         mediator <! new Put(Actor.Context.Self)
@@ -131,9 +109,8 @@ type GLWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
     override x.OnReceive message =
         match box message with
         | :? StartRumor as msg ->
-            taskWorker <! new Rumor()
-            if msg.MOTIVATED = false then
-                x.ReportRumor()
+            x.StartTaskWorker()
+            x.ReportRumor()
         | :? Rumor as msg ->
             if getRumorCounter < rumorLimit then
                 getRumorCounter <- (getRumorCounter + 1)
@@ -141,25 +118,31 @@ type GLWorkerActor(id: int, numberOfWorkers: int, rumorLimit: int) =
                 if getRumorCounter = 1 then
                     x.ReportRumor()
                 else if getRumorCounter = rumorLimit then
-                    switchWorker <! new SetSwitch(false)
+                    switch <- false
             else
                 mediator <! new Send("/user/worker_" + msg.FROM.ToString(), new IAmDone(id), true)
         | :? AllStop as msg ->
-            switchWorker <! new SetSwitch(false)
+            switch <- false
         | :? IAmDone as msg ->
             if (id = 1 && msg.ID = 2) || (id = numberOfWorkers && msg.ID = (numberOfWorkers - 1)) then
                 mediator <! new Send("/user/recorder", new Motivation(), true)
             else
-                if neighborDone < 2 then
-                    neighborDone <- (neighborDone + 1)
-                    if neighborDone = 2 then
-                        mediator <! new Send("/user/recorder", new Motivation(), true)
+                if leftDone && rightDone then
+                    mediator <! new Send("/user/recorder", new Motivation(), true)
+                else
+                    if msg.ID < id then leftDone <- true
+                    else rightDone <- true
+                    
         | _ -> printfn "worker unknown message"
 
     member x.ReportRumor() =
-        mediator <! new Send("/user/recorder", new GetRumor(), true)
+        if reportedGetRumor = false then
+            reportedGetRumor <- true
+            mediator <! new Send("/user/recorder", new GetRumor(), true)
 
     member x.StartTaskWorker() =
-        if taskWorkerStart = false then
-            taskWorkerStart <- true
-            taskWorker <! new Rumor()
+        if startSendOut = false then
+            switch <- true
+            startSendOut <- true
+            sendOut(new Rumor()) |> Async.StartAsTask |> ignore
+
