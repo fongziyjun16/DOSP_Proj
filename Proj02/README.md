@@ -34,14 +34,9 @@
 
 ### Result Description
 
-- The real time it takes to get the convergence of the algorithm
-- Main information printing format like "[%s] with [%s] leading zeros [%s]"
-  - First placeholders means one of results
-  - second means the number of leading zeros
-  - third means sha256 string of first placeholders string
-- The screen of main application will display strings with specific number of leading zeros when start running and display sha256 string with leading zeros but just one time with different number of leading zeros.
-  - For example, when we start running and input 5 leading zeros, it will display all result with 5 leading zeros, but for 1, 2, 3 ,4, 6, 7, and so on leading zeros, just display one of their results.
-
+- The real time it takes to get the convergence of the algorithm is printed as "".
+- The round it takes is printed as "".
+- There is the possibility that not all workers can receive the rumor. This observation is especially obvious in the topology "line". 
 
 
 ## Architecture
@@ -95,24 +90,6 @@
    
    -  Imp3D: A worker is connected to another random neighbor selected from all the workers on the fundation of the network of 3D.
 
-
-### Architecture Diagrams
-
-- Main application and Sub application
-
-  ![005](images/005.png)
-
-- Communication in Main Application
-
-  ![006](images/006.png)
-
-- Communication in Sub Application
-
-  ![007](images/007.png)
-
-- Main Application and several Sub Applications
-
-  ![008](images/008.png)
 
 ## Experiment
 
