@@ -19,14 +19,22 @@
 
 3. Opening Command Prompt and Going to the folder obtained from the second step
 
-4. Run the main application
-   
-5. See the result of running time and rounds number.
+4. Run the command line "dotnet run [topology] [algorithm]"
+   - selections for [topology]: full, 3D, line, imp3D
+   - selections for [algorithm]: gossip, push-sum
+
+![image](https://user-images.githubusercontent.com/28448629/136636560-4d0c46a8-5745-49db-aa68-d3e9eaf75a25.png)
+
+5. Input the number of workers and rumor limit time
+
+![image](https://user-images.githubusercontent.com/28448629/136636718-408eb9ba-714b-4ce3-8c69-57cc84fa0bd2.png)
+
+6. The result prints the running time and rounds number it takes to achieve the convergence of the algorithm.
 
 
 ### Result Description
 
-- All the important information will be printed on the main application screen.
+- The real time it takes to get the convergence of the algorithm
 - Main information printing format like "[%s] with [%s] leading zeros [%s]"
   - First placeholders means one of results
   - second means the number of leading zeros
@@ -46,23 +54,47 @@
 
 ### Actors Function
 
-- Worker: Computing and Submitting the result to StateManager
-  - Each started worker will asks StateManager for a length of suffix string and then calculates all possible string in this length. Without stop Main Application running, suffix length will increase continuously and worker will calculate one length, so the size of work unit is one and the suffix length has no limit.
-  - After calculating all possible string in the specific length, each work will ask StateManager again for the next suffix length
-- StateManager: 
-  - Designating suffix length that will increase with the increasing number of workers asking for to worker or connector that will send the length to outer application
-  - After receiving a result with specific length of leading zeros, it will check if there was a same result, if not, send message to printer for printing it. But for other results with non-specific length of zeros, it print one of them, for example, if there are more than one result with three leading zeros, just sending message about one result to printer for printing
-  - In Sub application, if one of worker sends message about finding one result, StateManager will send it to connector that will then send to Main Application in the Sub Application.
-  - In Sub application, when receiving asking for suffix length from workers, StateManager will send message to StateManager of Main Application to ask through connector.
-- Connector:
-  - Communication Between main application and sub application
-- Printer
-  - Printing Information to console in Main Application
+- Printer Actor:
+  - Print the messages.
+- Recorder Actor: 
+  - Supervise all the worker actors about the times they recieve the rumors
+  - When the network starts, choose a random worker to begin with sending the rumor.
+  - Counts the rumors, and reports the percentage of workers that have gotten the rumor. Every 20%, it reports once.
+  - Report the real time that used for the rumor to spread over the network
+- Worker Actor:
+  - Send out the rumor message and wait for one millisecond.
+  - Receive the message from its neighbors and account. When the rumors it receives reaches the limitaion, stop action.
+  - Report the rumor counts to the recorder actor. 
+- Attention:
+  - Here is a command "do! Async.Sleep(1)" in the worker actor after sending a message. As there is limited threads in the CPU, it makes the worker gives up the thread and stops for 1 millisecond, when it ends this turn of sending the rumor. Since the number of actors may be huge, this mechanisum assure that the thread can move to other actors but not be occupied by one same actor for a long time.
 
-### Two Modes 
+![image](https://user-images.githubusercontent.com/28448629/136637454-8b9b6d5f-e7de-41cd-ae5a-693d1a6d8d55.png)
 
-- Main Application
-- Sub Application
+
+### Two Algorithms And Four Network Topologies
+
+- Gossip and Push-sum
+   - Gossip is that a worker selects one of its neighbors based on the topology of network to send the rumor when the worker receives one rumor.
+   - Push-sum is that each time the worker send the rumor, it sends the pair (1/2sr, 1/2wr) in the last round of its total received sr and wr to itself in this round, and the other half to the neighbor it will select.
+
+- Full, 3D, Line, Imp3D
+   -  Full: A worker is connected to all the other workers.
+
+![image](https://user-images.githubusercontent.com/28448629/136637868-d80e096d-4a36-4c63-8e73-acc2e52791b7.png)
+
+
+   -  3D: A worker is connnected to the other 6 neighbors in a 3D grid.
+   
+![image](https://user-images.githubusercontent.com/28448629/136637886-7697284f-cdc9-4ce0-b23a-8dd81fbcd5d6.png)
+
+   
+   -  Line: The workers are arranged in a line, with the begining and the end worker reaches only one neighbor and the middle workers reaches the other two neighbors. 
+   
+![image](https://user-images.githubusercontent.com/28448629/136638073-52923c05-0a33-4b9d-a74b-0248f0efbe64.png)
+
+   
+   -  Imp3D: A worker is connected to another random neighbor selected from all the workers on the fundation of the network of 3D.
+
 
 ### Architecture Diagrams
 
