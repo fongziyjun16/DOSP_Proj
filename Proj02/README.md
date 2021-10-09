@@ -68,6 +68,7 @@
   - Report the rumor counts to the recorder actor. 
 - Attention:
   - Here is a command "do! Async.Sleep(1)" in the worker actor after sending a message. As there is limited threads in the CPU, it makes the worker gives up the thread and stops for 1 millisecond, when it ends this turn of sending the rumor. Since the number of actors may be huge, this mechanisum assure that the thread can move to other actors but not be occupied by one same actor for a long time.
+  - If the gossip is running on different computers, that is to say a real network, there will not be this thread occupying issue.
 
 ![image](https://user-images.githubusercontent.com/28448629/136637454-8b9b6d5f-e7de-41cd-ae5a-693d1a6d8d55.png)
 
