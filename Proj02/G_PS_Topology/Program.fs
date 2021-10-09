@@ -23,7 +23,7 @@ let main argv =
 
         if algorithm = "gossip" then
             let mutable rumorLimit = 0
-            printf "please input the rumor limit timit:"
+            printf "please input the rumor limit time:"
             rumorLimit <- Console.ReadLine() |> int
 
             if topology = "full" then
@@ -51,7 +51,7 @@ let main argv =
 
         if algorithm = "gossip" then
             let mutable rumorLimit = 0
-            printf "please input the rumor limit timit:"
+            printf "please input the rumor limit time:"
             rumorLimit <- Console.ReadLine() |> int
 
             if topology = "3D" then
