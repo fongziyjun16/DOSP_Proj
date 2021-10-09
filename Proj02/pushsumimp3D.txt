@@ -1,0 +1,139 @@
+------------- number of workers = 100 = 5 * 5 * 5 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 58
+run time -- minutes: 0 seconds: 0 milliseconds: 58
+
+------------- number of workers = 200 = 6 * 6 * 6 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 64
+run time -- minutes: 0 seconds: 0 milliseconds: 64
+
+------------- number of workers = 300 = 7 * 7 * 7 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 98
+run time -- minutes: 0 seconds: 0 milliseconds: 98
+
+------------- number of workers = 400 = 7 * 7 * 8 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 105
+run time -- minutes: 0 seconds: 0 milliseconds: 105
+
+------------- number of workers = 500 = 8 * 8 * 8 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 144
+run time -- minutes: 0 seconds: 0 milliseconds: 144
+
+------------- number of workers = 600 = 8 * 8 * 9 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 150
+run time -- minutes: 0 seconds: 0 milliseconds: 150
+
+------------- number of workers = 700 = 9 * 9 * 9 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 172
+run time -- minutes: 0 seconds: 0 milliseconds: 172
+
+------------- number of workers = 800 = 9 * 9 * 10 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 190
+run time -- minutes: 0 seconds: 0 milliseconds: 190
+
+------------- number of workers = 900 = 9 * 10 * 10 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 214
+run time -- minutes: 0 seconds: 0 milliseconds: 214
+
+------------- number of workers = 1000 = 10 * 10 * 10 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 239
+run time -- minutes: 0 seconds: 0 milliseconds: 239
+
+------------- number of workers = 2000 = 12 * 13 * 13 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 386
+run time -- minutes: 0 seconds: 0 milliseconds: 386
+
+------------- number of workers = 3000 = 14 * 14 * 15 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 569
+run time -- minutes: 0 seconds: 0 milliseconds: 569
+
+------------- number of workers = 4000 = 16 * 16 * 16 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 740
+run time -- minutes: 0 seconds: 0 milliseconds: 740
+
+------------- number of workers = 5000 = 17 * 17 * 17 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 0 milliseconds: 842
+run time -- minutes: 0 seconds: 0 milliseconds: 842
+
+------------- number of workers = 6000 = 18 * 18 * 19 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 1 milliseconds: 64
+run time -- minutes: 0 seconds: 1 milliseconds: 64
+
+------------- number of workers = 7000 = 19 * 19 * 20 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 1 milliseconds: 336
+run time -- minutes: 0 seconds: 1 milliseconds: 336
+
+------------- number of workers = 8000 = 20 * 20 * 20  -------------
+rounds: 12
+real time -- minutes: 0 seconds: 1 milliseconds: 521
+run time -- minutes: 0 seconds: 1 milliseconds: 521
+
+------------- number of workers = 9000 = 21 * 21 * 21 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 1 milliseconds: 736
+run time -- minutes: 0 seconds: 1 milliseconds: 736
+
+------------- number of workers = 10000 = 21 * 21 * 23 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 1 milliseconds: 835
+run time -- minutes: 0 seconds: 1 milliseconds: 835
+
+------------- number of workers = 20000 = 27 * 27 * 28 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 3 milliseconds: 544
+run time -- minutes: 0 seconds: 3 milliseconds: 544
+
+------------- number of workers = 30000 = 31 * 31 * 31 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 5 milliseconds: 193
+run time -- minutes: 0 seconds: 5 milliseconds: 193
+
+------------- number of workers = 40000 = 34 * 34 * 35 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 7 milliseconds: 346
+run time -- minutes: 0 seconds: 7 milliseconds: 346
+
+------------- number of workers = 50000 = 36 * 37 * 37 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 8 milliseconds: 991
+run time -- minutes: 0 seconds: 8 milliseconds: 991
+
+------------- number of workers = 60000 = 39 * 39 * 39 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 10 milliseconds: 542
+run time -- minutes: 0 seconds: 10 milliseconds: 542
+
+------------- number of workers = 70000 = 41 * 41 * 42 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 13 milliseconds: 4
+run time -- minutes: 0 seconds: 13 milliseconds: 4
+
+------------- number of workers = 80000 = 43 * 43 * 43 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 14 milliseconds: 720
+run time -- minutes: 0 seconds: 14 milliseconds: 720
+
+------------- number of workers = 90000 = 44 * 45 * 45 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 16 milliseconds: 236
+run time -- minutes: 0 seconds: 16 milliseconds: 236
+
+------------- number of workers = 100000 = 46 * 46 * 47 -------------
+rounds: 12
+real time -- minutes: 0 seconds: 18 milliseconds: 291
+run time -- minutes: 0 seconds: 18 milliseconds: 291

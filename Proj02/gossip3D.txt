@@ -1,0 +1,111 @@
+------------- number of workers = 100 = 5 * 5 * 5 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 24
+run time -- minutes: 0 seconds: 0 milliseconds: 24
+
+------------- number of workers = 200 = 6 * 6 * 6 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 31
+run time -- minutes: 0 seconds: 0 milliseconds: 31
+
+------------- number of workers = 300 = 7 * 7 * 7 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 37
+run time -- minutes: 0 seconds: 0 milliseconds: 37
+
+------------- number of workers = 400 = 7 * 7 * 8 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 43
+run time -- minutes: 0 seconds: 0 milliseconds: 43
+
+------------- number of workers = 500 = 8 * 8 * 8 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 52
+run time -- minutes: 0 seconds: 0 milliseconds: 52
+
+------------- number of workers = 600 = 8 * 8 * 9 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 55
+run time -- minutes: 0 seconds: 0 milliseconds: 55
+
+------------- number of workers = 700 = 9 * 9 * 9 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 64
+run time -- minutes: 0 seconds: 0 milliseconds: 64
+
+------------- number of workers = 800 = 9 * 9 * 10 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 76
+run time -- minutes: 0 seconds: 0 milliseconds: 76
+
+------------- number of workers = 900 = 9 * 10 * 10 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 102
+run time -- minutes: 0 seconds: 0 milliseconds: 102
+
+------------- number of workers = 1000 = 10 * 10 * 10 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 84
+run time -- minutes: 0 seconds: 0 milliseconds: 84
+
+------------- number of workers = 2000 = 12 * 13 * 13 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 259
+run time -- minutes: 0 seconds: 0 milliseconds: 259
+
+------------- number of workers = 3000 = 14 * 14 * 15 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 362
+run time -- minutes: 0 seconds: 0 milliseconds: 362
+
+------------- number of workers = 4000 = 16 * 16 * 16 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 443
+run time -- minutes: 0 seconds: 0 milliseconds: 443
+
+------------- number of workers = 5000 = 17 * 17 * 17 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 520
+run time -- minutes: 0 seconds: 0 milliseconds: 520
+
+------------- number of workers = 6000 = 18 * 18 * 19 -------------
+real time -- minutes: 0 seconds: 0 milliseconds: 800
+run time -- minutes: 0 seconds: 0 milliseconds: 800
+
+------------- number of workers = 7000 = 19 * 19 * 20 -------------
+real time -- minutes: 0 seconds: 1 milliseconds: 97
+run time -- minutes: 0 seconds: 1 milliseconds: 97
+
+------------- number of workers = 8000 = 20 * 20 * 20  -------------
+real time -- minutes: 0 seconds: 1 milliseconds: 294
+run time -- minutes: 0 seconds: 1 milliseconds: 294
+
+------------- number of workers = 9000 = 21 * 21 * 21 -------------
+real time -- minutes: 0 seconds: 1 milliseconds: 668
+run time -- minutes: 0 seconds: 1 milliseconds: 668
+
+------------- number of workers = 10000 = 21 * 21 * 22 -------------
+real time -- minutes: 0 seconds: 1 milliseconds: 520
+run time -- minutes: 0 seconds: 1 milliseconds: 520
+
+------------- number of workers = 20000 = 27 * 27 * 28 -------------
+real time -- minutes: 0 seconds: 6 milliseconds: 34
+run time -- minutes: 0 seconds: 6 milliseconds: 34
+
+------------- number of workers = 30000 = 31 * 31 * 31 -------------
+real time -- minutes: 0 seconds: 8 milliseconds: 522
+run time -- minutes: 0 seconds: 8 milliseconds: 522
+
+------------- number of workers = 40000 = 34 * 34 * 35 -------------
+real time -- minutes: 0 seconds: 48 milliseconds: 229
+run time -- minutes: 0 seconds: 48 milliseconds: 229
+
+------------- number of workers = 50000 = 36 * 37 * 37 -------------
+real time -- minutes: 1 seconds: 0 milliseconds: 635
+run time -- minutes: 1 seconds: 0 milliseconds: 635
+
+------------- number of workers = 60000 = 39 * 39 * 39 -------------
+real time -- minutes: 1 seconds: 2 milliseconds: 658
+run time -- minutes: 1 seconds: 2 milliseconds: 658
+
+------------- number of workers = 70000 = 41 * 41 * 42 -------------
+real time -- minutes: 3 seconds: 2 milliseconds: 679
+run time -- minutes: 3 seconds: 2 milliseconds: 679
+
+------------- number of workers = 80000 = 43 * 43 * 43 -------------
+real time -- minutes: 2 seconds: 36 milliseconds: 448
+run time -- minutes: 2 seconds: 36 milliseconds: 448
+
+------------- number of workers = 90000 = 44 * 45 * 45 -------------
+real time -- minutes: 7 seconds: 10 milliseconds: 901
+run time -- minutes: 7 seconds: 10 milliseconds: 901
+
+------------- number of workers = 100000 = 46 * 46 * 47 -------------
+real time -- minutes: 4 seconds: 57 milliseconds: 104
+run time -- minutes: 4 seconds: 57 milliseconds: 104
