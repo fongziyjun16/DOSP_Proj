@@ -25,9 +25,12 @@
 
 ![image](https://user-images.githubusercontent.com/28448629/136636560-4d0c46a8-5745-49db-aa68-d3e9eaf75a25.png)
 
-5. Input the number of workers and rumor limit time
+5. Input the number of workers or the (length, width, height) for 3D, and rumor limit time
 
 ![image](https://user-images.githubusercontent.com/28448629/136636718-408eb9ba-714b-4ce3-8c69-57cc84fa0bd2.png)
+
+![image](https://user-images.githubusercontent.com/28448629/136666905-907ba5d8-4962-4d66-916c-2fd7c8925227.png)
+
 
 6. The result prints the running time and rounds number it takes to achieve the convergence of the algorithm.
 
