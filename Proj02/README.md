@@ -109,58 +109,58 @@
 1. GOSSIP-FULL: The largest actor amount tested in the project is 100000. It can be more there but is not verified.
    -The algorithm convergence time for different scales of actors is saved in the file "gossipfull.txt", under the rumor limitation of 20.
    
-![image](https://user-images.githubusercontent.com/28448629/136675503-112f553a-784c-427d-9b65-99d21e2645aa.png)
+![image](https://user-images.githubusercontent.com/28448629/136712241-56fb92bf-7a85-448e-a19d-a191afa3dbac.png)
 
    
 2. GOSSIP-LINE: The largest actor amount tested in the project is 1000. When there is 2000, it is blocked between 80%~100% that not all workers can receive the rumor. 
    -The algorithm convergence time for different scales of actors is saved in the file "gossipline.txt", under the rumor limitation of 20.
    
-![image](https://user-images.githubusercontent.com/28448629/136675509-23e2be14-f142-4a02-b97b-7e69085bf20e.png)
+![image](https://user-images.githubusercontent.com/28448629/136712254-38e3eb1d-d162-4ba0-b491-49f5d277a019.png)
 
    
 3. GOSSIP-3D: The largest actor amount tested in the project is 100000. It can be more there but is not verified. 
    -The algorithm convergence time for different scales of actors is saved in the file "gossip3D.txt", under the rumor limitation of 20.
 
-![image](https://user-images.githubusercontent.com/28448629/136675520-33cc1279-c012-4643-8f94-41917c9c1a53.png)
+![image](https://user-images.githubusercontent.com/28448629/136712270-d834855c-fa86-4516-bcdf-5fceb49466ef.png)
 
 
 4. GOSSIP-IMP3D: The largest actor amount tested in the project is 100000. It can be more there but is not verified. 
    -The algorithm convergence time for different scales of actors is saved in the file "gossipimp3D.txt", under the rumor limitation of 20.
 
-![image](https://user-images.githubusercontent.com/28448629/136675528-b40a8f77-dd62-4d65-8102-6e7cfa9c2752.png)
+![image](https://user-images.githubusercontent.com/28448629/136712284-b4bf18d0-739b-498b-9ef7-95130c6679cc.png)
 
 
 The convergence time of gossip topologies draws in one picture.
 
-![image](https://user-images.githubusercontent.com/28448629/136675571-99f49bc1-1693-4c3b-8606-8b1dbb74cfa2.png)
+![image](https://user-images.githubusercontent.com/28448629/136712325-b1e12a17-3025-4b62-b04b-b93d774a4327.png)
 
-![image](https://user-images.githubusercontent.com/28448629/136675591-d2c1a171-7c62-47c0-b279-48aa376983de.png)
+![image](https://user-images.githubusercontent.com/28448629/136712346-3b6f91ca-0937-46aa-847c-6ff56c121675.png)
 
 
 5. PUSH_SUM-FULL: The largest actor amount tested in the project is 100000. When the ratio of s/w changes less than 10 with exponents -10 in 3 consecutive rounds, the actor stops. It can be more actors there but is not verified.
    -The algorithm convergence time for different scales of actors is saved in the file "pushsumfull.txt".
    
-![image](https://user-images.githubusercontent.com/28448629/136675609-b2235506-486f-43ad-b015-37957c9f0adc.png)
+![image](https://user-images.githubusercontent.com/28448629/136712393-c0bb4fb7-fd0f-4d4c-a1eb-bd34e5790c95.png)
 
 
 6. PUSH_SUM-LINE: The largest actor amount tested in the project is 100000. It can be more there but is not verified.
    -The algorithm convergence time for different scales of actors is saved in the file "pushsumline.txt".
 
-![image](https://user-images.githubusercontent.com/28448629/136675619-caafe1ae-bcbb-4d4c-9546-e11d3df07045.png)
+![image](https://user-images.githubusercontent.com/28448629/136712402-bfc513d4-bc71-4be8-ab82-c9e6881ffa97.png)
 
 
 7. PUSH_SUM-3D: The largest actor amount tested in the project is 100000. It can be more there but is not verified. 
    -The algorithm convergence time for different scales of actors is saved in the file "pushsum3D.txt".
 
-![image](https://user-images.githubusercontent.com/28448629/136675641-d1506b6f-feeb-4e7b-98e4-42b65c49110c.png)
+![image](https://user-images.githubusercontent.com/28448629/136712409-1dbcf2a9-6aaf-43d3-a04a-33f0c0baec36.png)
 
 
 8. PUSH_SUM-IMP3D: The largest actor amount tested in the project is 100000. It can be more there but is not verified.
    -The algorithm convergence time for different scales of actors is saved in the file "pushsumimp3D.txt".
    
-![image](https://user-images.githubusercontent.com/28448629/136675656-74a8f1e2-1619-4f60-af66-e3bdbba22736.png)
+![image](https://user-images.githubusercontent.com/28448629/136712416-a230db17-94d2-4343-80c0-0a8e027f8fc3.png)
 
 
 The convergence time of push-sum topologies draws in one picture.
 
-![image](https://user-images.githubusercontent.com/28448629/136675693-6417e84e-5075-4f0b-920d-d2113a7a9198.png)
+![image](https://user-images.githubusercontent.com/28448629/136712424-5f12a9d1-84e1-4292-b060-679efcf676f7.png)
