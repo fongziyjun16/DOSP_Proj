@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CPLDemo": {
+      "commandName": "Project",
+      "commandLineArgs": "100 10"
+    }
+  }
+}
