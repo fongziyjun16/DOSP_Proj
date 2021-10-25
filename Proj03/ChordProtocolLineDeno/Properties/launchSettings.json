@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "ChordProtocolLineDeno": {
-      "commandName": "Project",
-      "commandLineArgs": "1000 10"
-    }
-  }
-}
