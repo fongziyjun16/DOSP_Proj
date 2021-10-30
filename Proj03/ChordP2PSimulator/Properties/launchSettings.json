@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ChordP2PSimulator": {
+      "commandName": "Project",
+      "commandLineArgs": "8 3"
+    }
+  }
+}

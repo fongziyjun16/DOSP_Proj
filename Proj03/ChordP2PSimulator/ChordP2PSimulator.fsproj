@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <WarnOn>3390;$(WarnOn)</WarnOn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Tools.fs" />
+    <Compile Include="Msgs.fs" />
+    <Compile Include="PrinterActor.fs" />
+    <Compile Include="ChordManagerActor.fs" />
+    <Compile Include="ChordNodeActor.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Akka" Version="1.4.27" />
+    <PackageReference Include="Akka.Cluster" Version="1.4.27" />
+    <PackageReference Include="Akka.Cluster.Tools" Version="1.4.27" />
+    <PackageReference Include="Akka.FSharp" Version="1.4.27" />
+    <PackageReference Include="Akka.Remote" Version="1.4.27" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="6.0.0" />
+  </ItemGroup>
+
+</Project>
