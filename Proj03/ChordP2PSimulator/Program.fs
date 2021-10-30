@@ -92,7 +92,7 @@ let main argv =
                                         nodesBroadcastRouter <! new PrintContextInfo()
                                         do! Async.Sleep(1000)
                                 } |> Async.StartAsTask |> ignore
-        // printStructure()
+        printStructure()
         while flg = false do
             flg <- Async.RunSynchronously(chordManager <? new CheckChordStructure(), -1)
         printer <! "structure complete"
