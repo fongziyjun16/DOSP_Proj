@@ -189,6 +189,11 @@ type ChordNodeActor(identifier: string, numberOfRequests: int) =
                     do! Async.Sleep(500)
                 mediator <! new Send("/user/printer", identifier + " stop fix finger table period", true)
             } |> Async.StartAsTask |> ignore
+        | :? PrintContextInfo as msg ->
+            mediator <! new Send("/user/printer", "predecessor: " + predecessor + "; successor: " + successor, true)
+        | :? AskNodeContext as msg ->
+            this.Sender <! predecessor + ":" + successor
+        // Start request
         | :? StartMission as msg ->
             async {
                 let mutable sentRequestCounter = 0
@@ -225,10 +230,6 @@ type ChordNodeActor(identifier: string, numberOfRequests: int) =
                 let next = findSuccessor("0" + resourceCode.ToString("X"))
                 msg.incrSteps()
                 mediator <! new Send("/user/" + next, msg, true)
-        | :? PrintContextInfo as msg ->
-            mediator <! new Send("/user/printer", "predecessor: " + predecessor + "; successor: " + successor, true)
-        | :? AskNodeContext as msg ->
-            this.Sender <! predecessor + ":" + successor
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name
 
 
