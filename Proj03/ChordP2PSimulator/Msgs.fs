@@ -48,8 +48,12 @@ type FixFingerTable =
 type FoundResource =
     struct
         val STEPS: int
-        new (steps: int) = {
+        val PUBLISHER: string
+        val SEQNUMBER: int
+        new (steps: int, publisher: string, seqNumber: int) = {
             STEPS = steps;
+            PUBLISHER = publisher;
+            SEQNUMBER = seqNumber;
         }
     end
     
@@ -57,7 +61,19 @@ type StartMission =
     struct
     end
 
-type Lookup(key: string) =
+type PreLookup =
+    struct
+        val KEY: string
+        val PUBLISHER: string
+        val SEQNUMBER: int
+        new (key: string, publisher: string, seqNumber: int) = {
+            KEY = key;
+            PUBLISHER = publisher;
+            SEQNUMBER = seqNumber
+        }
+    end
+
+type Lookup(key: string, publisher: string, seqNumber: int) =
     
     let mutable steps = 0
     
@@ -69,6 +85,12 @@ type Lookup(key: string) =
 
     member this.getKey() =
         key
+
+    member this.getPublisher() =
+        publisher
+
+    member this.getSeqNumber() =
+        seqNumber
 
 type UpdSuccessor =
     struct
@@ -84,4 +106,12 @@ type CheckChordStructure=
 
 type AskNodeContext =
     struct
+    end
+
+type LooupFromOutside =
+    struct
+        val SEQNUMBER: int
+        new (seqNumber: int) = {
+            SEQNUMBER = seqNumber;
+        }
     end

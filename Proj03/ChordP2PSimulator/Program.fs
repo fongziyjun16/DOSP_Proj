@@ -43,15 +43,17 @@ let main argv =
     let sys = System.create "ChordP2PSimulator" configuration
     let mediator = DistributedPubSub.Get(sys).Mediator
     let printer = sys.ActorOf(Props(typeof<PrinterActor>), "printer")
-    let chordManager = sys.ActorOf(Props(typeof<ChordManagerActor>, [| numberOfNodes :> obj; numberOfEachNodeRequests :> obj |]), "ChordManager")
+    let chordManager = sys.ActorOf(Props(typeof<ChordManagerActor>, [| numberOfNodes :> obj; numberOfEachNodeRequests :> obj |]), "chordManager")
     chordManager <! new CheckChordStructure()
 
-    // let testCases = [| "214_115_122_34_52208"; "206_220_63_17_58480"; "186_198_200_46_11215" |]
+    let testCases = [| "25_184_151_96_40780"; "94_244_58_243_37488"; "113_46_96_93_51209";
+                       "79_226_228_148_8865"; "121_19_65_82_9338"; "7_51_219_205_53593";
+                    |]
 
     let entries = new SortedDictionary<string, string>()
     let nodes = new List<string>()
     for i in 1 .. numberOfNodes do
-        let identifier = ToolsKit.generateNodeIdentifier() // testCases.[i - 1]
+        let identifier =  ToolsKit.generateNodeIdentifier() //testCases.[i - 1] 
         nodes.Add(identifier) |> ignore
         ToolsKit.addRecord(identifier)
         entries.Add(ToolsKit.encodeBySHA1(identifier), identifier)
@@ -72,7 +74,7 @@ let main argv =
     let mutable lastNodeIdentifier = ""
     for i in 0 .. nodes.Count - 1 do
         let identifier = nodes.[i]
-        printer <! "create [" + (i + 1).ToString() + "] " + identifier
+        // printer <! "create [" + (i + 1).ToString() + "] " + identifier
         let newNode = sys.ActorOf(Props(typeof<ChordNodeActor>, [| identifier :> obj; numberOfEachNodeRequests :> obj |]), identifier)
         if lastNode <> null then
             newNode <! new Join(lastNodeIdentifier)
@@ -85,20 +87,30 @@ let main argv =
         lastNode <- newNode
         lastNodeIdentifier <- identifier
         
-    let isStructureComplete() = 
-        let mutable flg = false
-        let printStructure() = async {
-                                    while flg = false do
-                                        nodesBroadcastRouter <! new PrintContextInfo()
-                                        do! Async.Sleep(1000)
-                                } |> Async.StartAsTask |> ignore
-        printStructure()
-        while flg = false do
-            flg <- Async.RunSynchronously(chordManager <? new CheckChordStructure(), -1)
-        printer <! "structure complete"
+    
+    let mutable flg = false
+    let printStructure() = async {
+                                while flg = false do
+                                    nodesBroadcastRouter <! new PrintContextInfo()
+                                    do! Async.Sleep(1000)
+                            } |> Async.StartAsTask |> ignore
+    printStructure()
+    chordManager <! new CheckChordStructure()
 
-    isStructureComplete()
+    let checkIsCompleteStructure() = 
+        async {
+            while ToolsKit.isBuiltStructure() = false do
+                do! Async.Sleep(500)
+                chordManager <! new CheckChordStructure()
+            flg <- true
+            printer <! "structure complete"
+        } 
 
+    checkIsCompleteStructure() |> Async.RunSynchronously
+    flg <- true
+    // ToolsKit.stopPeriodSwitch()
+
+    printer <! "start mission"
     nodesBroadcastRouter <! new StartMission()
 
     Console.Read() |> ignore

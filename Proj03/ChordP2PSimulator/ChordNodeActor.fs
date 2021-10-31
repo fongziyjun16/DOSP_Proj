@@ -19,7 +19,6 @@ type ChordNodeActor(identifier: string, numberOfRequests: int) =
     let mutable predecessor = ""
     let mutable successor = identifier
     let basePosition = ToolsKit.toBigInteger(identifier)
-    // let basePositionHex = ToolsKit.toBigInteger(identifier).ToString("X")
 
     let offsetAddrs = new List<string>()
     let fingerTable = new List<string>()
@@ -147,7 +146,7 @@ type ChordNodeActor(identifier: string, numberOfRequests: int) =
             // mediator <! new Send("/user/printer", "test test", true)
             let context = Actor.Context
             async {
-                while true do
+                while true && ToolsKit.getPeriodSwitch() do
                     let mutable successorPredecessor = context |> fun context ->
                                                                     if identifier.Equals(successor) then ""
                                                                     else 
@@ -170,6 +169,7 @@ type ChordNodeActor(identifier: string, numberOfRequests: int) =
                         
                     mediator <! new Send("/user/" + successor, new Notify(identifier), true)
                     do! Async.Sleep(500)
+                mediator <! new Send("/user/printer", identifier + " stop stabilize period", true)
             } |> Async.StartAsTask |> ignore
             // this.Sender <! true
         | :? Notify as msg ->
@@ -180,29 +180,49 @@ type ChordNodeActor(identifier: string, numberOfRequests: int) =
             updSuccessor(msg.ID)
         | :? FixFingerTable as msg ->
             async {
-                while true do
+                while true && ToolsKit.getPeriodSwitch() do
                     let mutable next = 0
                     while next <> 160 do
                         let nextNode = findSuccessor(offsetAddrs.[next])
                         fingerTable.[next] <- nextNode
                         next <- next + 1
                     do! Async.Sleep(500)
+                mediator <! new Send("/user/printer", identifier + " stop fix finger table period", true)
             } |> Async.StartAsTask |> ignore
         | :? StartMission as msg ->
-            let mutable sentRequestCounter = 0
-            let self = Actor.Context.Self
             async {
+                let mutable sentRequestCounter = 0
                 while sentRequestCounter <> numberOfRequests do
                     sentRequestCounter <- sentRequestCounter + 1
                     let resource = generateOneRandomResource()
-                    self <! new Lookup(resource)
+                    // mediator <! new Send("/user/printer", identifier + " requests [" + sentRequestCounter.ToString() + "] " + ToolsKit.toBigInteger(resource).ToString("X"), true)
+                    let lookupInfo = new PreLookup(resource, identifier, sentRequestCounter)
+                    mediator <! new Send("/user/" + identifier, lookupInfo, true)
                     do! Async.Sleep(1000)
+                mediator <! new Send("/user/printer", identifier + " has sent out all requests", true)
             } |> Async.StartAsTask |> ignore
+        | :? PreLookup as msg ->
+            mediator <! new Send("/user/printer", identifier + " looks up [" + msg.SEQNUMBER.ToString() +  "] " + msg.KEY, true)
+            let lookupInfo = new Lookup(msg.KEY, msg.PUBLISHER, msg.SEQNUMBER)
+            mediator <! new Send("/user/" + identifier, lookupInfo, true)
         | :? Lookup as msg ->
-            let next = findSuccessor(msg.getKey())
-            if next = identifier then
-                mediator <! new Send("/user/chordManager", new FoundResource(msg.getSteps()), true)
+            let resourceCode = ToolsKit.toBigInteger(msg.getKey())
+            let currCode = ToolsKit.toBigInteger(identifier)
+            let predecessorCode = ToolsKit.toBigInteger(predecessor)
+            let mutable isContained = false
+            if predecessorCode.CompareTo(currCode) < 0 then
+                if resourceCode.CompareTo(predecessorCode) > 0 && resourceCode.CompareTo(currCode) <= 0 then
+                    isContained <- true
             else
+                if resourceCode.CompareTo(predecessorCode) > 0 && resourceCode.CompareTo(ToolsKit.getMAX()) <= 0 ||
+                    resourceCode.CompareTo(ToolsKit.getMIN()) >= 0 && resourceCode.CompareTo(currCode) <= 0 then
+                    isContained <- true
+
+            if isContained then 
+                let foundMsg = new FoundResource(msg.getSteps(), msg.getPublisher(), msg.getSeqNumber())
+                mediator <! new Send("/user/chordManager", foundMsg, true)
+            else
+                let next = findSuccessor("0" + resourceCode.ToString("X"))
                 msg.incrSteps()
                 mediator <! new Send("/user/" + next, msg, true)
         | :? PrintContextInfo as msg ->

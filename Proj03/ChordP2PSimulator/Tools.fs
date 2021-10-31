@@ -12,6 +12,8 @@ type ToolsKit() =
     static let random = new Random()
     static let identifierSet = new HashSet<string>()
     static let recorder = new SortedDictionary<string, string>()
+    static let mutable completeStructure = false
+    static let mutable periodSwitch = true
 
     static let generateOndNodeIdentifier(): string = 
         // the format of node identifier is "IP:Port"
@@ -63,4 +65,16 @@ type ToolsKit() =
                 else
                     table.Add(identifiers.[i], new Tuple<string, string>(identifiers.[i - 1], identifiers.[i + 1])) |> ignore
         table
-            
+
+    static member builtStructure() =
+        completeStructure <- true
+          
+    static member isBuiltStructure(): bool =
+        completeStructure
+
+    static member getPeriodSwitch() =
+        periodSwitch
+
+    static member stopPeriodSwitch() =
+        periodSwitch <- false
+
