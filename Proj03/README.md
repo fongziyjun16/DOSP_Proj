@@ -91,30 +91,19 @@ There are 6 files in total in this project.
   - Update predecessor in the fingertable
   - Prepare and add identifiers in the fingertable
   - Match the mailbox massage with the functions
+  - Key lookup
 
 ### Chord Algorithm
 
-- Gossip and Push-sum
-   - Gossip is that a worker selects one of its neighbors based on the topology of network to send the rumor when the worker receives one rumor.
-   - Push-sum is that each time the worker send the rumor, it sends the pair (1/2sr, 1/2wr) in the last round of its total received sr and wr to itself in this round, and the other half to the neighbor it will select. When the ratio of sr/wr of a worker is changed under 10 with an exponent -10, the worker stops.
+- Find locations of the keys
+   - Use hash to map keys by SHA1.
+   - Identifiers are ordered on an circle. A key K is assigned to the first node whose identifier is equal to or follows k, which is called the successor node. 
 
-- Full, 3D, Line, Imp3D
-   -  Full: A worker is connected to all the other workers.
+![image](https://user-images.githubusercontent.com/28448629/139670532-43c33549-aa20-4d0f-a225-b081a5c33c4a.png)
 
-![image](https://user-images.githubusercontent.com/28448629/136637868-d80e096d-4a36-4c63-8e73-acc2e52791b7.png)
+   - Each identifier knows its fingertable. Find the query key by jumping to the closest successor of the key in the finger table. If there is not any closest identifier in the finger table, find the closest predecessor.
 
-
-   -  3D: A worker is connnected to the other 6 neighbors in a 3D grid.
-   
-![image](https://user-images.githubusercontent.com/28448629/136637886-7697284f-cdc9-4ce0-b23a-8dd81fbcd5d6.png)
-
-   
-   -  Line: The workers are arranged in a line, with the begining and the end worker reaches only one neighbor and the middle workers reaches the other two neighbors. 
-   
-![image](https://user-images.githubusercontent.com/28448629/136638073-52923c05-0a33-4b9d-a74b-0248f0efbe64.png)
-
-   
-   -  Imp3D: A worker is connected to another random neighbor selected from all the workers on the fundation of the network of 3D.
+![image](https://user-images.githubusercontent.com/28448629/139672461-60d82661-d352-42c6-b3dc-5d4941551027.png)
 
 
 ## Experiment
