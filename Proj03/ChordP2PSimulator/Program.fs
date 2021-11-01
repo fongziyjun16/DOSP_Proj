@@ -58,9 +58,9 @@ let main argv =
         ToolsKit.addRecord(identifier)
         entries.Add(ToolsKit.encodeBySHA1(identifier), identifier)
 
-    for entry in entries do
+(*    for entry in entries do
         mediator <! new Send("/user/printer", entry.Key + ":" + entry.Value, true)
-
+*)
 
     let nodesForRouter = nodes |> fun nodes -> 
                                     let nodePaths = new List<string>()
@@ -81,13 +81,11 @@ let main argv =
             if i = 1 then 
                 lastNode <! new UpdSuccessor(identifier)
                 newNode <! new UpdSuccessor(nodes.[0])
-            // nodesBroadcastRouter <! new Stabilize()
         newNode <! new Stabilize()
         newNode <! new FixFingerTable()
         lastNode <- newNode
         lastNodeIdentifier <- identifier
         
-    
     let mutable flg = false
     let printStructure() = async {
                                 while flg = false do
@@ -106,9 +104,9 @@ let main argv =
             printer <! "structure complete"
         } 
 
+    async { do! Async.Sleep(2000) } |> Async.RunSynchronously
     checkIsCompleteStructure() |> Async.RunSynchronously
     flg <- true
-    // ToolsKit.stopPeriodSwitch()
 
     printer <! "start mission"
     nodesBroadcastRouter <! new StartMission()

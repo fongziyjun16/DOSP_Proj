@@ -63,14 +63,6 @@ type StartMission =
 
 type PreLookup =
     struct
-        val KEY: string
-        val PUBLISHER: string
-        val SEQNUMBER: int
-        new (key: string, publisher: string, seqNumber: int) = {
-            KEY = key;
-            PUBLISHER = publisher;
-            SEQNUMBER = seqNumber
-        }
     end
 
 type Lookup(key: string, publisher: string, seqNumber: int) =
