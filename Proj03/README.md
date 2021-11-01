@@ -15,25 +15,13 @@
 
    ​	.NET runtimes
 
-2. Decompressing the .RAR file: G_PS_Topology.rar 
+2. Decompressing the .RAR file: .rar 
 
-3. Opening Command Prompt and Going to the folder obtained from the second step
+3. Go to ChordP2PSimulator to input the "number of nodes" and "number of each node request" 
 
-4. Run the command line "dotnet run [topology] [algorithm]"
-   - selections for [topology]: full, 3D, line, imp3D
-   - selections for [algorithm]: gossip, push-sum
+![image](https://user-images.githubusercontent.com/28448629/139657413-001c5cd4-e638-42d8-b5b3-ed0e51aeed98.png)
 
-![image](https://user-images.githubusercontent.com/28448629/136636560-4d0c46a8-5745-49db-aa68-d3e9eaf75a25.png)
-
-5. Input the number of workers or the (length, width, height) for 3D, and rumor limit time
-
-![image](https://user-images.githubusercontent.com/28448629/136636718-408eb9ba-714b-4ce3-8c69-57cc84fa0bd2.png)
-
-![image](https://user-images.githubusercontent.com/28448629/136666905-907ba5d8-4962-4d66-916c-2fd7c8925227.png)
-
-
-6. The result prints the running time and rounds number it takes to achieve the convergence of the algorithm.
-
+4. Observe the result
 
 ### Result Description
 
@@ -51,33 +39,60 @@
 
 ## Architecture
 
+There are 6 files in total in this project.
+
 ### The structure of the source code
 
-- "Msgs.fs" defines different kinds of messages
-- "Actors.fs" defines different kinds of actors
+- "Msgs.fs" defines different types of messages
+   - Module Msgs
+
+- "Tools.fs" defines the tools to test the project
+   - Module ToolsKit
+   - Generate and transform different IP address and ports to simulate the chord algorithm
+      - static let generateOndNodeIdentifier()
+   - Encode Key by SHA1. 
+      - Attention: Here, it should add a "0" at the begining of the key to convert it into a positive integer of a Hexadecimal form
+      - static member encodeBySHA1(key: string)
+   - Generate nodes identifier randomly
+      - static member generateNodeIdentifier()
+   - Generate the chord of the identifiers
+      - static member getCorrectIdentifiers()
+
+- "PrinterActor.fs"
+   - Module PrinterActor
+   - Inherit from actor, a print actor to print the sender address and received message    
+   
+- "ChordManagerActor.fs"
+   - Module ChordManagerActor
+   - An actor. Test the correctness of algorithm
+   
+- "ChordNodeActor.fs"
+   - Module ChordNodeActor
+   - The real actor in the chord.
+   - 
 - "Programs.fs" is the running entry of the application
+   - Generate number of "numberOfNodes" identifiers
+   - Defines nodes broad cast router
+   - Check if the structure is completed
 
 ### Actors Function
 
-- Printer Actor:
-  - Print the messages.
-- Recorder Actor: 
-  - Supervise all the worker actors about the times they recieve the rumors
-  - When the network starts, choose a random worker to begin with sending the rumor.
-  - Counts the rumors, and reports the percentage of workers that have gotten the rumor. Every 20%, it reports once.
-  - Report the real time that used for the rumor to spread over the network
-- Worker Actor:
-  - Send out the rumor message and wait for one millisecond.
-  - Receive the message from its neighbors and account. When the rumors it receives reaches the limitaion, stop action.
-  - Report the rumor counts to the recorder actor. 
-- Attention:
-  - Here is a command "do! Async.Sleep(1)" in the worker actor after sending a message. As there is limited threads in the CPU, it makes the worker gives up the thread and stops for 1 millisecond, when it ends this turn of sending the rumor. Since the number of actors may be huge, this mechanisum assure that the thread can move to other actors but not be occupied by one same actor for a long time.
-  - If the gossip is running on different computers, that is to say a real network, there will not be this thread occupying issue.
+- Printer Actor in Module PrinterActor:
+  - Print the addresses of an identifier and its next predecessor and successor.
 
-![image](https://user-images.githubusercontent.com/28448629/136637454-8b9b6d5f-e7de-41cd-ae5a-693d1a6d8d55.png)
+- Manage Actor in module Manager Actor: 
+  - Destination actor of the messages, with messages processing
+  - To verify the correctness of structure of the chord
+  
+- Node Actor in module ChordNodeActor:
+  - Generate one random resource
+  - Find the successor: judge if the current identifier's code is same to or in the range of the successor. If it is, change the variant "isInScope" to true. If not find, search from index=159 down to 0 in the finger table.
+  - Update the successor in fingertable
+  - Update predecessor in the fingertable
+  - Prepare and add identifiers in the fingertable
+  - Match the mailbox massage with the functions
 
-
-### Two Algorithms And Four Network Topologies
+### Chord Algorithm
 
 - Gossip and Push-sum
    - Gossip is that a worker selects one of its neighbors based on the topology of network to send the rumor when the worker receives one rumor.
