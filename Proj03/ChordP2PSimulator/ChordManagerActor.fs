@@ -43,6 +43,7 @@ type ChordManagerActor(numberOfNodes: int, numberOfEachNodeRequest: int) =
                         orgNodeContextInfo <- (string) (Async.RunSynchronously(target <? new AskNodeContext(), 2000))
                     with
                     | :? TimeoutException ->
+                        mediator <! new Send("/user/printer", "ask node context timeout", true)
                         orgNodeContextInfo <- ":"
                     let nodeContextInfo = orgNodeContextInfo |> fun x ->
                                                             let parts = x.Split(':')

@@ -12,8 +12,10 @@ type PrintContextInfo =
 type FindSuccessor =
     struct
         val ID: string
-        new (id: string) = {
+        val ENCODED: bool
+        new (id: string, encoded: bool) = {
             ID = id;
+            ENCODED = encoded
         }
     end
 
@@ -27,6 +29,14 @@ type Join =
 
 type AskPredecessor =
     struct
+    end
+
+type UpdPredecessor =
+    struct
+        val ID: string
+        new (id: string) = {
+            ID = id;
+        }
     end
 
 type Stabilize = 
