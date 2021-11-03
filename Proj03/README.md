@@ -1,4 +1,4 @@
-# DOSP_Proj01
+# DOSP_Proj03
 
 ## Group Members
 
@@ -25,9 +25,9 @@
 
 ### Result Description
 
-- The real time it takes to get the convergence of the algorithm is printed as "real time -- minutes: 0 seconds: 0 milliseconds: 396 \nrun time -- minutes: 0 seconds: 0 milliseconds: 396".
+- The avrage number of hops it takes is printed as "the average number of hops is 4.243333333333333" in the end.
 
-![image](https://user-images.githubusercontent.com/28448629/136638555-ae23bf61-68e3-447a-ae6f-37d4f11dfaf8.png)
+![image](https://user-images.githubusercontent.com/28448629/140201373-fd624d07-59c1-496e-9e41-63eca27b1ae9.png)
 
 - The round it takes is printed as "rounds:6". Only the "push-sum" algorithm prints the number of rounds.
 
@@ -39,7 +39,7 @@
 
 ## Architecture
 
-There are 6 files in total in this project.
+There are 8 files in total in this project.
 
 ### The structure of the source code
 
@@ -60,38 +60,77 @@ There are 6 files in total in this project.
 
 - "PrinterActor.fs"
    - Module PrinterActor
-   - Inherit from actor, a print actor to print the sender address and received message    
+   - Inherit from actor, a print actor to print message   
    
 - "ChordManagerActor.fs"
    - Module ChordManagerActor
-   - An actor. Test the correctness of algorithm
+   - An actor. Test the correctness of the chord and print the result using the printor actor
    
+- "ChordNodeInfo.fs"
+   - Module ChordNodeInfo
+   - The operation for information of fingertables a node in the chord.
+
 - "ChordNodeActor.fs"
-   - Module ChordNodeActor
-   - The real actor in the chord.
-   - 
+   - Module ChordNodeInfo
+   - The realization of operations of a node in the chord, including "Lookup"
+
+- "ChordNodeAssitantActor.fs"
+   - Module ChordNodeAssitantActor
+   - Stabilize and fix finger table for each node.
+   
 - "Programs.fs" is the running entry of the application
    - Generate number of "numberOfNodes" identifiers
+   - Check the node of chord structure every 500 ms
    - Defines nodes broad cast router
    - Check if the structure is completed
+   - If the chord is completed, start the mission
 
-### Actors Function
+### Actors of A Node
 
 - Printer Actor in Module PrinterActor:
-  - Print the addresses of an identifier and its next predecessor and successor.
+  - Print the addresses of the sender and its successor.
+  - When the searching is down, be called and print out the result massage
 
-- Manage Actor in module Manager Actor: 
+- Manage Actor in module ChordManagerActor: 
   - Destination actor of the messages, with messages processing
-  - To verify the correctness of structure of the chord
-  
+  - To verify the correctness of structure of the chord, by "CheckChordStructure"
+  - Count the steps number and print each step, by "FoundResource"
+  - Call the printer to print the final result and average number of hops
+
+- Assistant Actor in module ChordNodeAssitantActor
+   - Get stabilize message and stabilize
+   - Get fix finger table messge and fix the finger table.
+      - The operations of stabilizing and fixing finger table are seperated out to the Assistant actor so that an actor can no longer wait for these messages and doing corresponding operations that hinder other operations. The assistant actor will do these issues, and the efficient of and an actor of a node improves.
+
+- Info Actor in module ChordNodeInfo:
+  - Initialize and set the predecessor and successor
+  - Reset fingertable
+  - Find the successor in fingertable: judge if the current identifier's code is same to or in the range of the successor. If it is, change the variant "found" to be true. If not find, search from index=159 down to 0 in the finger table.
+  - Update the fingertable
+  - Get or set prececessor and successor and their codes
+
 - Node Actor in module ChordNodeActor:
-  - Generate one random resource
-  - Find the successor: judge if the current identifier's code is same to or in the range of the successor. If it is, change the variant "isInScope" to true. If not find, search from index=159 down to 0 in the finger table.
-  - Update the successor in fingertable
-  - Update predecessor in the fingertable
-  - Prepare and add identifiers in the fingertable
   - Match the mailbox massage with the functions
-  - Key lookup
+  - Call the corresponding actions or actors to operate
+  - Stableize: call the assistant actor to operate stablize operation
+  - Notify
+  - Send "StopStabilize" and "StopFixFingerTable" message to its assistant actor
+  - Lookup: start lookup mission, Prelookup and Lookup.  
+ 
+![image](https://user-images.githubusercontent.com/28448629/140198834-e7253847-170a-4be0-a983-193aea53201a.png)
+
+
+### Attention
+
+Their was an deadlock problem we met when imployment the network.
+When their are two nodes A and B. A sends out a message to query B the successor or predecessor, while B also sends out a message to A's mailbox and is waiting for A's answer but the message is listed in the back of the mailbox of A. In such a condition, A will be hindered in a waiting status and B is the same hindered in a waiting status. The program is trapped in a deadlock.
+
+![image](https://user-images.githubusercontent.com/28448629/140204445-efea5e7b-0733-4fc6-8e72-4b2c1f26cdea.png)
+
+Such a situation happens also in a larger scale of situation, like "A->B->C->D->E->A". The solution of this problem is to clean up the mailbox of one actor periodically. After we added an clean-up function, the problem is solved.
+
+
+
 
 ### Chord Algorithm
 
@@ -110,61 +149,11 @@ There are 6 files in total in this project.
 
 #### Result
 
-1. GOSSIP-FULL: The largest actor amount tested in the project is 100000. It can be more there but is not verified.
-   -The algorithm convergence time for different scales of actors is saved in the file "gossipfull.txt", under the rumor limitation of 20.
-   
-![image](https://user-images.githubusercontent.com/28448629/136712241-56fb92bf-7a85-448e-a19d-a191afa3dbac.png)
+1. There listed several results and their average number of hops below.
 
-   
-2. GOSSIP-LINE: The largest actor amount tested in the project is 1000. When there is 2000, it is blocked between 80%~100% that not all workers can receive the rumor. 
-   -The algorithm convergence time for different scales of actors is saved in the file "gossipline.txt", under the rumor limitation of 20.
-   
-![image](https://user-images.githubusercontent.com/28448629/136712254-38e3eb1d-d162-4ba0-b491-49f5d277a019.png)
-
-   
-3. GOSSIP-3D: The largest actor amount tested in the project is 100000. It can be more there but is not verified. 
-   -The algorithm convergence time for different scales of actors is saved in the file "gossip3D.txt", under the rumor limitation of 20.
-
-![image](https://user-images.githubusercontent.com/28448629/136712270-d834855c-fa86-4516-bcdf-5fceb49466ef.png)
+![image](https://user-images.githubusercontent.com/28448629/140200345-2c0faae2-98b6-42da-931b-e3d11cb134f3.png)
 
 
-4. GOSSIP-IMP3D: The largest actor amount tested in the project is 100000. It can be more there but is not verified. 
-   -The algorithm convergence time for different scales of actors is saved in the file "gossipimp3D.txt", under the rumor limitation of 20.
+2. As we tested in the program, 30 nodes performs well in this chord algorithm and theoritically it can afford way much more scale of network to realize chord algorithm. There is no up limitation when the program is implemented in a real network unless bigger than 2^160. Limited to the running time and a single machine to do the experiments, there are only results of limited scales.
 
-![image](https://user-images.githubusercontent.com/28448629/136712284-b4bf18d0-739b-498b-9ef7-95130c6679cc.png)
-
-
-The convergence time of gossip topologies draws in one picture.
-
-![image](https://user-images.githubusercontent.com/28448629/136712325-b1e12a17-3025-4b62-b04b-b93d774a4327.png)
-
-![image](https://user-images.githubusercontent.com/28448629/136712346-3b6f91ca-0937-46aa-847c-6ff56c121675.png)
-
-
-5. PUSH_SUM-FULL: The largest actor amount tested in the project is 100000. When the ratio of s/w changes less than 10 with exponents -10 in 3 consecutive rounds, the actor stops. It can be more actors there but is not verified.
-   -The algorithm convergence time for different scales of actors is saved in the file "pushsumfull.txt".
-   
-![image](https://user-images.githubusercontent.com/28448629/136712393-c0bb4fb7-fd0f-4d4c-a1eb-bd34e5790c95.png)
-
-
-6. PUSH_SUM-LINE: The largest actor amount tested in the project is 100000. It can be more there but is not verified.
-   -The algorithm convergence time for different scales of actors is saved in the file "pushsumline.txt".
-
-![image](https://user-images.githubusercontent.com/28448629/136712402-bfc513d4-bc71-4be8-ab82-c9e6881ffa97.png)
-
-
-7. PUSH_SUM-3D: The largest actor amount tested in the project is 100000. It can be more there but is not verified. 
-   -The algorithm convergence time for different scales of actors is saved in the file "pushsum3D.txt".
-
-![image](https://user-images.githubusercontent.com/28448629/136712409-1dbcf2a9-6aaf-43d3-a04a-33f0c0baec36.png)
-
-
-8. PUSH_SUM-IMP3D: The largest actor amount tested in the project is 100000. It can be more there but is not verified.
-   -The algorithm convergence time for different scales of actors is saved in the file "pushsumimp3D.txt".
-   
-![image](https://user-images.githubusercontent.com/28448629/136712416-a230db17-94d2-4343-80c0-0a8e027f8fc3.png)
-
-
-The convergence time of push-sum topologies draws in one picture.
-
-![image](https://user-images.githubusercontent.com/28448629/136712424-5f12a9d1-84e1-4292-b060-679efcf676f7.png)
+And When deploymented in a solo machine, a mailbox of an actor may receive too much messages so that leads to delay of network building or finger table updating. In a real multi-machine network, there will not be such problems.   
