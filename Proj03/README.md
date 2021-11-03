@@ -29,12 +29,35 @@
 
 ![image](https://user-images.githubusercontent.com/28448629/140201373-fd624d07-59c1-496e-9e41-63eca27b1ae9.png)
 
-- The round it takes is printed as "rounds:6". Only the "push-sum" algorithm prints the number of rounds.
+- When a node finds a key in ith steps, it is printed as "176_55_59_235_16731 found key 9IOm2wtz5D5XdKY6MtP in 1 steps".
 
-![image](https://user-images.githubusercontent.com/28448629/136675776-97a3adf6-cab0-46ff-8bbd-0aebea7ac98c.png)
+![image](https://user-images.githubusercontent.com/28448629/140211783-0fc7665b-cb24-4997-8769-8f6cba63f4c5.png)
 
+- The other messages includes:
+   - The first identifier
 
-- There is the possibility that not all workers can receive the rumor. This observation is especially obvious in the topology "line" in gossip algorithm. 
+![image](https://user-images.githubusercontent.com/28448629/140212788-a376e3a4-b8f9-4fc3-8e5f-eee11cee1296.png)
+
+   - Updating of a node of in its finger table of its predecessor and successor.
+
+![image](https://user-images.githubusercontent.com/28448629/140209336-20b38e3d-9196-4662-a75c-490bc8c840bc.png)
+
+   - Stabilize message
+
+![image](https://user-images.githubusercontent.com/28448629/140209847-34cc7ba6-d47d-4b8f-ad95-fd05d6335602.png)
+
+   - Fix Finger Table message
+
+![image](https://user-images.githubusercontent.com/28448629/140209866-1e1493ed-e72c-4075-a9da-78f78a07be85.png)
+
+   -  Checking structure
+
+![image](https://user-images.githubusercontent.com/28448629/140210013-ac1eb365-e16e-4732-b5a6-9dad9603eed4.png)
+
+   -  Sends out all lookup
+
+![image](https://user-images.githubusercontent.com/28448629/140212219-1016b627-aaf8-428f-a131-c8f42972dc5a.png)
+
 
 
 ## Architecture
