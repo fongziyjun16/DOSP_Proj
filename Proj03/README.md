@@ -178,6 +178,7 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
 
 1. There listed several results and their average number of hops below.
 
+- numberOfNodes: 30   numberOfEachNodeRequests: 10
 ![image](https://user-images.githubusercontent.com/28448629/140200345-2c0faae2-98b6-42da-931b-e3d11cb134f3.png)
 
 
