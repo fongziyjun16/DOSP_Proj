@@ -186,6 +186,6 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
 ![image](https://user-images.githubusercontent.com/28448629/140200345-2c0faae2-98b6-42da-931b-e3d11cb134f3.png)
 
 
-2. As we tested in the program, 30 nodes performs well in this chord algorithm and theoritically it can afford way much more scale of network to realize chord algorithm. There is no up limitation when the program is implemented in a real network unless bigger than 2^160. Limited to the running time and a single machine to do the experiments, there are only results of limited scales. 
+2. As we tested in the program, 50 nodes performs well in this chord algorithm and theoritically it can afford way much more scale of network to realize chord algorithm. There is no up limitation when the program is implemented in a real network unless bigger than 2^160. Limited to the running time and a single machine to do the experiments, there are only results of limited scales. 
 
    And When deploymented in a solo machine, a mailbox of an actor may receive too much messages so that leads to delay of network building or finger table updating. In a real multi-machine network, there will not be such problems.   
