@@ -34,6 +34,10 @@
 ![image](https://user-images.githubusercontent.com/28448629/140211783-0fc7665b-cb24-4997-8769-8f6cba63f4c5.png)
 
 The other messages include:
+- The simulated IP_address and its key.
+
+![image](https://user-images.githubusercontent.com/28448629/140214848-93afcebf-a4a9-4608-ae3c-45926ee9c033.png)
+
 - The first identifier
 
 ![image](https://user-images.githubusercontent.com/28448629/140212788-a376e3a4-b8f9-4fc3-8e5f-eee11cee1296.png)
