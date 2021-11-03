@@ -176,7 +176,11 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
 
 #### Result
 
-1. There listed several results and their average number of hops below.
+1. There listed several results and their average number of hops below. The number of hops is counted using variant "totalNumberOfSteps" in ChordManagerActor.fs and each time it receives a message the variant will add the steps number up. Finally devided by totalNumberOfRequest to get the average hop number.
+
+![image](https://user-images.githubusercontent.com/28448629/140229296-afd4b925-6a08-4760-b318-a3135bbc1923.png)
+
+- numberOfNodes: 20   numberOfEachNodeRequests: 10
 
 - numberOfNodes: 30   numberOfEachNodeRequests: 10
 ![image](https://user-images.githubusercontent.com/28448629/140200345-2c0faae2-98b6-42da-931b-e3d11cb134f3.png)
