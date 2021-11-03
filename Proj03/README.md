@@ -95,7 +95,12 @@ There are 8 files in total in this project.
    
 - "ChordNodeInfo.fs"
    - Module ChordNodeInfo
-   - The operation for information of fingertables a node in the chord.
+   - Stores the information (fingertable) of a node in the chord. Can be accessed by actor and assistant actor.
+   - Initialize and set the predecessor and successor
+   - Reset fingertable
+   - Find the successor in fingertable: judge if the current identifier's code is same to or in the range of the successor. If it is, change the variant "found" to be true. If not find, search from index=159 down to 0 in the finger table.
+   - Update the fingertable
+   - Get or set prececessor and successor and their codes
 
 - "ChordNodeActor.fs"
    - Module ChordNodeInfo
@@ -129,13 +134,6 @@ There are 8 files in total in this project.
    - Get fix finger table messge and fix the finger table.
       - The operations of stabilizing and fixing finger table are seperated out to the Assistant actor so that an actor can no longer wait for these messages and doing corresponding operations that hinder other operations. The assistant actor will do these issues, and the efficient of and an actor of a node improves.
 
-- Info Actor in module ChordNodeInfo:
-  - Initialize and set the predecessor and successor
-  - Reset fingertable
-  - Find the successor in fingertable: judge if the current identifier's code is same to or in the range of the successor. If it is, change the variant "found" to be true. If not find, search from index=159 down to 0 in the finger table.
-  - Update the fingertable
-  - Get or set prececessor and successor and their codes
-
 - Node Actor in module ChordNodeActor:
   - Match the mailbox massage with the functions
   - Call the corresponding actions or actors to operate
@@ -144,7 +142,8 @@ There are 8 files in total in this project.
   - Send "StopStabilize" and "StopFixFingerTable" message to its assistant actor
   - Lookup: start lookup mission, Prelookup and Lookup.  
  
-![image](https://user-images.githubusercontent.com/28448629/140198834-e7253847-170a-4be0-a983-193aea53201a.png)
+![image](https://user-images.githubusercontent.com/28448629/140232556-f96f58b9-c354-49b2-a31c-8d05e09732b3.png)
+
 
 
 ### Attention
@@ -154,7 +153,7 @@ When their are two nodes A and B. A sends out a message to query B the successor
 
 ![image](https://user-images.githubusercontent.com/28448629/140204445-efea5e7b-0733-4fc6-8e72-4b2c1f26cdea.png)
 
-Such a situation happens also in a larger scale of situation, like "A->B->C->D->E->A". The solution of this problem is to clean up the mailbox of one actor periodically. After we added an clean-up function, the problem is solved.
+Such a situation happens also in a larger scale of situation, like "A->B->C->D->E->A". The solution of this problem is to clean up the mailbox of one actor periodically. After we added an judging function, the problem is solved.
 
 
 
