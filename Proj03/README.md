@@ -15,7 +15,7 @@
 
    ​	.NET runtimes
 
-2. Decompressing the .RAR file: .rar
+2. Decompressing the .RAR file: ChordP2PSystemSimulate.rar
 
 3. Opening Command Prompt and Going to the folder obtained from the second step
 
@@ -158,7 +158,7 @@ When their are two nodes A and B. A sends out a message to query B the successor
 
 ![image](https://user-images.githubusercontent.com/28448629/140204445-efea5e7b-0733-4fc6-8e72-4b2c1f26cdea.png)
 
-Such a situation happens also in a larger scale of situation, like "A->B->C->D->E->A". The solution of this problem is to clean up the mailbox of one actor periodically. After we added an judging function, the problem is solved.
+Such a situation happens also in a larger scale of situation, like "A->B->C->D->E->A". The solution of this problem is to clean up the mailbox of one actor periodically. After we added a judging step, the problem is solved.
 
 
 
@@ -186,8 +186,18 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
 
 - numberOfNodes: 20   numberOfEachNodeRequests: 10
 
+![image](https://user-images.githubusercontent.com/28448629/140234197-d98f9331-c1f9-49c1-8978-ad93d8e4d1b2.png)
+
+![image](https://user-images.githubusercontent.com/28448629/140234164-f0de9601-1a1e-4583-b1d2-bd0b6f815456.png)
+
+![image](https://user-images.githubusercontent.com/28448629/140234367-b31b994a-48dc-421f-b0bf-30141785c4eb.png)
+
 - numberOfNodes: 30   numberOfEachNodeRequests: 10
+
+![image](https://user-images.githubusercontent.com/28448629/140234398-28bdc64f-5bbd-4597-8805-61bb0e7fdaf3.png)
+
 ![image](https://user-images.githubusercontent.com/28448629/140200345-2c0faae2-98b6-42da-931b-e3d11cb134f3.png)
+
 
 
 2. As we tested in the program, 50 nodes performs well in this chord algorithm and theoritically it can afford way much more scale of network to realize chord algorithm. There is no up limitation when the program is implemented in a real network unless bigger than 2^160. Limited to the running time and a single machine to do the experiments, there are only results of limited scales. 
