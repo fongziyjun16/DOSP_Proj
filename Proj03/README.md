@@ -33,8 +33,8 @@
 
 ![image](https://user-images.githubusercontent.com/28448629/140211783-0fc7665b-cb24-4997-8769-8f6cba63f4c5.png)
 
-- The other messages includes:
-   - The first identifier
+The other messages include:
+- The first identifier
 
 ![image](https://user-images.githubusercontent.com/28448629/140212788-a376e3a4-b8f9-4fc3-8e5f-eee11cee1296.png)
 
