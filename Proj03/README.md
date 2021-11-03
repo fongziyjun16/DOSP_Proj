@@ -15,13 +15,18 @@
 
    ​	.NET runtimes
 
-2. Decompressing the .RAR file: .rar 
+2. Decompressing the .RAR file: .rar
 
-3. Go to ChordP2PSimulator to input the "number of nodes" and "number of each node request" 
+3. Opening Command Prompt and Going to the folder obtained from the second step
 
-![image](https://user-images.githubusercontent.com/28448629/139657413-001c5cd4-e638-42d8-b5b3-ed0e51aeed98.png)
+4. Run the command line "dotnet run [numberOfNodes] [numberOfEachNodeRequest]"
+   - suggest to input numberOfNodes under 30, for it needs more time to run the project as the scale of network growing larger
 
-4. Observe the result
+![image](https://user-images.githubusercontent.com/28448629/140233504-4a9c6459-d8e5-4ef0-acdf-74ceb15d94b6.png)
+
+
+5. Wait and observe the result 
+
 
 ### Result Description
 
