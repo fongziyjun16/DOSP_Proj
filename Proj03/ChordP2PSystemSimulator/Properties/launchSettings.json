@@ -2,7 +2,7 @@
   "profiles": {
     "ChordP2PSystemSimulator": {
       "commandName": "Project",
-      "commandLineArgs": "10 10"
+      "commandLineArgs": "30 10"
     }
   }
 }

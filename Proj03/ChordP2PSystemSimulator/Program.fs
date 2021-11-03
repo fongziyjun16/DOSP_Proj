@@ -50,6 +50,7 @@ let main argv =
         if firstNode = null then
             firstNode <- newNode
             firstNodeIdentifier <- newIdentifier
+            printer <! "first identifier: " + firstNodeIdentifier
         else
             newNode <! new Join(firstNodeIdentifier)
         newNode <! new Stabilize()

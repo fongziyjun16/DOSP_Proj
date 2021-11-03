@@ -17,6 +17,7 @@ type ChordNodeActor(identifier: string, numberOfRequests: int) =
     let context = Actor.Context
     let nodeInfo = new ChordNodeInfo(identifier)
     let mutable assitant = null
+    let mutable sentOutLookupCounter = 0
 
     let mediator = DistributedPubSub.Get(Actor.Context.System).Mediator
 
@@ -117,16 +118,26 @@ type ChordNodeActor(identifier: string, numberOfRequests: int) =
         | :? PreLookup as msg ->
             let resource = ToolsKit.generateOneRandomResource()
             let lookupInfo = new Lookup(resource, nodeInfo.getIdentifier())
-            context.Self <! lookupInfo
+            // context.Self <! lookupInfo
+            mediator <! new Send("/user/" + nodeInfo.getIdentifier(), lookupInfo, true)
+            sentOutLookupCounter <- sentOutLookupCounter + 1
+            if sentOutLookupCounter = numberOfRequests then
+                print(" has sent out all lookup ")
         | :? Lookup as msg ->
+            let foundProcess() =
+                mediator <! new Send("/user/chordManager", new FoundResource(msg.getKey(), msg.getSteps(), msg.getPublisher()), true)
+                // print(msg.getPublisher() + " found key " + msg.getKey() + " in " + msg.getSteps().ToString() + " steps ")
+
             let key = msg.getKey()
             let keyCode = ToolsKit.encodeBySHA1(key)
             if nodeInfo.isInSuccessor(keyCode) then
-                mediator <! new Send("/user/chordManager", new FoundResource(msg.getKey(), msg.getSteps(), msg.getPublisher()), true)
+                // mediator <! new Send("/user/chordManager", new FoundResource(msg.getKey(), msg.getSteps(), msg.getPublisher()), true)
+                foundProcess()
             else
                 let nextNode = nodeInfo.findInFigerTable(keyCode)
-                if nextNode.Equals(nodeInfo.getIdentifier) then
-                    mediator <! new Send("/user/chordManager", new FoundResource(msg.getKey(), msg.getSteps(), msg.getPublisher()), true)
+                if nextNode.Equals(nodeInfo.getIdentifier()) then
+                    // mediator <! new Send("/user/chordManager", new FoundResource(msg.getKey(), msg.getSteps(), msg.getPublisher()), true)
+                    foundProcess()
                 else
                     msg.incrSteps()
                     mediator <! new Send("/user/" + nextNode, msg, true)
