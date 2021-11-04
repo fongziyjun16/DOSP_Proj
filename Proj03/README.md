@@ -22,7 +22,8 @@
 4. Run the command line "dotnet run [numberOfNodes] [numberOfEachNodeRequest]"
    - suggest to input numberOfNodes under 30, for it needs more time to run the project as the scale of network growing larger
 
-![image](https://user-images.githubusercontent.com/28448629/140233504-4a9c6459-d8e5-4ef0-acdf-74ceb15d94b6.png)
+![415612026495964824](https://user-images.githubusercontent.com/28448629/140237180-54ef7eea-69b9-4937-8cf2-0ec9d1d5fd02.png)
+
 
 
 5. Wait and observe the result 
