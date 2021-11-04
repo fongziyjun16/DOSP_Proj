@@ -69,6 +69,7 @@ The other messages include:
 
 
 
+
 ## Architecture
 
 There are 8 files in total in this project.
@@ -174,6 +175,7 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
    - Each identifier knows its fingertable. Find the query key by jumping to the closest successor of the key in the finger table. If there is not any closest identifier in the finger table, find the closest predecessor.
 
 ![image](https://user-images.githubusercontent.com/28448629/139672461-60d82661-d352-42c6-b3dc-5d4941551027.png)
+
 
 
 ## Experiment
