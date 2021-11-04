@@ -161,7 +161,10 @@ When their are two nodes A and B. A sends out a message to query B the successor
 
 ![image](https://user-images.githubusercontent.com/28448629/140204445-efea5e7b-0733-4fc6-8e72-4b2c1f26cdea.png)
 
-Such a situation happens also in a larger scale of situation, like "A->B->C->D->E->A". The solution of this problem is to clean up the mailbox of one actor periodically. After we added a judging step, the problem is solved.
+Such a situation happens also in a larger scale of situation, like "A->B->C->D->E->A". The solution of this problem is to do overtime processing periodically. After we added a judging step that set the flag to be "false" for a searching failure when one node waits for another until overtime, the problem is solved. The failure flag will stimulate the sender of "Findsuccessor" to do an corresponding processing.
+
+![image](https://user-images.githubusercontent.com/28448629/140238116-4011ac75-9521-4c4d-84b0-cc39dfd33d05.png)
+
 
 
 ### Chord Algorithm
