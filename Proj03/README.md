@@ -117,6 +117,8 @@ There are 8 files in total in this project.
    
 - "Programs.fs" is the running entry of the application
    - Generate number of "numberOfNodes" identifiers
+      - create first node
+      - After the first node, the other nodes join the network
    - Check the node of chord structure every 500 ms
    - Defines nodes broad cast router
    - Check if the structure is completed
@@ -162,6 +164,17 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
 
 
 ### Chord Algorithm
+
+- Create a chord ring
+   -"Program.fs" 
+      - Create the first node
+      - After the first node, the other nodes join the ring
+      - Call stablilize
+      - Fix Finger table
+   - "ChordNodeActor.fs"
+      - Join in a new node
+      - Stabilizing every 200 ms
+      - Notify
 
 - Find locations of the keys
    - Use hash to map keys by SHA1.
