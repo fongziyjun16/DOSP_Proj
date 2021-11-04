@@ -185,21 +185,15 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
 
 - numberOfNodes: 20   numberOfEachNodeRequests: 10
 
-![image](https://user-images.githubusercontent.com/28448629/140234197-d98f9331-c1f9-49c1-8978-ad93d8e4d1b2.png)
-
-   - The average hops =  
+![image](https://user-images.githubusercontent.com/28448629/140234197-d98f9331-c1f9-49c1-8978-ad93d8e4d1b2.png) 
 
 ![image](https://user-images.githubusercontent.com/28448629/140234164-f0de9601-1a1e-4583-b1d2-bd0b6f815456.png)
-
-   - The average hops = 
 
 ![image](https://user-images.githubusercontent.com/28448629/140234367-b31b994a-48dc-421f-b0bf-30141785c4eb.png)
 
 - numberOfNodes: 30   numberOfEachNodeRequests: 10
 
 ![image](https://user-images.githubusercontent.com/28448629/140234398-28bdc64f-5bbd-4597-8805-61bb0e7fdaf3.png)
-
-   - The average hops = 
 
 ![image](https://user-images.githubusercontent.com/28448629/140200345-2c0faae2-98b6-42da-931b-e3d11cb134f3.png)
 
