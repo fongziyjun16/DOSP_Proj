@@ -162,8 +162,6 @@ When their are two nodes A and B. A sends out a message to query B the successor
 Such a situation happens also in a larger scale of situation, like "A->B->C->D->E->A". The solution of this problem is to clean up the mailbox of one actor periodically. After we added a judging step, the problem is solved.
 
 
-
-
 ### Chord Algorithm
 
 - Find locations of the keys
