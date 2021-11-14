@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\demo01\\demo01.fsproj": {}
+    "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\DemoWithSQLite\\DemoWithSQLite.fsproj": {}
   },
   "projects": {
-    "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\demo01\\demo01.fsproj": {
+    "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\DemoWithSQLite\\DemoWithSQLite.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\demo01\\demo01.fsproj",
-        "projectName": "demo01",
-        "projectPath": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\demo01\\demo01.fsproj",
+        "projectUniqueName": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\DemoWithSQLite\\DemoWithSQLite.fsproj",
+        "projectName": "DemoWithSQLite",
+        "projectPath": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\DemoWithSQLite\\DemoWithSQLite.fsproj",
         "packagesPath": "C:\\Users\\fongziyjun\\.nuget\\packages\\",
-        "outputPath": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\demo01\\obj\\",
+        "outputPath": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\DemoWithSQLite\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\fongziyjun\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -35,33 +35,13 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
-            "Akka": {
-              "target": "Package",
-              "version": "[1.4.27, )",
-              "generatePathProperty": true
-            },
-            "Akka.Cluster": {
-              "target": "Package",
-              "version": "[1.4.27, )",
-              "generatePathProperty": true
-            },
-            "Akka.Cluster.Tools": {
-              "target": "Package",
-              "version": "[1.4.27, )",
-              "generatePathProperty": true
-            },
-            "Akka.FSharp": {
-              "target": "Package",
-              "version": "[1.4.27, )",
-              "generatePathProperty": true
-            },
-            "Akka.Remote": {
-              "target": "Package",
-              "version": "[1.4.27, )",
-              "generatePathProperty": true
-            },
             "FSharp.Core": {
               "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[6.0.1, )",
+              "generatePathProperty": true
+            },
+            "Microsoft.Data.Sqlite": {
               "target": "Package",
               "version": "[6.0.0, )",
               "generatePathProperty": true
