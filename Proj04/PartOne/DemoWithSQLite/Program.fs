@@ -1,12 +1,6 @@
 ﻿open System
 open Microsoft.Data.Sqlite
 
-type student = 
-    val UFID: string
-    val NAME: string
-    val address: string
-    new ()
-
 [<EntryPoint>]
 let main argv =
     

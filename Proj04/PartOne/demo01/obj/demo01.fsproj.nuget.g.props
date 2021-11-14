@@ -15,12 +15,18 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)entityframework\6.4.4\buildTransitive\netcoreapp3.0\EntityFramework.props" Condition="Exists('$(NuGetPackageRoot)entityframework\6.4.4\buildTransitive\netcoreapp3.0\EntityFramework.props')" />
+  </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">C:\Users\fongziyjun\.nuget\packages\fsharp.core\6.0.0</PkgFSharp_Core>
-    <PkgAkka Condition=" '$(PkgAkka)' == '' ">C:\Users\fongziyjun\.nuget\packages\akka\1.4.27</PkgAkka>
-    <PkgAkka_Remote Condition=" '$(PkgAkka_Remote)' == '' ">C:\Users\fongziyjun\.nuget\packages\akka.remote\1.4.27</PkgAkka_Remote>
-    <PkgAkka_FSharp Condition=" '$(PkgAkka_FSharp)' == '' ">C:\Users\fongziyjun\.nuget\packages\akka.fsharp\1.4.27</PkgAkka_FSharp>
-    <PkgAkka_Cluster Condition=" '$(PkgAkka_Cluster)' == '' ">C:\Users\fongziyjun\.nuget\packages\akka.cluster\1.4.27</PkgAkka_Cluster>
-    <PkgAkka_Cluster_Tools Condition=" '$(PkgAkka_Cluster_Tools)' == '' ">C:\Users\fongziyjun\.nuget\packages\akka.cluster.tools\1.4.27</PkgAkka_Cluster_Tools>
+    <PkgEntityFramework Condition=" '$(PkgEntityFramework)' == '' ">C:\Users\fongziyjun\.nuget\packages\entityframework\6.4.4</PkgEntityFramework>
+    <PkgSystem_Data_SQLite_EF6 Condition=" '$(PkgSystem_Data_SQLite_EF6)' == '' ">C:\Users\fongziyjun\.nuget\packages\system.data.sqlite.ef6\1.0.115.5</PkgSystem_Data_SQLite_EF6>
+    <PkgSystem_Data_SQLite Condition=" '$(PkgSystem_Data_SQLite)' == '' ">C:\Users\fongziyjun\.nuget\packages\system.data.sqlite\1.0.115.5</PkgSystem_Data_SQLite>
+    <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">C:\Users\fongziyjun\.nuget\packages\fsharp.core\6.0.1</PkgFSharp_Core>
+    <PkgAkka Condition=" '$(PkgAkka)' == '' ">C:\Users\fongziyjun\.nuget\packages\akka\1.4.28</PkgAkka>
+    <PkgAkka_Remote Condition=" '$(PkgAkka_Remote)' == '' ">C:\Users\fongziyjun\.nuget\packages\akka.remote\1.4.28</PkgAkka_Remote>
+    <PkgAkka_FSharp Condition=" '$(PkgAkka_FSharp)' == '' ">C:\Users\fongziyjun\.nuget\packages\akka.fsharp\1.4.28</PkgAkka_FSharp>
+    <PkgAkka_Cluster Condition=" '$(PkgAkka_Cluster)' == '' ">C:\Users\fongziyjun\.nuget\packages\akka.cluster\1.4.28</PkgAkka_Cluster>
+    <PkgAkka_Cluster_Tools Condition=" '$(PkgAkka_Cluster_Tools)' == '' ">C:\Users\fongziyjun\.nuget\packages\akka.cluster.tools\1.4.28</PkgAkka_Cluster_Tools>
   </PropertyGroup>
 </Project>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "demo01": {
+      "commandName": "Project",
+      "workingDirectory": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\demo01"
+    }
+  }
+}
