@@ -17,7 +17,7 @@
     <Compile Include="DAO\TweetMentionDAO.fs" />
     <Compile Include="DAO\TweetHashtagDAO.fs" />
     <Compile Include="Msgs.fs" />
-    <Compile Include="PrinterActor.fs" />
+    <Compile Include="Actors\PrinterActor.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   
