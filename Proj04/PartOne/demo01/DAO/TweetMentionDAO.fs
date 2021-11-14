@@ -5,10 +5,10 @@ open System.Data.SQLite
 
 open Entities
 
-type MentionDAO(connection: SQLiteConnection) =
+type TweetMentionDAO(connection: SQLiteConnection) =
 
-    member this.insert(mention: Mention): bool =
-        let sql = "insert into Mention values(@tweetID, @name)"
+    member this.insert(mention: TweetMention): bool =
+        let sql = "insert into Tweet_Mention values(@tweetID, @name)"
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@tweetID", mention.TWEETID) |> ignore
         command.Parameters.AddWithValue("@name", mention.NAME) |> ignore
@@ -20,7 +20,7 @@ type MentionDAO(connection: SQLiteConnection) =
             false
 
     member this.getMentionsByTweetID(tweetID: int): List<string> =
-        let sql = "select * from Mention where tweetID = @tweetID"
+        let sql = "select * from Tweet_Mention where tweetID = @tweetID"
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@tweetID", tweetID) |> ignore
         let mentions = new List<string>()

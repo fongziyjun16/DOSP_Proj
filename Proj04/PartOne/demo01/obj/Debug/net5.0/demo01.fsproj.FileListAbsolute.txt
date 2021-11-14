@@ -5,9 +5,6 @@ E:\Documents\Courses\DOSP\Projs\Proj04\PartOne\demo01\bin\Debug\net5.0\demo01.ru
 E:\Documents\Courses\DOSP\Projs\Proj04\PartOne\demo01\bin\Debug\net5.0\demo01.dll
 E:\Documents\Courses\DOSP\Projs\Proj04\PartOne\demo01\bin\Debug\net5.0\demo01.pdb
 E:\Documents\Courses\DOSP\Projs\Proj04\PartOne\demo01\bin\Debug\net5.0\Akka.dll
-E:\Documents\Courses\DOSP\Projs\Proj04\PartOne\demo01\bin\Debug\net5.0\Akka.Cluster.dll
-E:\Documents\Courses\DOSP\Projs\Proj04\PartOne\demo01\bin\Debug\net5.0\Akka.Cluster.Tools.dll
-E:\Documents\Courses\DOSP\Projs\Proj04\PartOne\demo01\bin\Debug\net5.0\Akka.Coordination.dll
 E:\Documents\Courses\DOSP\Projs\Proj04\PartOne\demo01\bin\Debug\net5.0\Akka.FSharp.dll
 E:\Documents\Courses\DOSP\Projs\Proj04\PartOne\demo01\bin\Debug\net5.0\Akka.Remote.dll
 E:\Documents\Courses\DOSP\Projs\Proj04\PartOne\demo01\bin\Debug\net5.0\DotNetty.Buffers.dll

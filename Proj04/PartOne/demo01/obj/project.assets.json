@@ -17,44 +17,6 @@
           "lib/netstandard2.0/Akka.dll": {}
         }
       },
-      "Akka.Cluster/1.4.28": {
-        "type": "package",
-        "dependencies": {
-          "Akka.Coordination": "1.4.28",
-          "Akka.Remote": "1.4.28"
-        },
-        "compile": {
-          "lib/netstandard2.0/Akka.Cluster.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/Akka.Cluster.dll": {}
-        }
-      },
-      "Akka.Cluster.Tools/1.4.28": {
-        "type": "package",
-        "dependencies": {
-          "Akka.Cluster": "1.4.28",
-          "Akka.Coordination": "1.4.28"
-        },
-        "compile": {
-          "lib/netstandard2.0/Akka.Cluster.Tools.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/Akka.Cluster.Tools.dll": {}
-        }
-      },
-      "Akka.Coordination/1.4.28": {
-        "type": "package",
-        "dependencies": {
-          "Akka": "1.4.28"
-        },
-        "compile": {
-          "lib/netstandard2.0/Akka.Coordination.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/Akka.Coordination.dll": {}
-        }
-      },
       "Akka.FSharp/1.4.28": {
         "type": "package",
         "dependencies": {
@@ -2121,51 +2083,6 @@
         "akkalogo.png",
         "lib/netstandard2.0/Akka.dll",
         "lib/netstandard2.0/Akka.xml"
-      ]
-    },
-    "Akka.Cluster/1.4.28": {
-      "sha512": "zT1oIouDTEfih8P2Fghpl+nD3SWDdbFmuULRLGAse85pzUqeYPzkvKEF9kR7W35xZHjLgAVZWbvpgQgLgQqxaw==",
-      "type": "package",
-      "path": "akka.cluster/1.4.28",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "akka.cluster.1.4.28.nupkg.sha512",
-        "akka.cluster.nuspec",
-        "akkalogo.png",
-        "lib/netstandard2.0/Akka.Cluster.dll",
-        "lib/netstandard2.0/Akka.Cluster.xml"
-      ]
-    },
-    "Akka.Cluster.Tools/1.4.28": {
-      "sha512": "vPVw56wXpYFCs+TR9e9V++FnqNfTZzNXUmarbInkakJ4dJpLK0VFIopTBPDTOUuubLFJQT7trGHTMadJk2zRjA==",
-      "type": "package",
-      "path": "akka.cluster.tools/1.4.28",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "akka.cluster.tools.1.4.28.nupkg.sha512",
-        "akka.cluster.tools.nuspec",
-        "akkalogo.png",
-        "lib/netstandard2.0/Akka.Cluster.Tools.dll",
-        "lib/netstandard2.0/Akka.Cluster.Tools.xml"
-      ]
-    },
-    "Akka.Coordination/1.4.28": {
-      "sha512": "lKw4U7Fa4S1ANX+mLEpRxkUoEFS5GhPlRZ6/IlSvbheslNIfL17abClCtNGB5BbDgGNI2AkEHNZTXB0Ocm77sw==",
-      "type": "package",
-      "path": "akka.coordination/1.4.28",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "akka.coordination.1.4.28.nupkg.sha512",
-        "akka.coordination.nuspec",
-        "akkalogo.png",
-        "lib/netstandard2.0/Akka.Coordination.dll",
-        "lib/netstandard2.0/Akka.Coordination.xml"
       ]
     },
     "Akka.FSharp/1.4.28": {
@@ -7153,8 +7070,6 @@
   "projectFileDependencyGroups": {
     "net5.0": [
       "Akka >= 1.4.28",
-      "Akka.Cluster >= 1.4.28",
-      "Akka.Cluster.Tools >= 1.4.28",
       "Akka.FSharp >= 1.4.28",
       "Akka.Remote >= 1.4.28",
       "FSharp.Core >= 6.0.1",
@@ -7196,16 +7111,6 @@
         "targetAlias": "net5.0",
         "dependencies": {
           "Akka": {
-            "target": "Package",
-            "version": "[1.4.28, )",
-            "generatePathProperty": true
-          },
-          "Akka.Cluster": {
-            "target": "Package",
-            "version": "[1.4.28, )",
-            "generatePathProperty": true
-          },
-          "Akka.Cluster.Tools": {
             "target": "Package",
             "version": "[1.4.28, )",
             "generatePathProperty": true

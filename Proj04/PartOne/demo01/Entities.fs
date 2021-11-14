@@ -41,17 +41,6 @@ type Hashtag =
         }
     end
 
-    
-type Mention = 
-    struct
-        val TWEETID: int
-        val NAME: string // account name
-        new (tweetID: int, name: string) = {
-            TWEETID = tweetID;
-            NAME = name;
-        }
-    end
-
 type Tweet = 
     struct
         val ID: int
@@ -72,6 +61,15 @@ type Tweet =
         }
     end
 
+type TweetMention = 
+    struct
+        val TWEETID: int
+        val NAME: string // account name
+        new (tweetID: int, name: string) = {
+            TWEETID = tweetID;
+            NAME = name;
+        }
+    end
 
 type TweetHashtag = 
     struct

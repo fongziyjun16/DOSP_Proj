@@ -7,22 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="resources\create_tables.sql" />
+    <None Include="resources\tweet_sys.db" />
     <Compile Include="Entities.fs" />
     <Compile Include="DAO\AccountDAO.fs" />
     <Compile Include="DAO\FollowDAO.fs" />
     <Compile Include="DAO\HashtagDAO.fs" />
-    <Compile Include="DAO\MentionDAO.fs" />
     <Compile Include="DAO\TweetDAO.fs" />
+    <Compile Include="DAO\TweetMentionDAO.fs" />
     <Compile Include="DAO\TweetHashtagDAO.fs" />
     <Compile Include="Msgs.fs" />
     <Compile Include="PrinterActor.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Akka" Version="1.4.28" />
-    <PackageReference Include="Akka.Cluster" Version="1.4.28" />
-    <PackageReference Include="Akka.Cluster.Tools" Version="1.4.28" />
     <PackageReference Include="Akka.FSharp" Version="1.4.28" />
     <PackageReference Include="Akka.Remote" Version="1.4.28" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.115.5" />

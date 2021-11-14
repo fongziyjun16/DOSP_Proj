@@ -1,13 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "97vOWo0JFK19wVNUPwUIQB+qgpyBK1AqkBJF+NG82RxZvVc9IuvBzv5hIQfW0pQtOV24hsPyQjDzttEQ3I+Owg==",
+  "dgSpecHash": "PN+md9drNJCZoStXUKHiDsuB3afb8jE/ImQOsafhnyFkCQlnYpG1ACVOMHBR3fMjTbAuTZpWOeu/GWHpfI5alg==",
   "success": true,
   "projectFilePath": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\demo01\\demo01.fsproj",
   "expectedPackageFiles": [
     "C:\\Users\\fongziyjun\\.nuget\\packages\\akka\\1.4.28\\akka.1.4.28.nupkg.sha512",
-    "C:\\Users\\fongziyjun\\.nuget\\packages\\akka.cluster\\1.4.28\\akka.cluster.1.4.28.nupkg.sha512",
-    "C:\\Users\\fongziyjun\\.nuget\\packages\\akka.cluster.tools\\1.4.28\\akka.cluster.tools.1.4.28.nupkg.sha512",
-    "C:\\Users\\fongziyjun\\.nuget\\packages\\akka.coordination\\1.4.28\\akka.coordination.1.4.28.nupkg.sha512",
     "C:\\Users\\fongziyjun\\.nuget\\packages\\akka.fsharp\\1.4.28\\akka.fsharp.1.4.28.nupkg.sha512",
     "C:\\Users\\fongziyjun\\.nuget\\packages\\akka.remote\\1.4.28\\akka.remote.1.4.28.nupkg.sha512",
     "C:\\Users\\fongziyjun\\.nuget\\packages\\dotnetty.buffers\\0.6.0\\dotnetty.buffers.0.6.0.nupkg.sha512",
