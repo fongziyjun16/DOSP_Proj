@@ -9,6 +9,7 @@ type Tools() =
     static let random = new Random()
 
     static let clientList = new List<string>()
+    static let hashtagList = new List<string>()
 
     static member getRandomString(small: int, big: int): string =
         let letters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -23,3 +24,11 @@ type Tools() =
 
     static member getRandomClient(): string =
         clientList.[random.Next(clientList.Count)]
+
+    static member addNewHashtag(name: string) =
+        hashtagList.Add(name) |> ignore
+
+    static member getRandomHashtag(): string =
+        if hashtagList.Count > 0 then
+            hashtagList.[random.Next(hashtagList.Count)]
+        else ""

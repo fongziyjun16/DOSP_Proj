@@ -18,6 +18,14 @@ type HashtagDAO(connection: SQLiteConnection) =
         | :? SQLiteException ->
             false
 
+    member this.getLastInsertRowID(): int =
+        let sql = "select last_insert_rowid() as last_rowid from hashtag"
+        use command = new SQLiteCommand(sql, connection)
+        let reader = command.ExecuteReader()
+        let flg = reader.Read()
+        if flg = false then 1
+        else reader.["last_rowid"].ToString() |> int
+
     member this.getHashtagByTopic(topic: string): Hashtag =
         let sql = "select * from Hashtag where topic = @topic"
         use command = new SQLiteCommand(sql, connection)

@@ -29,5 +29,14 @@ type FollowDAO(connection: SQLiteConnection) =
             followers.Add(reader.["FOLLOWER"].ToString())
         followers
 
+    member this.getFollowsByName(follower: string): List<string> =
+        let sql = "select * from follow where follower = @follower"
+        use command = new SQLiteCommand(sql, connection)
+        command.Parameters.AddWithValue("@follower", follower) |> ignore
+        let follows = new List<string>()
+        let reader = command.ExecuteReader()
+        while reader.Read() do
+            follows.Add(reader.["NAME"].ToString())
+        follows
 
 

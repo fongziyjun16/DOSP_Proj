@@ -41,6 +41,12 @@ type Tweet =
         val CREATOR: string // account name
         val CONTENT: string 
         val RETWEETID: int
+        new (creator: string, content: string) = {
+            ID = -1;
+            CREATOR = creator;
+            CONTENT = content;
+            RETWEETID = -1;
+        }
         new (creator: string, content: string, retweetID: int) = {
             ID = -1;
             CREATOR = creator;
