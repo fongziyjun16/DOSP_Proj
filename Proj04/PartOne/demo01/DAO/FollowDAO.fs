@@ -10,7 +10,7 @@ type FollowDAO(connection: SQLiteConnection) =
     member this.insert(follow: Follow): bool = 
         let sql = "insert into Follow values(@username, @follower)"
         use command = new SQLiteCommand(sql, connection)
-        command.Parameters.AddWithValue("@username", follow.USERNAME) |> ignore
+        command.Parameters.AddWithValue("@username", follow.NAME) |> ignore
         command.Parameters.AddWithValue("@follower", follow.FOLLOWER) |> ignore
         try
             command.ExecuteNonQuery() |> ignore
@@ -19,10 +19,10 @@ type FollowDAO(connection: SQLiteConnection) =
         | :? SQLiteException ->
             false
 
-    member this.getFollowersByUsername(username: string): List<string> =
-        let sql = "select * from follow where username = @username"
+    member this.getFollowersByName(name: string): List<string> =
+        let sql = "select * from follow where name = @name"
         use command = new SQLiteCommand(sql, connection)
-        command.Parameters.AddWithValue("@username", username) |> ignore
+        command.Parameters.AddWithValue("@name", name) |> ignore
         let followers = new List<string>()
         let reader = command.ExecuteReader()
         while reader.Read() do

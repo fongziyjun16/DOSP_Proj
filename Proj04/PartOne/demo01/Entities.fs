@@ -2,24 +2,18 @@
 
 type Account = 
     struct
-        val USERNAME: string
-        val PASSWORD: string
         val NAME: string
-        val GENDER: string
-        new (username: string, password: string, name: string, gender: string) = {
-            USERNAME = username;
-            PASSWORD = password;
+        new (name: string) = {
             NAME = name;
-            GENDER = gender;
         }
     end
 
 type Follow = 
     struct
-        val USERNAME: string
+        val NAME: string
         val FOLLOWER: string
-        new (username: string, follower: string) = {
-            USERNAME = username;
+        new (name: string, follower: string) = {
+            NAME = name;
             FOLLOWER = follower;
         }
     end
@@ -44,7 +38,7 @@ type Hashtag =
 type Tweet = 
     struct
         val ID: int
-        val CREATOR: string // account username
+        val CREATOR: string // account name
         val CONTENT: string 
         val RETWEETID: int
         new (creator: string, content: string, retweetID: int) = {

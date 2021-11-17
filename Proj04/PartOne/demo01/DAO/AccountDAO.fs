@@ -7,12 +7,9 @@ open Entities
 type AccountDAO(connection: SQLiteConnection) =
 
     member this.insert(account: Account): bool =
-        let sql = "insert into account values(@username, @password, @name, @gender)"
+        let sql = "insert into account values(@name)"
         use command = new SQLiteCommand(sql, connection)
-        command.Parameters.AddWithValue("@username", account.USERNAME) |> ignore
-        command.Parameters.AddWithValue("@password", account.PASSWORD) |> ignore
         command.Parameters.AddWithValue("@name", account.NAME) |> ignore
-        command.Parameters.AddWithValue("@gender", account.GENDER) |> ignore
         try
             command.ExecuteNonQuery() |> ignore
             true
@@ -20,20 +17,17 @@ type AccountDAO(connection: SQLiteConnection) =
         | :? SQLiteException ->
             false
 
-    member this.getAccountByUsername(username: string): Account =
-        let sql = "select * from account where username = @username"
+    member this.getAccountByUsername(name: string): Account =
+        let sql = "select * from account where name = @name"
         use command = new SQLiteCommand(sql, connection)
-        command.Parameters.AddWithValue("@username", username) |> ignore
+        command.Parameters.AddWithValue("@name", name) |> ignore
         let reader = command.ExecuteReader()
         let flg = reader.Read()
         if flg then
             new Account(
-                reader.["USERNAME"].ToString(),
-                reader.["PASSWORD"].ToString(),
-                reader.["NAME"].ToString(),
-                reader.["GENDER"].ToString()
+                reader.["NAME"].ToString()
             )
         else
-            new Account("", "", "", "")
+            new Account("")
 
 

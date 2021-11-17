@@ -2,6 +2,7 @@
   "profiles": {
     "demo01": {
       "commandName": "Project",
+      "commandLineArgs": "50",
       "workingDirectory": "E:\\Documents\\Courses\\DOSP\\Projs\\Proj04\\PartOne\\demo01"
     }
   }

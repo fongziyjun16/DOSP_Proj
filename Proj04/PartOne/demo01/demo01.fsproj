@@ -9,6 +9,7 @@
   <ItemGroup>
     <None Include="resources\create_tables.sql" />
     <None Include="resources\tweet_sys.db" />
+    <Compile Include="ToolsKit.fs" />
     <Compile Include="Entities.fs" />
     <Compile Include="DAO\AccountDAO.fs" />
     <Compile Include="DAO\FollowDAO.fs" />
@@ -18,6 +19,9 @@
     <Compile Include="DAO\TweetHashtagDAO.fs" />
     <Compile Include="Msgs.fs" />
     <Compile Include="Actors\PrinterActor.fs" />
+    <Compile Include="Actors\TweetEngineActor.fs" />
+    <Compile Include="Actors\ClientActor.fs" />
+    <Compile Include="Actors\RandomControllerActor.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   
