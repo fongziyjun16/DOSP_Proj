@@ -28,3 +28,13 @@ type TweetMentionDAO(connection: SQLiteConnection) =
         while reader.Read() do
             mentions.Add(reader.["NAME"].ToString())
         mentions
+
+    member this.getTweetIDsByName(name: string): List<int> =
+        let sql = "select * from Tweet_Mention where name = @name"
+        use command = new SQLiteCommand(sql, connection)
+        command.Parameters.AddWithValue("@name", name) |> ignore
+        let mentions = new List<int>()
+        let reader = command.ExecuteReader()
+        while reader.Read() do
+            mentions.Add(reader.["TWEETID"].ToString() |> int)
+        mentions

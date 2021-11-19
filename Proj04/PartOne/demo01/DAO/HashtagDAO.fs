@@ -40,4 +40,5 @@ type HashtagDAO(connection: SQLiteConnection) =
         else
             new Hashtag(-1, "", "")
 
+
     

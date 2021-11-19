@@ -112,10 +112,18 @@ type QueryFollowOperation =
 
 type QueryFollowInfo =
     struct
+        val FOLLOWER: string
+        new (follower: string) = {
+            FOLLOWER = follower;
+        }
     end
 
 type QueryFollowResult =
     struct
+        val TWEETS: List<Tweet>
+        new (tweets: List<Tweet>) = {
+            TWEETS = tweets;
+        }
     end
 
 type QueryMentionOperation = 
@@ -124,10 +132,18 @@ type QueryMentionOperation =
 
 type QueryMentionInfo =
     struct
+        val NAME: string
+        new (name: string) = {
+            NAME = name;
+        }
     end
 
 type QueryMentionResult =
     struct
+        val TWEETS: List<Tweet>
+        new (tweets: List<Tweet>) = {
+            TWEETS = tweets;
+        }
     end
 
 type QueryHashtagsOperation = 
@@ -136,8 +152,16 @@ type QueryHashtagsOperation =
 
 type QueryHashtagsInfo =
     struct
+        val NAME: string
+        new (name: string) = {
+            NAME = name;
+        }
     end
 
 type QueryHashtagsResult =
     struct
+        val TWEETS: List<Tweet>
+        new (tweets: List<Tweet>) = {
+            TWEETS = tweets;
+        }
     end

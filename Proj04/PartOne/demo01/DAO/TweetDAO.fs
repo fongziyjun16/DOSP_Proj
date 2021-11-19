@@ -79,3 +79,25 @@ type TweetDAO(connection: SQLiteConnection) =
             tweets.Add(tweet)
         tweets
 
+    member this.getTweetsByTweetIDs(tweetIDs: List<int>): List<Tweet> = 
+        let sql = new StringBuilder("select * from Tweet where tweetID in (")
+        let numberOfTweetIDs = tweetIDs.Count
+        for i in 1 .. numberOfTweetIDs do
+            if i < numberOfTweetIDs then
+                sql.Append("@tweetID" + i.ToString() + ", ") |> ignore
+            else
+                sql.Append("@tweetID" + i.ToString() + ")") |> ignore
+        use command = new SQLiteCommand(sql.ToString(), connection)
+        for i in 1 .. numberOfTweetIDs do
+            command.Parameters.AddWithValue("@tweetID" + i.ToString(), tweetIDs.[i - 1]) |> ignore
+        let tweets = new List<Tweet>()
+        let reader = command.ExecuteReader()
+        while reader.Read() do
+            let tweet = new Tweet(
+                            reader.["CREATOR"].ToString(),
+                            reader.["CONTENT"].ToString(),
+                            reader.["RETWEETID"].ToString() |> int
+                        )
+            tweets.Add(tweet)
+        tweets
+

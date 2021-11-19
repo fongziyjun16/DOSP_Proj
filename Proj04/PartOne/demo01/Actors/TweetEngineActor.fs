@@ -1,6 +1,7 @@
 ﻿namespace Actor
 
 open System
+open System.IO
 open System.Collections.Generic
 open System.Data.SQLite
 
@@ -14,6 +15,7 @@ open Msgs
 type TweetEngineActor() =
     inherit Actor()
 
+    let context = Actor.Context
     let random = new Random()
     let accountDAO = new AccountDAO(new SQLiteConnection("Data Source=./resources/tweet_sys.db"))
     let followDAO = new FollowDAO(new SQLiteConnection("Data Source=./resources/tweet_sys.db"))
@@ -22,7 +24,10 @@ type TweetEngineActor() =
     let tweetMentionDAO = new TweetMentionDAO(new SQLiteConnection("Data Source=./resources/tweet_sys.db"))
     let tweetHashtagDAO = new TweetHashtagDAO(new SQLiteConnection("Data Source=./resources/tweet_sys.db"))
     
-    let printer = Actor.Context.System.ActorSelection("akka://TweetSimulator@localhost:10012/user/printer")
+    let printer = context.System.ActorSelection("akka://TweetSimulator@localhost:10012/user/printer")
+
+    let getClientActor(name: string) = 
+        context.System.ActorSelection("akka://TweetSimulator@localhost:10012/user/randomController/" + name)
 
     let loginSet = new HashSet<string>()
 
@@ -90,22 +95,26 @@ type TweetEngineActor() =
             let followers = followDAO.getFollowersByName(msg.NAME)
             let deliverTweetOperation = new DeliverTweetOperation(msg.NAME, msg.CONTENT, retweetID)
             for follower in followers do
-                let followerActor = Actor.Context.System.ActorSelection(
-                                        "akka://TweetSimulator@localhost:10012/user/randomController/" + follower)
-                followerActor <! deliverTweetOperation
+                getClientActor(follower) <! deliverTweetOperation
         // query follow tweets
         | :? QueryFollowInfo as msg ->
-            // implementation
-
-            printfn "aaa"
+            // query one of follow tweets
+            let follows = followDAO.getFollowsByName(msg.FOLLOWER)
+            let follow = follows.[random.Next(follows.Count)]
+            let tweets = tweetDAO.getTweetsByCreator(follow)
+            getClientActor(msg.FOLLOWER) <! new QueryFollowResult(tweets)
         // query mention tweets
         | :? QueryMentionInfo as msg ->
-            // implementation
-
-            printfn "aaa"
+            // query mention tweets
+            let tweetIDs = tweetMentionDAO.getTweetIDsByName(msg.NAME)
+            let tweets = tweetDAO.getTweetsByTweetIDs(tweetIDs)
+            getClientActor(msg.NAME) <! new QueryMentionResult(tweets)
         // query hashtag tweets
         | :? QueryHashtagsInfo as msg ->
-            // implementation
-             
-            printfn "aaa"
+            // query tweets with hashtag
+            let hashtag = Tools.getRandomHashtag()
+            let tweetIDs = tweetHashtagDAO.getTweetIDsByHashtag(hashtag)
+            let tweets = tweetDAO.getTweetsByTweetIDs(tweetIDs)
+            getClientActor(msg.NAME) <! new QueryHashtagsResult(tweets)
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name
+

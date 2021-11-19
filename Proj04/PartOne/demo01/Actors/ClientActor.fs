@@ -67,29 +67,26 @@ type ClientActor() =
             printfn "aaa"
         // query follow tweets
         | :? QueryFollowOperation as msg ->
-            // implementation
-
-            printfn "aaaa"
+            tweetEngine <! new QueryFollowInfo(name)
         | :? QueryFollowResult as msg ->
-            // implementation
+            let tweets = msg.TWEETS
+            // print
 
-            printfn "aaaa"
+            printfn "aaa"
         // query mention tweet
         | :? QueryMentionOperation as msg ->
-            // implementation
-
-            printfn "aaaa"
+            tweetEngine <! new QueryMentionInfo(name)
         | :? QueryMentionResult as msg ->
-            // implementation
+            let tweets = msg.TWEETS
+            // print
 
             printfn "aaaa"
         // query mention tweet
         | :? QueryHashtagsOperation as msg ->
-            // implementation
-
-            printfn "aaaa"
+            tweetEngine <! new QueryHashtagsInfo(name)
         | :? QueryHashtagsResult as msg ->
-            // implementation
+            let tweets = msg.TWEETS
+            // print
 
             printfn "aaaa"
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name
