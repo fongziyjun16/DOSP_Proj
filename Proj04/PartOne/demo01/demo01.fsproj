@@ -6,7 +6,7 @@
     <WarnOn>3390;$(WarnOn)</WarnOn>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup>    
     <None Include="resources\create_tables.sql" />
     <None Include="resources\tweet_sys.db" />
     <Compile Include="ToolsKit.fs" />
@@ -17,7 +17,9 @@
     <Compile Include="DAO\TweetDAO.fs" />
     <Compile Include="DAO\TweetMentionDAO.fs" />
     <Compile Include="DAO\TweetHashtagDAO.fs" />
-    <Compile Include="Msgs.fs" />
+    <Compile Include="Msgs\TweetEngineMsgs.fs" />
+    <Compile Include="Msgs\ClientMsgs.fs" />
+    <Compile Include="Msgs\RandomControllerMsgs.fs" />
     <Compile Include="Actors\PrinterActor.fs" />
     <Compile Include="Actors\TweetEngineActor.fs" />
     <Compile Include="Actors\ClientActor.fs" />

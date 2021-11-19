@@ -28,6 +28,7 @@ type ClientActor() =
         | :? RegisterSuccessInfo as msg ->
             registerFlg <- true
             login <- true
+            printer <! name + " register"
         | :? RegisterFailureInfo as msg ->
             name <- Tools.getRandomString(10, 20)
             this.Self <! new RegisterOperationInfo()

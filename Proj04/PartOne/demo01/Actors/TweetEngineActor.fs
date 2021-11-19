@@ -1,7 +1,6 @@
 ﻿namespace Actor
 
 open System
-open System.IO
 open System.Collections.Generic
 open System.Data.SQLite
 
