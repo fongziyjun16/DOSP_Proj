@@ -6,6 +6,7 @@ open Akka.Actor
 open Akka.FSharp
 open Akka.Configuration
 
+open Msgs
 open Actor
 
 [<EntryPoint>]
@@ -45,7 +46,7 @@ let main argv =
     let tweetEngine = tweetSimulator.ActorOf(Props(typeof<TweetEngineActor>), "tweetEngine")
     let randomController = tweetSimulator.ActorOf(Props(typeof<RandomControllerActor>, [| numberOfClients :> obj |]), "randomController")
     
-    
+    randomController <! new RegisterCall()
 
     Console.Read() |> ignore
     0 // return an integer exit code

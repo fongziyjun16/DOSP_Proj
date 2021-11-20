@@ -9,12 +9,12 @@ open ToolsKit
 open Entities
 open Msgs
 
-type ClientActor() =
+type ClientActor(name: string) =
     inherit Actor()
 
-    let mutable name = Tools.getRandomString(10, 20)
-    let tweetEngine = Actor.Context.System.ActorSelection("akka://TweetSimulator@localhost:10012/user/tweetEngine")
-    let printer = Actor.Context.System.ActorSelection("akka://TweetSimulator@localhost:10012/user/printer")
+    let context = Actor.Context
+    let tweetEngine = Actor.Context.System.ActorSelection(context.Parent.Path.ToStringWithAddress() + "/tweetEngine")
+    let printer = Actor.Context.System.ActorSelection(context.Parent.Path.ToStringWithAddress() + "/printer")
     let random = new Random()
 
     let mutable registerFlg = false
@@ -23,16 +23,13 @@ type ClientActor() =
     override this.OnReceive message =
         match box message with
         // registration work
-        | :? RegisterOperationInfo as msg ->
+        | :? RegisterOperation as msg ->
             tweetEngine <! new RegisterInfo(name)
         | :? RegisterSuccessInfo as msg ->
             registerFlg <- true
             login <- true
-            printer <! name + " register"
-        | :? RegisterFailureInfo as msg ->
-            name <- Tools.getRandomString(10, 20)
-            this.Self <! new RegisterOperationInfo()
-        // login & logout
+            printer <! name + " registered"
+        // login
         | :? LoginOperation as msg ->
             login <- true
             tweetEngine <! new LoginInfo(name)
@@ -41,7 +38,8 @@ type ClientActor() =
             let tweets = msg.TWEETS
             // print tweets
 
-            () // nothing do sign
+            printfn "aaa"
+        // logout
         | :? LogoutOperation as msg ->
             login <- false
             tweetEngine <! new LogoutInfo(name)

@@ -16,14 +16,6 @@ type RegisterSuccessInfo =
     struct
     end
 
-type RegisterFailureInfo =
-    struct
-    end
-
-type RegisterOperationInfo =
-    struct
-    end
-
 type LoginInfo = 
     struct
         val NAME: string

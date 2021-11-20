@@ -8,6 +8,7 @@ type Tools() =
     
     static let random = new Random()
 
+
     static let clientList = new List<string>()
     static let hashtagList = new List<string>()
 

@@ -16,17 +16,23 @@ type TweetEngineActor() =
 
     let context = Actor.Context
     let random = new Random()
-    let accountDAO = new AccountDAO(new SQLiteConnection("Data Source=./resources/tweet_sys.db"))
-    let followDAO = new FollowDAO(new SQLiteConnection("Data Source=./resources/tweet_sys.db"))
-    let hashtagDAO = new HashtagDAO(new SQLiteConnection("Data Source=./resources/tweet_sys.db"))
-    let tweetDAO = new TweetDAO(new SQLiteConnection("Data Source=./resources/tweet_sys.db"))
-    let tweetMentionDAO = new TweetMentionDAO(new SQLiteConnection("Data Source=./resources/tweet_sys.db"))
-    let tweetHashtagDAO = new TweetHashtagDAO(new SQLiteConnection("Data Source=./resources/tweet_sys.db"))
+
+    let getNewOpenDBConnection(): SQLiteConnection = 
+        let newConnection = new SQLiteConnection("Data Source=./resources/tweet_sys.db")
+        newConnection.Open()
+        newConnection
+
+    let accountDAO = new AccountDAO(getNewOpenDBConnection())
+    let followDAO = new FollowDAO(getNewOpenDBConnection())
+    let hashtagDAO = new HashtagDAO(getNewOpenDBConnection())
+    let tweetDAO = new TweetDAO(getNewOpenDBConnection())
+    let tweetMentionDAO = new TweetMentionDAO(getNewOpenDBConnection())
+    let tweetHashtagDAO = new TweetHashtagDAO(getNewOpenDBConnection())
     
-    let printer = context.System.ActorSelection("akka://TweetSimulator@localhost:10012/user/printer")
+    let printer = context.System.ActorSelection(context.Self.Path.ToStringWithAddress() + "/printer")
 
     let getClientActor(name: string) = 
-        context.System.ActorSelection("akka://TweetSimulator@localhost:10012/user/randomController/" + name)
+        context.System.ActorSelection(context.Self.Path.ToStringWithAddress() + name)
 
     let loginSet = new HashSet<string>()
 
@@ -40,8 +46,6 @@ type TweetEngineActor() =
                 sender <! new RegisterSuccessInfo()
                 loginSet.Add(msg.NAME) |> ignore
                 Tools.addNewClient(msg.NAME)
-            else 
-                sender <! new RegisterFailureInfo()
         // clients login & logout
         | :? LoginInfo as msg ->
             loginSet.Add(msg.NAME) |> ignore

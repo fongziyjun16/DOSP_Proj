@@ -4,6 +4,10 @@ open System.Collections.Generic
 
 open Entities
 
+type RegisterOperation =
+    struct
+    end
+
 type LoginOperation =
     struct
     end

@@ -1,2 +1,5 @@
-﻿module RandomControllerMsgs
+﻿namespace Msgs
 
+type RegisterCall =
+    struct
+    end
