@@ -11,3 +11,7 @@ type LoginLogoutTest =
 type CLientPostTest = 
     struct
     end
+
+type QueryTest = 
+    struct
+    end
