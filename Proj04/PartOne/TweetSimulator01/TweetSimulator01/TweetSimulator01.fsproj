@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <WarnOn>3390;$(WarnOn)</WarnOn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="resources\create_table.sql" />
+        <Content Include="resources\tweet_sys.db" />
+        <Compile Include="ToolsKit.fs" />
+        <Compile Include="Entities.fs" />
+        <Compile Include="DAO\AccountDAO.fs" />
+        <Compile Include="DAO\FollowDAO.fs" />
+        <Compile Include="DAO\HashtagDAO.fs" />
+        <Compile Include="DAO\TweetDAO.fs" />
+        <Compile Include="DAO\TweetMentionDAO.fs" />
+        <Compile Include="DAO\TweetHashtagDAO.fs" />
+        <Compile Include="Msgs\TweetEngineMsgs.fs" />
+        <Compile Include="Msgs\ClientMsgs.fs" />
+        <Compile Include="Msgs\RandomControllerMsgs.fs" />
+        <Compile Include="Actors\PrinterActor.fs" />
+        <Compile Include="Actors\TweetEngineActor.fs" />
+        <Compile Include="Actors\ClientActor.fs" />
+        <Compile Include="Actors\RandomControllerActor.fs" />
+        <Compile Include="Program.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="FSharp.Core" Version="6.0.1" />
+      <PackageReference Include="Akka" Version="1.4.28" />
+      <PackageReference Include="Akka.FSharp" Version="1.4.28" />
+      <PackageReference Include="Akka.Remote" Version="1.4.28" />
+      <PackageReference Include="System.Data.SQLite" Version="1.0.115.5" />
+    </ItemGroup>
+
+</Project>
