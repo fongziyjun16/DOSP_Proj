@@ -79,8 +79,8 @@ type QueryFollowOperation =
     
 type QueryFollowResult =
     struct
-        val TWEETS: List<Tweet>
-        new (tweets: List<Tweet>) = {
+        val TWEETS: List<TweetDTO>
+        new (tweets: List<TweetDTO>) = {
             TWEETS = tweets;
         }
     end
@@ -91,8 +91,8 @@ type QueryMentionOperation =
 
 type QueryMentionResult =
     struct
-        val TWEETS: List<Tweet>
-        new (tweets: List<Tweet>) = {
+        val TWEETS: List<TweetDTO>
+        new (tweets: List<TweetDTO>) = {
             TWEETS = tweets;
         }
     end
@@ -103,8 +103,8 @@ type QueryHashtagsOperation =
 
 type QueryHashtagsResult =
     struct
-        val TWEETS: List<Tweet>
-        new (tweets: List<Tweet>) = {
+        val TWEETS: List<TweetDTO>
+        new (tweets: List<TweetDTO>) = {
             TWEETS = tweets;
         }
     end

@@ -57,6 +57,7 @@ type Tools() =
             else
                 tweet.Append("#" + hashtags.[i]) |> ignore
         tweet.Append("]; \n") |> ignore
+        tweet.Append("retweet: " + retweet.ToString() + " ; \n") |> ignore
         tweet.Append("}") |> ignore
 
         tweet.ToString()

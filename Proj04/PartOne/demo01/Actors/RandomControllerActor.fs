@@ -55,10 +55,11 @@ type RandomControllerActor(numberOfClients: int) =
                     do! Async.Sleep(5000)
             } |> Async.StartAsTask |> ignore
         | :? CLientPostTest as msg ->
-            let star = clients.[random.Next(clients.Count)]
-            printer <! "star: " + star.Path.Name
+            let starA = clients.[random.Next(clients.Count)]
+            let starB = clients.[random.Next(clients.Count)]
             for client in clients do
-                if client.Path.Name <> star.Path.Name then
-                    client <! new SubscribeOperation(star.Path.Name)
-            star <! new PostTweetOperation(false)
+                if client.Path.Name <> starA.Path.Name then
+                    client <! new SubscribeOperation(starA.Path.Name)
+            starA <! new PostTweetOperation(false)
+            starB <! new PostTweetOperation(true)
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name

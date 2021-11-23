@@ -1,6 +1,8 @@
 ﻿namespace DAO
 
+open System.Text
 open System.Data.SQLite
+open System.Collections.Generic
 
 open Entities
 
@@ -40,5 +42,20 @@ type HashtagDAO(connection: SQLiteConnection) =
         else
             new Hashtag(-1, "", "")
 
-
+    member this.getTopicsByHashtagIDs(hashtagIDs: List<int>): List<string> =
+        let sql = new StringBuilder("select * from Hashtag where id in (")
+        for i in 1 .. hashtagIDs.Count do
+            sql.Append("@id" + i.ToString()) |> ignore
+        sql.Append(")") |> ignore
+        use command = new SQLiteCommand(sql.ToString(), connection)
+        for i in 1 .. hashtagIDs.Count do
+            command.Parameters.AddWithValue("@id" + i.ToString(), hashtagIDs.[i - 1]) |> ignore
+        let topics = new List<string>()
+        use reader = command.ExecuteReader()
+        while reader.Read() do
+            topics.Add(reader.["topic"].ToString()) |> ignore 
+        topics
+            
+        
+        
     
