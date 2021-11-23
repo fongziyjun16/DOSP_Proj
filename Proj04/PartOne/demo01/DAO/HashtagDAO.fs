@@ -21,7 +21,7 @@ type HashtagDAO(connection: SQLiteConnection) =
     member this.getLastInsertRowID(): int =
         let sql = "select last_insert_rowid() as last_rowid from hashtag"
         use command = new SQLiteCommand(sql, connection)
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         let flg = reader.Read()
         if flg = false then 1
         else reader.["last_rowid"].ToString() |> int
@@ -30,7 +30,7 @@ type HashtagDAO(connection: SQLiteConnection) =
         let sql = "select * from Hashtag where topic = @topic"
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@topic", topic) |> ignore
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         let flg = reader.Read()
         if flg then
             new Hashtag(

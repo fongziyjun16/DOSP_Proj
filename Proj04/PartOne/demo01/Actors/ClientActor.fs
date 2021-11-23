@@ -1,6 +1,7 @@
 ﻿namespace Actor
 
 open System
+open System.Text
 open System.Collections.Generic
 
 open Akka.FSharp
@@ -38,17 +39,23 @@ type ClientActor(name: string) =
             let tweets = msg.TWEETS
             // print tweets
 
-            printfn "aaa"
+            ()
         // logout
         | :? LogoutOperation as msg ->
             login <- false
             tweetEngine <! new LogoutInfo(name)
         // randomly subscribe
         | :? SubscribeOperation as msg ->
-            tweetEngine <! new SubscribeInfo()
+            tweetEngine <! new SubscribeInfo(msg.FOLLOW, name)
         // post tweet
         | :? PostTweetOperation as msg ->
-            let numberOfMentions = random.Next(51)
+            let mutable numberOfMentions = -1
+            let nubmerOfRegistered = Tools.getRegiteredClientNumber()
+            if nubmerOfRegistered >= 11 then
+                numberOfMentions <- random.Next(10)
+            else
+                numberOfMentions <- random.Next(nubmerOfRegistered)
+
             let nubmerOfNewHashtags = random.Next(5)
             let numberOfExistingHashtags = random.Next(5)
 
@@ -58,12 +65,12 @@ type ClientActor(name: string) =
                 hashtags.Add(Tools.getRandomString(1, 20))
 
             tweetEngine <! new PostTweetInfo(name, content, numberOfMentions, numberOfExistingHashtags, hashtags, msg.RETWEETFLAG)
+            printer <! name + " posts new one"
         // get follow post a new tweet
         | :? DeliverTweetOperation as msg ->
-            let oneNewTweet = new Tweet(msg.NAME, msg.CONTENT, msg.RETWEETID)
+            let oneNewTweet = msg.TWEET
             // print tweet
-
-            printfn "aaa"
+            printer <! name + " gets one " + oneNewTweet.toString()
         // query follow tweets
         | :? QueryFollowOperation as msg ->
             tweetEngine <! new QueryFollowInfo(name)
@@ -71,7 +78,7 @@ type ClientActor(name: string) =
             let tweets = msg.TWEETS
             // print
 
-            printfn "aaa"
+            ()
         // query mention tweet
         | :? QueryMentionOperation as msg ->
             tweetEngine <! new QueryMentionInfo(name)
@@ -79,7 +86,7 @@ type ClientActor(name: string) =
             let tweets = msg.TWEETS
             // print
 
-            printfn "aaaa"
+            ()
         // query mention tweet
         | :? QueryHashtagsOperation as msg ->
             tweetEngine <! new QueryHashtagsInfo(name)
@@ -87,6 +94,6 @@ type ClientActor(name: string) =
             let tweets = msg.TWEETS
             // print
 
-            printfn "aaaa"
+            ()
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name
 

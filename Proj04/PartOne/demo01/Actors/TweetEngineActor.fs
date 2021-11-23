@@ -1,6 +1,7 @@
 ﻿namespace Actor
 
 open System
+open System.Linq
 open System.Collections.Generic
 open System.Data.SQLite
 
@@ -18,7 +19,7 @@ type TweetEngineActor() =
     let random = new Random()
 
     let getNewOpenDBConnection(): SQLiteConnection = 
-        let newConnection = new SQLiteConnection("Data Source=./resources/tweet_sys.db")
+        let newConnection = new SQLiteConnection("Data Source=./resources/tweet_sys.db;Version=3;")
         newConnection.Open()
         newConnection
 
@@ -29,10 +30,10 @@ type TweetEngineActor() =
     let tweetMentionDAO = new TweetMentionDAO(getNewOpenDBConnection())
     let tweetHashtagDAO = new TweetHashtagDAO(getNewOpenDBConnection())
     
-    let printer = context.System.ActorSelection(context.Self.Path.ToStringWithAddress() + "/printer")
+    let printer = context.System.ActorSelection(context.Parent.Path.ToStringWithAddress() + "/printer")
 
     let getClientActor(name: string) = 
-        context.System.ActorSelection(context.Self.Path.ToStringWithAddress() + name)
+        context.System.ActorSelection(context.Parent.Path.ToStringWithAddress() + "/" + name)
 
     let loginSet = new HashSet<string>()
 
@@ -44,24 +45,30 @@ type TweetEngineActor() =
             let flg = accountDAO.insert(new Account(msg.NAME))
             if flg then 
                 sender <! new RegisterSuccessInfo()
-                loginSet.Add(msg.NAME) |> ignore
                 Tools.addNewClient(msg.NAME)
         // clients login & logout
         | :? LoginInfo as msg ->
             loginSet.Add(msg.NAME) |> ignore
             // deliver new tweets
-            let tweets = tweetDAO.getTweetsByCreators(followDAO.getFollowsByName(msg.NAME))
+            let follows = followDAO.getFollowsByName(msg.NAME)
+            let tweets = tweetDAO.getTweetsByCreators(follows)
             sender <! new DeliverTweetsOperation(tweets)
+            printer <! msg.NAME + " login"
         | :? LogoutInfo as msg ->
             loginSet.Remove(msg.NAME) |> ignore
+            printer <! msg.NAME + " logout"
         // clients subscribe
         | :? SubscribeInfo as msg ->
-            followDAO.insert(new Follow(Tools.getRandomClient(), msg.FOLLOWER)) |> ignore
+            followDAO.insert(new Follow(msg.FOLLOW, msg.FOLLOWER)) |> ignore
+            printer <! msg.FOLLOWER + " follows " + msg.FOLLOW
         // clients post tweet
         | :? PostTweetInfo as msg ->
-            let mentions = new List<string>()
-            for i in 1 .. msg.NUMBEROFMENTIONS do
-                mentions.Add(Tools.getRandomClient()) |> ignore
+            let mentionSet = new HashSet<string>()
+            while mentionSet.Count <> msg.NUMBEROFMENTIONS do
+                let mention = Tools.getRandomClient()
+                if mention <> msg.NAME then
+                    mentionSet.Add(mention) |> ignore
+            let mentions = mentionSet.ToList()
 
             let hashtags = msg.HASHTAGS
             for i in 1 .. msg.NUMBEROFEXISTINGHASHTAGS do
@@ -74,6 +81,7 @@ type TweetEngineActor() =
             let tweetID = tweetDAO.getLastInsertRowID()
 
             // add mention to db
+
             for mention in mentions do
                 tweetMentionDAO.insert(new TweetMention(tweetID, mention)) |> ignore
 
@@ -82,6 +90,7 @@ type TweetEngineActor() =
                 let queryHashtag = hashtagDAO.getHashtagByTopic(hashTag)
                 if queryHashtag.TOPIC.Length = 0 then
                     // new hashtag
+                    hashtagDAO.insert(new Hashtag(hashTag, msg.NAME)) |> ignore
                     let mutable hashTagID = hashtagDAO.getLastInsertRowID()
                     tweetHashtagDAO.insert(new TweetHashtag(tweetID, hashTagID)) |> ignore
                 else
@@ -96,7 +105,8 @@ type TweetEngineActor() =
                 
             // deliver to follower
             let followers = followDAO.getFollowersByName(msg.NAME)
-            let deliverTweetOperation = new DeliverTweetOperation(msg.NAME, msg.CONTENT, retweetID)
+            let tweetDTO = new TweetDTO(tweetID, msg.NAME, msg.CONTENT, mentions, hashtags, msg.RETWEETFLAG)
+            let deliverTweetOperation = new DeliverTweetOperation(tweetDTO)
             for follower in followers do
                 getClientActor(follower) <! deliverTweetOperation
         // query follow tweets

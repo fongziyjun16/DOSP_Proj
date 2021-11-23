@@ -24,7 +24,7 @@ type TweetDAO(connection: SQLiteConnection) =
     member this.getLastInsertRowID(): int =
         let sql = "select last_insert_rowid() as last_rowid from tweet"
         use command = new SQLiteCommand(sql, connection)
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         let flg = reader.Read()
         if flg = false then 1
         else reader.["last_rowid"].ToString() |> int
@@ -34,7 +34,7 @@ type TweetDAO(connection: SQLiteConnection) =
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@creator", creator) |> ignore
         let tweets = new List<Tweet>()
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         while reader.Read() do
             let tweet = new Tweet(
                             reader.["CREATOR"].ToString(),
@@ -63,13 +63,13 @@ type TweetDAO(connection: SQLiteConnection) =
             if i < numberOfFollows then
                 sql.Append("@create" + i.ToString() + ", ") |> ignore
             else 
-                sql.Append("@create" + i.ToString() + ")") |> ignore
-        sql.Append(" and rowid < 31") |> ignore
+                sql.Append("@create" + i.ToString()) |> ignore
+        sql.Append(") and rowid < 31") |> ignore
         use command = new SQLiteCommand(sql.ToString(), connection)
         for i in 1 .. numberOfFollows do
             command.Parameters.AddWithValue("@create" + i.ToString(), follows.[i - 1]) |> ignore
         let tweets = new List<Tweet>()
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         while reader.Read() do
             let tweet = new Tweet(
                             reader.["CREATOR"].ToString(),
@@ -86,7 +86,9 @@ type TweetDAO(connection: SQLiteConnection) =
             if i < numberOfTweetIDs then
                 sql.Append("@tweetID" + i.ToString() + ", ") |> ignore
             else
-                sql.Append("@tweetID" + i.ToString() + ")") |> ignore
+                sql.Append("@tweetID" + i.ToString()) |> ignore
+        sql.Append(")") |> ignore
+
         use command = new SQLiteCommand(sql.ToString(), connection)
         for i in 1 .. numberOfTweetIDs do
             command.Parameters.AddWithValue("@tweetID" + i.ToString(), tweetIDs.[i - 1]) |> ignore

@@ -34,8 +34,10 @@ type LogoutInfo =
 
 type SubscribeInfo = 
     struct
+        val FOLLOW: string
         val FOLLOWER: string
-        new (follower: string) = {
+        new (follow: string, follower: string) = {
+            FOLLOW = follow;
             FOLLOWER = follower;
         }
     end

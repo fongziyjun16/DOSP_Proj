@@ -24,7 +24,7 @@ type FollowDAO(connection: SQLiteConnection) =
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@name", name) |> ignore
         let followers = new List<string>()
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         while reader.Read() do
             followers.Add(reader.["FOLLOWER"].ToString())
         followers
@@ -34,7 +34,7 @@ type FollowDAO(connection: SQLiteConnection) =
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@follower", follower) |> ignore
         let follows = new List<string>()
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         while reader.Read() do
             follows.Add(reader.["NAME"].ToString())
         follows

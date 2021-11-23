@@ -2,6 +2,7 @@
 
 open System.Collections.Generic
 
+open ToolsKit
 open Entities
 
 type RegisterOperation =
@@ -18,6 +19,34 @@ type LogoutOperation =
 
 type SubscribeOperation =
     struct
+        val FOLLOW: string
+        new (follow: string) = {
+            FOLLOW = follow;
+        }
+    end
+
+type TweetDTO =
+    struct
+        val ID: int
+        val CREATOR: string
+        val CONTENT: string
+        val MENTIONS: List<string>
+        val HASHTAGS: List<string>
+        val RETWEET: bool
+        new (id: int, creator: string, content: string, mentions: List<string>, hashtags: List<string>, retweet: bool) = {
+            ID = id;
+            CREATOR = creator;
+            CONTENT = content;
+            MENTIONS = mentions;
+            HASHTAGS = hashtags;
+            RETWEET = retweet;
+        }
+
+        member this.getID(): int =
+            this.ID
+
+        member this.toString(): string =
+            Tools.buildPrintingTweet(this.CREATOR, this.CONTENT, this.MENTIONS, this.HASHTAGS, this.RETWEET)
     end
 
 type PostTweetOperation =
@@ -30,13 +59,9 @@ type PostTweetOperation =
 
 type DeliverTweetOperation = 
     struct
-        val NAME: string
-        val CONTENT: string
-        val RETWEETID: int
-        new (name: string, content: string, retweetID: int) = {
-            NAME = name;
-            CONTENT = content;
-            RETWEETID = retweetID;
+        val TWEET: TweetDTO
+        new (tweet: TweetDTO) = {
+            TWEET = tweet;
         }
     end
 

@@ -47,6 +47,8 @@ let main argv =
     let randomController = tweetSimulator.ActorOf(Props(typeof<RandomControllerActor>, [| numberOfClients :> obj |]), "randomController")
     
     randomController <! new RegisterCall()
+    // randomController <! new LoginLogoutTest()
+    randomController <! new CLientPostTest()
 
     Console.Read() |> ignore
     0 // return an integer exit code

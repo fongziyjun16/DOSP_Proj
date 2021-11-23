@@ -16,7 +16,7 @@ type TweetMentionDAO(connection: SQLiteConnection) =
             command.ExecuteNonQuery() |> ignore
             true
         with
-        | :? SQLiteException ->
+        | :? SQLiteException as e ->
             false
 
     member this.getMentionsByTweetID(tweetID: int): List<string> =
@@ -24,7 +24,7 @@ type TweetMentionDAO(connection: SQLiteConnection) =
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@tweetID", tweetID) |> ignore
         let mentions = new List<string>()
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         while reader.Read() do
             mentions.Add(reader.["NAME"].ToString())
         mentions
@@ -34,7 +34,7 @@ type TweetMentionDAO(connection: SQLiteConnection) =
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@name", name) |> ignore
         let mentions = new List<int>()
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         while reader.Read() do
             mentions.Add(reader.["TWEETID"].ToString() |> int)
         mentions

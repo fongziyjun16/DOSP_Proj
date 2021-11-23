@@ -1,5 +1,7 @@
 ﻿module Entities
 
+open System.Text
+
 type Account = 
     struct
         val NAME: string

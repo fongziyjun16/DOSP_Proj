@@ -21,7 +21,7 @@ type AccountDAO(connection: SQLiteConnection) =
         let sql = "select * from account where name = @name"
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@name", name) |> ignore
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         let flg = reader.Read()
         if flg then
             new Account(

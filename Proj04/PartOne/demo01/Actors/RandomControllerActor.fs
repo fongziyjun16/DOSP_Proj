@@ -1,6 +1,6 @@
 ﻿namespace Actor
 
-open System.Linq
+open System
 open System.Collections.Generic
 
 open Akka.Actor
@@ -12,10 +12,11 @@ open Msgs
 type RandomControllerActor(numberOfClients: int) =
     inherit Actor()
 
+    let random = new Random()
     let context = Actor.Context
 
     let clients = new List<IActorRef>()
-    let mutable clientNames: List<string> = null
+    let clientLoginStatus = new Dictionary<string, bool>()
 
     let printer = context.System.ActorSelection(context.Parent.Path.ToStringWithAddress() + "/printer")
 
@@ -23,10 +24,11 @@ type RandomControllerActor(numberOfClients: int) =
         printer <! "RandomController Starts"
         let nameSet = new HashSet<string>()
         while nameSet.Count <> numberOfClients do
-            nameSet.Add(Tools.getRandomString(6, 20)) |> ignore
-        clientNames <- nameSet.ToList()
+            let name = Tools.getRandomString(6, 20)
+            if nameSet.Add(name) then
+                clientLoginStatus.Add(name, false)
 
-        for name in clientNames do
+        for name in clientLoginStatus.Keys do
             let clientActor = context.System.ActorOf(Props(typeof<ClientActor>, [| name :> obj |]), name)
             clients.Add(clientActor) |> ignore
 
@@ -35,7 +37,28 @@ type RandomControllerActor(numberOfClients: int) =
         | :? RegisterCall as msg ->
             for client in clients do
                 client <! new RegisterOperation()
-            printfn ""
-        | :? string as msg ->
-            printfn "[%s]:[%s]" (Actor.Context.Sender.Path.ToStringWithAddress()) msg
+            while Tools.getRegiteredClientNumber() <> clients.Count do
+                ()
+        | :? LoginLogoutTest as msg ->
+            async {
+                while true do
+                    for client in clients do
+                        let name = client.Path.Name
+                        let sign = random.Next(1, 10)
+                        if sign >= 1 && sign <= 7 then
+                            clientLoginStatus.[name] <- not clientLoginStatus.[name]
+                            let flg = clientLoginStatus.[name]
+                            if flg then
+                                client <! new LoginOperation()
+                            else 
+                                client <! new LogoutOperation()
+                    do! Async.Sleep(5000)
+            } |> Async.StartAsTask |> ignore
+        | :? CLientPostTest as msg ->
+            let star = clients.[random.Next(clients.Count)]
+            printer <! "star: " + star.Path.Name
+            for client in clients do
+                if client.Path.Name <> star.Path.Name then
+                    client <! new SubscribeOperation(star.Path.Name)
+            star <! new PostTweetOperation(false)
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name

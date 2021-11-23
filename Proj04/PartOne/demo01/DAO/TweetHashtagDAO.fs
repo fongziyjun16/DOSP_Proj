@@ -23,7 +23,7 @@ type TweetHashtagDAO(connection: SQLiteConnection) =
         let sql = "select * from Tweet_Hashtag where tweetID = @tweetID"
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@tweetID", tweetID) |> ignore
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         let hashtagIDs = new List<int>()
         while reader.Read() do
             hashtagIDs.Add(reader.["HASHTAGID"].ToString() |> int) |> ignore
@@ -33,7 +33,7 @@ type TweetHashtagDAO(connection: SQLiteConnection) =
         let sql = "select * from Tweet_Hashtag where hashtag = @hashtag"
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@hashtag", hashtag) |> ignore
-        let reader = command.ExecuteReader()
+        use reader = command.ExecuteReader()
         let tweetIDs = new List<int>()
         while reader.Read() do
             tweetIDs.Add(reader.["TWEETID"].ToString() |> int) |> ignore
