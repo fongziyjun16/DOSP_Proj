@@ -76,4 +76,6 @@ type RandomControllerActor(numberOfClients: int) =
                 // client <! new QueryFollowOperation()
                 // client <! new QueryMentionOperation()
                 client <! new QueryHashtagOperation()
+        | :? StartSimulation as msg ->
+                printfn ""
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name

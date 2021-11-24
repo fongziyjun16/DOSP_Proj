@@ -15,3 +15,7 @@ type CLientPostTest =
 type QueryTest = 
     struct
     end
+    
+type StartSimulation =
+    struct
+    end
