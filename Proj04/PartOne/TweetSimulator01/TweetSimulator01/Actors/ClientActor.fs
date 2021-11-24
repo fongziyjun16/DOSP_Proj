@@ -21,6 +21,17 @@ type ClientActor(name: string) =
     let mutable registerFlg = false
     let mutable login = false
 
+    let printingQueryTweets(tweets: List<SimpleTweetDTO>): string =
+        let printing = new StringBuilder()
+        printing.Append(" [ ") |> ignore
+        for i in 0 .. tweets.Count - 1 do
+            let simpleTweet = tweets.[i]
+            printing.Append(simpleTweet.toString()) |> ignore
+            if i <> tweets.Count - 1 then
+                printing.Append(", ") |> ignore
+        printing.Append(" ] ") |> ignore
+        printing.ToString()
+    
     override this.OnReceive message =
         match box message with
         // registration work
@@ -77,23 +88,24 @@ type ClientActor(name: string) =
         | :? QueryFollowResult as msg ->
             let tweets = msg.TWEETS
             // print
-
-            ()
+            let printing = printingQueryTweets(tweets)
+            printer <! "name query follow get " + printing
         // query mention tweet
         | :? QueryMentionOperation as msg ->
             tweetEngine <! new QueryMentionInfo(name)
         | :? QueryMentionResult as msg ->
             let tweets = msg.TWEETS
             // print
-
-            ()
+            let printing = printingQueryTweets(tweets)
+            printer <! "name query mention get " + printing
         // query mention tweet
-        | :? QueryHashtagsOperation as msg ->
-            tweetEngine <! new QueryHashtagsInfo(name)
-        | :? QueryHashtagsResult as msg ->
+        | :? QueryHashtagOperation as msg ->
+            // let hashtag = Tools.getRandomHashtag()
+            tweetEngine <! new QueryHashtagInfo(name(*, hashtag*))
+        | :? QueryHashtagResult as msg ->
             let tweets = msg.TWEETS
             // print
-
-            ()
+            let printing = printingQueryTweets(tweets)
+            printer <! "name query hashtag \"" + msg.HASHTAG + "\" get " + printing
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name
 

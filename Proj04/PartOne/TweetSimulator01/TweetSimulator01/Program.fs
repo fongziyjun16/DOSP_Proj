@@ -33,7 +33,7 @@ let main argv =
                                 actor.provider = remote
                                 remote {
                                     dot-netty.tcp {
-                                        port = 10012
+                                        port = 20026
                                         hostname = localhost
                                     }
                                 }
@@ -48,8 +48,8 @@ let main argv =
     
     randomController <! new RegisterCall()
     // randomController <! new LoginLogoutTest()
-    randomController <! new CLientPostTest()
-    // randomController <! new QueryTest()
+    // randomController <! new CLientPostTest()
+    randomController <! new QueryTest()
 
     Console.Read() |> ignore
     0 // return an integer exit code

@@ -2,6 +2,7 @@
 
 open System.Collections.Generic
 
+open System.Text
 open ToolsKit
 open Entities
 
@@ -23,6 +24,25 @@ type SubscribeOperation =
         new (follow: string) = {
             FOLLOW = follow;
         }
+    end
+
+type SimpleTweetDTO =
+    struct
+        val TWEETID: int
+        val RETWEETID: int
+        new (tweetID: int, retweetID: int) = {
+            TWEETID = tweetID;
+            RETWEETID = retweetID;
+        }
+        
+        member this.toString(): string =
+            let sb = new StringBuilder()
+            sb.Append("{ ") |> ignore
+            sb.Append(this.TWEETID) |> ignore
+            if this.RETWEETID <> -1 then
+                sb.Append("(" + string(this.RETWEETID) + ")") |> ignore
+            sb.Append(" }") |> ignore
+            sb.ToString()
     end
 
 type TweetDTO =
@@ -79,8 +99,8 @@ type QueryFollowOperation =
     
 type QueryFollowResult =
     struct
-        val TWEETS: List<TweetDTO>
-        new (tweets: List<TweetDTO>) = {
+        val TWEETS: List<SimpleTweetDTO>
+        new (tweets: List<SimpleTweetDTO>) = {
             TWEETS = tweets;
         }
     end
@@ -91,20 +111,22 @@ type QueryMentionOperation =
 
 type QueryMentionResult =
     struct
-        val TWEETS: List<TweetDTO>
-        new (tweets: List<TweetDTO>) = {
+        val TWEETS: List<SimpleTweetDTO>
+        new (tweets: List<SimpleTweetDTO>) = {
             TWEETS = tweets;
         }
     end
 
-type QueryHashtagsOperation = 
+type QueryHashtagOperation = 
     struct
     end
 
-type QueryHashtagsResult =
+type QueryHashtagResult =
     struct
-        val TWEETS: List<TweetDTO>
-        new (tweets: List<TweetDTO>) = {
+        val HASHTAG: string
+        val TWEETS: List<SimpleTweetDTO>
+        new (hashtag: string, tweets: List<SimpleTweetDTO>) = {
+            HASHTAG = hashtag;
             TWEETS = tweets;
         }
     end

@@ -36,6 +36,7 @@ type HashtagDAO(connection: SQLiteConnection) =
         let flg = reader.Read()
         if flg then
             new Hashtag(
+                reader.["ID"].ToString() |> int,
                 reader.["TOPIC"].ToString(),
                 reader.["CREATOR"].ToString()
             )

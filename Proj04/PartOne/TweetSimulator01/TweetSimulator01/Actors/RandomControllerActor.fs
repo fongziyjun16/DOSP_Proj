@@ -68,10 +68,12 @@ type RandomControllerActor(numberOfClients: int) =
             for client in clients do
                 if client.Path.Name <> starA.Path.Name then
                     client <! new SubscribeOperation(starA.Path.Name)
+                    client <! new SubscribeOperation(starB.Path.Name)
             for i in 1 .. 3 do
                 starA <! new PostTweetOperation(false)
                 starB <! new PostTweetOperation(false)
             for client in clients do
-                if client.Path.Name <> starA.Path.Name then
-                    client <! new QueryFollowOperation()
+                // client <! new QueryFollowOperation()
+                // client <! new QueryMentionOperation()
+                client <! new QueryHashtagOperation()
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name

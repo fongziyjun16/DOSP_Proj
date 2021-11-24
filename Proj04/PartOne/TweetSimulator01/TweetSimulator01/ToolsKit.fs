@@ -28,8 +28,8 @@ type Tools() =
     static member getRandomClient(): string =
         clientList.[random.Next(clientList.Count)]
 
-    static member addNewHashtag(name: string) =
-        hashtagList.Add(name) |> ignore
+    static member addNewHashtag(topic: string) =
+        hashtagList.Add(topic) |> ignore
 
     static member getRandomHashtag(): string =
         if hashtagList.Count > 0 then

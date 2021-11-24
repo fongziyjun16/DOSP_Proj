@@ -76,11 +76,17 @@ type QueryMentionInfo =
         }
     end
 
-type QueryHashtagsInfo =
+type QueryHashtagInfo =
     struct
         val NAME: string
+        val HASHTAG: string
         new (name: string) = {
-            NAME = name;
+            NAME = name
+            HASHTAG = "";
+        }
+        new (name: string, hashtag: string) = {
+            NAME = name
+            HASHTAG = hashtag;
         }
     end
     

@@ -48,7 +48,14 @@ type TweetEngineActor() =
         for rawTweet in rawTweets do
             tweets.Add(buildUpRawTweet(rawTweet))
         tweets
-
+    
+    let rawTweets2SimpleTweet(rawTweets: List<Tweet>): List<SimpleTweetDTO> =
+        let tweets = new List<SimpleTweetDTO>()
+        for rawTweet in rawTweets do
+            let tweet = new SimpleTweetDTO(rawTweet.ID, rawTweet.RETWEETID)
+            tweets.Add(tweet)
+        tweets
+    
     override this.OnReceive message =
         let sender = this.Sender
         match box message with
@@ -105,6 +112,7 @@ type TweetEngineActor() =
                 if queryHashtag.TOPIC.Length = 0 then
                     // new hashtag
                     hashtagDAO.insert(new Hashtag(hashTag, msg.NAME)) |> ignore
+                    Tools.addNewHashtag(hashTag)
                     let mutable hashTagID = hashtagDAO.getLastInsertRowID()
                     tweetHashtagDAO.insert(new TweetHashtag(tweetID, hashTagID)) |> ignore
                 else
@@ -127,24 +135,29 @@ type TweetEngineActor() =
         | :? QueryFollowInfo as msg ->
             // query one of follow tweets
             let follows = followDAO.getFollowsByName(msg.FOLLOWER)
-            let follow = follows.[random.Next(follows.Count)]
-            let rawTweets = tweetDAO.getTweetsByCreator(follow)
-            let tweets = rawTweets2Tweets(rawTweets)
-            getClientActor(msg.FOLLOWER) <! new QueryFollowResult(tweets)
+            let rawTweets = tweetDAO.getTweetsByCreators(follows)
+            let tweets = rawTweets2SimpleTweet(rawTweets)
+            let followerActor = getClientActor(msg.FOLLOWER)
+            followerActor <! new QueryFollowResult(tweets)
         // query mention tweets
         | :? QueryMentionInfo as msg ->
             // query mention tweets
             let tweetIDs = tweetMentionDAO.getTweetIDsByName(msg.NAME)
             let rawTweets = tweetDAO.getTweetsByTweetIDs(tweetIDs)
-            let tweets = rawTweets2Tweets(rawTweets)
-            getClientActor(msg.NAME) <! new QueryMentionResult(tweets)
+            let tweets = rawTweets2SimpleTweet(rawTweets)
+            let clientActor = getClientActor(msg.NAME)
+            clientActor <! new QueryMentionResult(tweets)
         // query hashtag tweets
-        | :? QueryHashtagsInfo as msg ->
+        | :? QueryHashtagInfo as msg ->
             // query tweets with hashtag
-            let hashtag = Tools.getRandomHashtag()
-            let tweetIDs = tweetHashtagDAO.getTweetIDsByHashtag(hashtag)
+            let hashtag = hashtagDAO.getHashtagByTopic(msg.HASHTAG |> function hashtag -> if hashtag.Length = 0 then
+                                                                                            Tools.getRandomHashtag()
+                                                                                          else
+                                                                                            msg.HASHTAG)
+            let tweetIDs = tweetHashtagDAO.getTweetIDsByHashtagID(hashtag.ID)
             let rawTweets = tweetDAO.getTweetsByTweetIDs(tweetIDs)
-            let tweets = rawTweets2Tweets(rawTweets)
-            getClientActor(msg.NAME) <! new QueryHashtagsResult(tweets)
+            let tweets = rawTweets2SimpleTweet(rawTweets)
+            let clientActor = getClientActor(msg.NAME)
+            clientActor <! new QueryHashtagResult(hashtag.TOPIC, tweets)
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name
 
