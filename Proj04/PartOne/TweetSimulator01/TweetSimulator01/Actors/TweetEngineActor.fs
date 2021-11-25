@@ -35,7 +35,7 @@ type TweetEngineActor() =
     let getClientActor(name: string) = 
         context.System.ActorSelection(context.Parent.Path.ToStringWithAddress() + "/" + name)
 
-    let loginSet = new HashSet<string>()
+    // let loginSet = new HashSet<string>()
 
     let buildUpRawTweet(tweet: Tweet): TweetDTO = 
         let mentions = tweetMentionDAO.getMentionsByTweetID(tweet.ID)
@@ -67,7 +67,7 @@ type TweetEngineActor() =
                 Tools.addNewClient(msg.NAME)
         // clients login & logout
         | :? LoginInfo as msg ->
-            loginSet.Add(msg.NAME) |> ignore
+            // loginSet.Add(msg.NAME) |> ignore
             // deliver new tweets
             (*
             let follows = followDAO.getFollowsByName(msg.NAME)
@@ -76,7 +76,7 @@ type TweetEngineActor() =
             *)
             printer <! msg.NAME + " login"
         | :? LogoutInfo as msg ->
-            loginSet.Remove(msg.NAME) |> ignore
+            // loginSet.Remove(msg.NAME) |> ignore
             printer <! msg.NAME + " logout"
         // clients subscribe
         | :? SubscribeInfo as msg ->

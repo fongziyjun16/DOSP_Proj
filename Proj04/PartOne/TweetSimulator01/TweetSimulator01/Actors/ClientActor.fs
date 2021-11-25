@@ -47,44 +47,49 @@ type ClientActor(name: string) =
             tweetEngine <! new LoginInfo(name)
         // after login get new tweets
         | :? DeliverTweetsOperation as msg ->
-            let tweets = msg.TWEETS
-            // print tweets
+            if login then
+                let tweets = msg.TWEETS
+                // print tweets
 
-            ()
+                ()
         // logout
         | :? LogoutOperation as msg ->
             login <- false
             tweetEngine <! new LogoutInfo(name)
         // randomly subscribe
         | :? SubscribeOperation as msg ->
-            tweetEngine <! new SubscribeInfo(msg.FOLLOW, name)
+            if login then
+                tweetEngine <! new SubscribeInfo(msg.FOLLOW, name)
         // post tweet
         | :? PostTweetOperation as msg ->
-            let mutable numberOfMentions = -1
-            let nubmerOfRegistered = Tools.getRegiteredClientNumber()
-            if nubmerOfRegistered >= 11 then
-                numberOfMentions <- random.Next(10)
-            else
-                numberOfMentions <- random.Next(nubmerOfRegistered)
+            if login then
+                let mutable numberOfMentions = -1
+                let numberOfRegistered = Tools.getRegiteredClientNumber()
+                if numberOfRegistered >= 11 then
+                    numberOfMentions <- random.Next(10)
+                else
+                    numberOfMentions <- random.Next(numberOfRegistered)
 
-            let nubmerOfNewHashtags = random.Next(5)
-            let numberOfExistingHashtags = random.Next(5)
+                let numberOfNewHashtags = random.Next(5)
+                let numberOfExistingHashtags = random.Next(5)
 
-            let content = Tools.getRandomString(1, 300)
-            let hashtags = new List<string>()
-            for i in 1 .. nubmerOfNewHashtags do
-                hashtags.Add(Tools.getRandomString(1, 20))
+                let content = Tools.getRandomString(1, 300)
+                let hashtags = new List<string>()
+                for i in 1 .. numberOfNewHashtags do
+                    hashtags.Add(Tools.getRandomString(1, 20))
 
-            tweetEngine <! new PostTweetInfo(name, content, numberOfMentions, numberOfExistingHashtags, hashtags, msg.RETWEETFLAG)
-            printer <! name + " posts new one"
+                tweetEngine <! new PostTweetInfo(name, content, numberOfMentions, numberOfExistingHashtags, hashtags, msg.RETWEETFLAG)
+                printer <! name + " posts new one"
         // get follow post a new tweet
         | :? DeliverTweetOperation as msg ->
-            let oneNewTweet = msg.TWEET
-            // print tweet
-            printer <! name + " gets one " + oneNewTweet.toString()
+            if login then
+                let oneNewTweet = msg.TWEET
+                // print tweet
+                printer <! name + " gets one " + oneNewTweet.toString()
         // query follow tweets
         | :? QueryFollowOperation as msg ->
-            tweetEngine <! new QueryFollowInfo(name)
+            if login then
+                tweetEngine <! new QueryFollowInfo(name)
         | :? QueryFollowResult as msg ->
             let tweets = msg.TWEETS
             // print
@@ -92,7 +97,8 @@ type ClientActor(name: string) =
             printer <! "name query follow get " + printing
         // query mention tweet
         | :? QueryMentionOperation as msg ->
-            tweetEngine <! new QueryMentionInfo(name)
+            if login then
+                tweetEngine <! new QueryMentionInfo(name)
         | :? QueryMentionResult as msg ->
             let tweets = msg.TWEETS
             // print
@@ -100,8 +106,9 @@ type ClientActor(name: string) =
             printer <! "name query mention get " + printing
         // query mention tweet
         | :? QueryHashtagOperation as msg ->
+            if login then
             // let hashtag = Tools.getRandomHashtag()
-            tweetEngine <! new QueryHashtagInfo(name(*, hashtag*))
+                tweetEngine <! new QueryHashtagInfo(name(*, hashtag*))
         | :? QueryHashtagResult as msg ->
             let tweets = msg.TWEETS
             // print
