@@ -125,15 +125,16 @@ type ClientActor(name: string) =
             async {
                 while simulationWork do
                     if login then
-                        // logout 0
-                        // query follow 1 2 
-                        // query mention 3 4 
-                        // query hashtag 5 6
                         let postSign = random.Next(index)
                         if postSign = 0 then
                             let retweetSign = random.Next(2) |> fun sign -> sign = 0 
                             context.Self <! new PostTweetOperation(retweetSign)
+                            
                         let randomOperation = random.Next(7)
+                        // logout 0
+                        // query follow 1 2 
+                        // query mention 3 4 
+                        // query hashtag 5 6
                         if randomOperation = 0 then
                             context.Self <! new LogoutOperation()
                         else if randomOperation = 1 || randomOperation = 2 then
@@ -149,6 +150,7 @@ type ClientActor(name: string) =
         | :? StopSimulationOperation as msg ->
             simulationWork <- false
             printer <! name + "stop simualtion"
-            Tools.addStopSimulation()
+            // Tools.addStopSimulation()
+            tweetEngine <! new StopSimulationInfo()
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name
 

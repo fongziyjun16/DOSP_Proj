@@ -125,4 +125,5 @@ type RandomControllerActor(numberOfClients: int) =
                 let line = "[ " + clientStatus.toString() + "] \n"
                 let bytes = Encoding.UTF8.GetBytes(line)
                 stream.Write(bytes, 0, bytes.Length)
+            printer <! "statistics work finish, generate output file"
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name

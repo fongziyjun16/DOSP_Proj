@@ -174,6 +174,9 @@ type TweetEngineActor() =
             let tweets = rawTweets2SimpleTweet(rawTweets)
             let clientActor = getClientActor(msg.NAME)
             clientActor <! new QueryHashtagResult(hashtag.TOPIC, tweets)
+        // client stops simulation
+        | :? StopSimulationInfo as msg ->
+            Tools.addStopSimulation()
         // after system stop running, do some statisctics work
         | :? StatisticsStatus as msg ->
             printer <! "start doing statistics work"
@@ -188,7 +191,7 @@ type TweetEngineActor() =
                                             account.ID,
                                             account.NAME,
                                             followersNumber.ToString() + " / " + numberOfClients.ToString(),
-                                            Math.Round(double(tweetsNumber) / double(numberOfTweets), 2) * double(100)
+                                            Math.Round(double(tweetsNumber) / double(numberOfTweets), 6) * double(100)
                                         )
                 clientsStatus.Add(clientStatus) |> ignore
             this.Sender <! new StatisticsStatusResult(clientsStatus)
