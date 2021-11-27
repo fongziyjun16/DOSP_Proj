@@ -37,7 +37,8 @@ type RandomControllerActor(numberOfClients: int) =
         | :? RegisterCall as msg ->
             for client in clients do
                 client <! new RegisterOperation()
-            while Tools.getRegiteredClientNumber() <> clients.Count do
+                client <! new LoginOperation()
+            while Tools.getRegisteredClientNumber() <> clients.Count do
                 ()
         | :? LoginLogoutTest as msg ->
             async {

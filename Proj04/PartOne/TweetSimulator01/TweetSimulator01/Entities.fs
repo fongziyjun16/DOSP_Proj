@@ -2,8 +2,14 @@
 
 type Account = 
     struct
+        val ID: int
         val NAME: string
         new (name: string) = {
+            ID = -1;
+            NAME = name;
+        }
+        new (id: int, name: string) = {
+            ID = id;
             NAME = name;
         }
     end

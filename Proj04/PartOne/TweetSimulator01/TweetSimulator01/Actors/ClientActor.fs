@@ -39,7 +39,7 @@ type ClientActor(name: string) =
             tweetEngine <! new RegisterInfo(name)
         | :? RegisterSuccessInfo as msg ->
             registerFlg <- true
-            login <- true
+            // login <- true
             printer <! name + " registered"
         // login
         | :? LoginOperation as msg ->
@@ -64,7 +64,7 @@ type ClientActor(name: string) =
         | :? PostTweetOperation as msg ->
             if login then
                 let mutable numberOfMentions = -1
-                let numberOfRegistered = Tools.getRegiteredClientNumber()
+                let numberOfRegistered = Tools.getRegisteredClientNumber()
                 if numberOfRegistered >= 11 then
                     numberOfMentions <- random.Next(10)
                 else

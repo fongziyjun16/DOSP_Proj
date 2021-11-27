@@ -35,6 +35,14 @@ type TweetEngineActor() =
     let getClientActor(name: string) = 
         context.System.ActorSelection(context.Parent.Path.ToStringWithAddress() + "/" + name)
 
+    let getRandomClient(): string =
+        let id = random.Next(accountDAO.getLastInsertRowID()) + 1
+        accountDAO.getAccountNameByID(id)
+        
+    let getRandomHashtag(): string =
+        let id = random.Next(hashtagDAO.getLastInsertRowID()) + 1
+        hashtagDAO.getTopicByHashtagID(id)
+    
     // let loginSet = new HashSet<string>()
 
     let buildUpRawTweet(tweet: Tweet): TweetDTO = 
@@ -64,7 +72,8 @@ type TweetEngineActor() =
             let flg = accountDAO.insert(new Account(msg.NAME))
             if flg then 
                 sender <! new RegisterSuccessInfo()
-                Tools.addNewClient(msg.NAME)
+                Tools.addRegisteredClientNumber()
+                // Tools.addNewClient(msg.NAME)
         // clients login & logout
         | :? LoginInfo as msg ->
             // loginSet.Add(msg.NAME) |> ignore
@@ -86,14 +95,14 @@ type TweetEngineActor() =
         | :? PostTweetInfo as msg ->
             let mentionSet = new HashSet<string>()
             while mentionSet.Count <> msg.NUMBEROFMENTIONS do
-                let mention = Tools.getRandomClient()
+                let mention = getRandomClient() // Tools.getRandomClient()
                 if mention <> msg.NAME then
                     mentionSet.Add(mention) |> ignore
             let mentions = mentionSet.ToList()
 
             let hashtags = msg.HASHTAGS
             for i in 1 .. msg.NUMBEROFEXISTINGHASHTAGS do
-                let existingHashtag = Tools.getRandomHashtag()
+                let existingHashtag = getRandomHashtag() // Tools.getRandomHashtag()
                 if existingHashtag.Length > 0 then
                     hashtags.Add(existingHashtag)
 
@@ -112,7 +121,7 @@ type TweetEngineActor() =
                 if queryHashtag.TOPIC.Length = 0 then
                     // new hashtag
                     hashtagDAO.insert(new Hashtag(hashTag, msg.NAME)) |> ignore
-                    Tools.addNewHashtag(hashTag)
+                    // Tools.addNewHashtag(hashTag)
                     let mutable hashTagID = hashtagDAO.getLastInsertRowID()
                     tweetHashtagDAO.insert(new TweetHashtag(tweetID, hashTagID)) |> ignore
                 else
@@ -122,7 +131,7 @@ type TweetEngineActor() =
             // whether retweet
             let mutable retweetID = -1
             if msg.RETWEETFLAG then
-                retweetID <- random.Next(tweetID)
+                retweetID <- random.Next(tweetID) + 1
                 tweetDAO.updateTweetRetweetIDByTweetID(tweetID, retweetID) |> ignore
                 
             // deliver to follower
@@ -151,7 +160,8 @@ type TweetEngineActor() =
         | :? QueryHashtagInfo as msg ->
             // query tweets with hashtag
             let hashtag = hashtagDAO.getHashtagByTopic(msg.HASHTAG |> function hashtag -> if hashtag.Length = 0 then
-                                                                                            Tools.getRandomHashtag()
+                                                                                            // Tools.getRandomHashtag()
+                                                                                            getRandomHashtag()
                                                                                           else
                                                                                             msg.HASHTAG)
             let tweetIDs = tweetHashtagDAO.getTweetIDsByHashtagID(hashtag.ID)

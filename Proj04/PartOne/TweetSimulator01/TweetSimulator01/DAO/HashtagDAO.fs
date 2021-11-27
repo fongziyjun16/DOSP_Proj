@@ -43,6 +43,17 @@ type HashtagDAO(connection: SQLiteConnection) =
         else
             new Hashtag(-1, "", "")
 
+    member this.getTopicByHashtagID(id: int): string =
+        let sql = "select * from Hashtag where id = @id"
+        use command = new SQLiteCommand(sql, connection)
+        command.Parameters.AddWithValue("@id", id) |> ignore
+        use reader = command.ExecuteReader()
+        let read = reader.Read()
+        if read then
+            reader.["TOPIC"].ToString()
+        else
+            ""
+    
     member this.getTopicsByHashtagIDs(hashtagIDs: List<int>): List<string> =
         let sql = new StringBuilder("select * from Hashtag where id in (")
         for i in 1 .. hashtagIDs.Count do

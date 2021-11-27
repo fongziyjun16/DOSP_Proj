@@ -8,11 +8,16 @@ type Tools() =
     
     static let random = new Random()
 
-    static let clientList = new List<string>()
-    static let hashtagList = new List<string>()
+    // static let clientList = new List<string>()
+    // static let hashtagList = new List<string>()
+    
+    static let mutable registered = 0
 
-    static member getRegiteredClientNumber(): int =
-        clientList.Count
+    static member addRegisteredClientNumber() =
+        registered <- registered + 1
+    
+    static member getRegisteredClientNumber(): int =
+        registered
 
     static member getRandomString(small: int, big: int): string =
         let letters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -22,19 +27,27 @@ type Tools() =
             randomResource.Append(letters.[random.Next(0, letters.Length)]) |> ignore
         randomResource.ToString()
 
+(*
     static member addNewClient(name: string) =
         clientList.Add(name) |> ignore
+*)
 
+(*
     static member getRandomClient(): string =
         clientList.[random.Next(clientList.Count)]
+*)
 
+(*
     static member addNewHashtag(topic: string) =
         hashtagList.Add(topic) |> ignore
+*)
 
+(*
     static member getRandomHashtag(): string =
         if hashtagList.Count > 0 then
             hashtagList.[random.Next(hashtagList.Count)]
         else ""
+*)
 
     static member buildPrintingTweet(creator: string, content: string, mentions: List<string>, hashtags: List<string>, retweet: bool): string =
         let tweet = new StringBuilder()
