@@ -90,4 +90,6 @@ type QueryHashtagInfo =
         }
     end
     
-
+type StatisticsStatus =
+    struct
+    end

@@ -2,6 +2,7 @@
 
 open System.Collections.Generic
 open System.Data.SQLite
+open System.Data.SQLite
 open System.Text
 
 open Entities
@@ -105,3 +106,21 @@ type TweetDAO(connection: SQLiteConnection) =
             tweets.Add(tweet)
         tweets
 
+    member this.getNumberOfTweets(): int =
+        let sql = "select count(*) as number from tweet"
+        use command = new SQLiteCommand(sql, connection)
+        use reader = command.ExecuteReader()
+        if reader.Read() then
+            reader.["number"].ToString() |> int
+        else
+            0
+            
+    member this.getTweetsNumberOfClient(name: string): int =
+        let sql = "select count(*) as number from tweet where creator = @name"
+        use command = new SQLiteCommand(sql, connection)
+        command.Parameters.AddWithValue("@name", name) |> ignore
+        use reader = command.ExecuteReader()
+        if reader.Read() then
+            reader.["number"].ToString() |> int
+        else
+            0

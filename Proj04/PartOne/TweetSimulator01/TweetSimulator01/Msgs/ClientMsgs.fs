@@ -26,6 +26,14 @@ type SubscribeOperation =
         }
     end
 
+type SetIndex =
+    struct
+        val INDEX: int
+        new (index: int) = {
+            INDEX = index
+        }
+    end
+
 type SimpleTweetDTO =
     struct
         val TWEETID: int
@@ -138,3 +146,10 @@ type QueryHashtagResult =
         }
     end
 
+type SimulationOperation =
+    struct
+    end
+    
+type StopSimulationOperation =
+    struct
+    end

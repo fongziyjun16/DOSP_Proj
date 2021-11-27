@@ -12,13 +12,19 @@ type Tools() =
     // static let hashtagList = new List<string>()
     
     static let mutable registered = 0
-
+    static let mutable stopSimulationNumber = 0
     static member addRegisteredClientNumber() =
         registered <- registered + 1
     
     static member getRegisteredClientNumber(): int =
         registered
 
+    static member addStopSimulation() =
+        stopSimulationNumber <- stopSimulationNumber + 1
+    
+    static member getStopSimulationNumber(): int =
+        stopSimulationNumber
+            
     static member getRandomString(small: int, big: int): string =
         let letters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         let randomLength = random.Next(small, big)

@@ -1,5 +1,6 @@
 ﻿namespace DAO
 
+open System.Collections.Generic
 open System.Data.SQLite
 
 open Entities
@@ -39,7 +40,7 @@ type AccountDAO(connection: SQLiteConnection) =
         if flg = false then 1
         else reader.["last_rowid"].ToString() |> int
 
-    member this. getAccountNameByID(id: int): string =
+    member this.getAccountNameByID(id: int): string =
         let sql = "select * from account where id = @id"
         use command = new SQLiteCommand(sql, connection)
         command.Parameters.AddWithValue("@id", id) |> ignore
@@ -49,6 +50,27 @@ type AccountDAO(connection: SQLiteConnection) =
             reader.["NAME"].ToString()
         else
             ""
+            
+    member this.getNumberOfClients(): int =
+        let sql = "select count(*) as number from account"
+        use command = new SQLiteCommand(sql, connection)
+        use reader = command.ExecuteReader()
+        if reader.Read() then
+            reader.["number"].ToString() |> int
+        else
+            0
+    
+    member this.getAccounts(): List<Account> =
+        let sql = "select * from account"
+        use command = new SQLiteCommand(sql, connection)
+        use reader = command.ExecuteReader()
+        let accounts = new List<Account>()
+        while reader.Read() do
+            accounts.Add(new Account(
+                            reader.["ID"].ToString() |> int,
+                            reader.["NAME"].ToString()
+                        ))
+        accounts
         
         
         

@@ -25,6 +25,7 @@
         <Compile Include="Actors\ClientActor.fs" />
         <Compile Include="Actors\RandomControllerActor.fs" />
         <Compile Include="Program.fs" />
+        <Content Include="output\statistics.txt" />
     </ItemGroup>
 
     <ItemGroup>

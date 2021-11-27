@@ -27,6 +27,10 @@ let main argv =
     command.ExecuteNonQuery() |> ignore
     sqliteConnection.Close()
 
+    let statisticsFile = @"./output/statistics.txt"
+    if File.Exists(statisticsFile) then
+        File.Delete(statisticsFile)
+    
     // Tweet System Simulator using AKKA
     let configuration = ConfigurationFactory.ParseString(@"
                             akka {
@@ -46,10 +50,11 @@ let main argv =
     let tweetEngine = tweetSimulator.ActorOf(Props(typeof<TweetEngineActor>), "tweetEngine")
     let randomController = tweetSimulator.ActorOf(Props(typeof<RandomControllerActor>, [| numberOfClients :> obj |]), "randomController")
     
-    randomController <! new RegisterCall()
+    // randomController <! new RegisterTest()
     // randomController <! new LoginLogoutTest()
     // randomController <! new CLientPostTest()
-    randomController <! new QueryTest()
+    // randomController <! new QueryTest()
+    randomController <! new StartSimulationWithZipf()
 
     Console.Read() |> ignore
     0 // return an integer exit code

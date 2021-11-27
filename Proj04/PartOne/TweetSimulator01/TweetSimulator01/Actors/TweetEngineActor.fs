@@ -100,12 +100,15 @@ type TweetEngineActor() =
                     mentionSet.Add(mention) |> ignore
             let mentions = mentionSet.ToList()
 
-            let hashtags = msg.HASHTAGS
+            let hashtagSet = msg.HASHTAGS.ToHashSet()
+            // let hashtags = msg.HASHTAGS
             for i in 1 .. msg.NUMBEROFEXISTINGHASHTAGS do
                 let existingHashtag = getRandomHashtag() // Tools.getRandomHashtag()
                 if existingHashtag.Length > 0 then
-                    hashtags.Add(existingHashtag)
-
+                    // hashtags.Add(existingHashtag)
+                    hashtagSet.Add(existingHashtag) |> ignore
+            let hashtags = hashtagSet.ToList()
+            
             tweetDAO.insert(new Tweet(msg.NAME, msg.CONTENT)) |> ignore
 
             let tweetID = tweetDAO.getLastInsertRowID()
@@ -171,5 +174,23 @@ type TweetEngineActor() =
             let tweets = rawTweets2SimpleTweet(rawTweets)
             let clientActor = getClientActor(msg.NAME)
             clientActor <! new QueryHashtagResult(hashtag.TOPIC, tweets)
+        // after system stop running, do some statisctics work
+        | :? StatisticsStatus as msg ->
+            printer <! "start doing statistics work"
+            let clientsStatus = new List<StatisticsStatusEntity>()
+            let numberOfClients = accountDAO.getNumberOfClients()
+            let numberOfTweets = tweetDAO.getNumberOfTweets()
+            let accounts = accountDAO.getAccounts()
+            for account in accounts do
+                let followersNumber = followDAO.getFollowersNumberOfClient(account.NAME)
+                let tweetsNumber = tweetDAO.getTweetsNumberOfClient(account.NAME)
+                let clientStatus = new StatisticsStatusEntity(
+                                            account.ID,
+                                            account.NAME,
+                                            followersNumber.ToString() + " / " + numberOfClients.ToString(),
+                                            Math.Round(double(tweetsNumber) / double(numberOfTweets), 2) * double(100)
+                                        )
+                clientsStatus.Add(clientStatus) |> ignore
+            this.Sender <! new StatisticsStatusResult(clientsStatus)
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name
 

@@ -8,9 +8,9 @@ open Entities
 type FollowDAO(connection: SQLiteConnection) =
     
     member this.insert(follow: Follow): bool = 
-        let sql = "insert into Follow values(@username, @follower)"
+        let sql = "insert into Follow values(@name, @follower)"
         use command = new SQLiteCommand(sql, connection)
-        command.Parameters.AddWithValue("@username", follow.NAME) |> ignore
+        command.Parameters.AddWithValue("@name", follow.NAME) |> ignore
         command.Parameters.AddWithValue("@follower", follow.FOLLOWER) |> ignore
         try
             command.ExecuteNonQuery() |> ignore
@@ -38,5 +38,14 @@ type FollowDAO(connection: SQLiteConnection) =
         while reader.Read() do
             follows.Add(reader.["NAME"].ToString())
         follows
-
+    
+    member this.getFollowersNumberOfClient(name: string): int =
+        let sql = "select count(*) as number from follow where name = @name"
+        use command = new SQLiteCommand(sql, connection)
+        command.Parameters.AddWithValue("@name", name) |> ignore
+        use reader = command.ExecuteReader()
+        if reader.Read() then
+            reader.["number"].ToString() |> int
+        else
+            0
 

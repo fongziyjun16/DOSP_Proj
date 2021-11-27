@@ -17,10 +17,14 @@ type ClientActor(name: string) =
     let tweetEngine = Actor.Context.System.ActorSelection(context.Parent.Path.ToStringWithAddress() + "/tweetEngine")
     let printer = Actor.Context.System.ActorSelection(context.Parent.Path.ToStringWithAddress() + "/printer")
     let random = new Random()
+    
+    let mutable index = 0
 
     let mutable registerFlg = false
     let mutable login = false
 
+    let mutable simulationWork = true
+    
     let printingQueryTweets(tweets: List<SimpleTweetDTO>): string =
         let printing = new StringBuilder()
         printing.Append(" [ ") |> ignore
@@ -60,6 +64,8 @@ type ClientActor(name: string) =
         | :? SubscribeOperation as msg ->
             if login then
                 tweetEngine <! new SubscribeInfo(msg.FOLLOW, name)
+        | :? SetIndex as msg ->
+            index <- msg.INDEX
         // post tweet
         | :? PostTweetOperation as msg ->
             if login then
@@ -114,5 +120,35 @@ type ClientActor(name: string) =
             // print
             let printing = printingQueryTweets(tweets)
             printer <! "name query hashtag \"" + msg.HASHTAG + "\" get " + printing
+        | :? SimulationOperation as msg ->
+            printer <! name + " starts simulation work"
+            async {
+                while simulationWork do
+                    if login then
+                        // logout 0
+                        // query follow 1 2 
+                        // query mention 3 4 
+                        // query hashtag 5 6
+                        let postSign = random.Next(index)
+                        if postSign = 0 then
+                            let retweetSign = random.Next(2) |> fun sign -> sign = 0 
+                            context.Self <! new PostTweetOperation(retweetSign)
+                        let randomOperation = random.Next(7)
+                        if randomOperation = 0 then
+                            context.Self <! new LogoutOperation()
+                        else if randomOperation = 1 || randomOperation = 2 then
+                            context.Self <! new QueryFollowOperation()
+                        else if randomOperation = 3 || randomOperation = 4 then
+                            context.Self <! new QueryMentionOperation()
+                        else if randomOperation = 5 || randomOperation = 6 then
+                            context.Self <! new QueryHashtagOperation()
+                    else
+                        context.Self <! new LoginOperation()
+                    do! Async.Sleep(1)
+            } |> Async.StartAsTask |> ignore
+        | :? StopSimulationOperation as msg ->
+            simulationWork <- false
+            printer <! name + "stop simualtion"
+            Tools.addStopSimulation()
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name
 
