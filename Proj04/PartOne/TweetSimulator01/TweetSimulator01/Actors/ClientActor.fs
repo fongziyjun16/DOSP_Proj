@@ -79,13 +79,13 @@ type ClientActor(name: string) =
                     hashtags.Add(Tools.getRandomString(1, 20))
 
                 tweetEngine <! new PostTweetInfo(name, content, numberOfMentions, numberOfExistingHashtags, hashtags, msg.RETWEETFLAG)
-                printer <! name + " posts new one"
+                // printer <! name + " posts new one"
         // get follow post a new tweet
         | :? DeliverTweetOperation as msg ->
             if login then
                 let oneNewTweet = msg.TWEET
                 // print tweet
-                printer <! name + " gets one " + oneNewTweet.toString()
+                printer <! name + " gets one " + oneNewTweet.toSimpleString()
         // query follow tweets
         | :? QueryFollowOperation as msg ->
             if login then

@@ -49,7 +49,7 @@ type Tools() =
         else ""
 *)
 
-    static member buildPrintingTweet(creator: string, content: string, mentions: List<string>, hashtags: List<string>, retweet: bool): string =
+    static member buildPrintingTweet(creator: string, content: string, mentions: List<string>, hashtags: List<string>, retweetID: int): string =
         let tweet = new StringBuilder()
         tweet.Append("Tweet { \n") |> ignore
         tweet.Append("creator: " + creator + "; \n") |> ignore
@@ -70,7 +70,7 @@ type Tools() =
             else
                 tweet.Append("#" + hashtags.[i]) |> ignore
         tweet.Append("]; \n") |> ignore
-        tweet.Append("retweet: " + retweet.ToString() + " ; \n") |> ignore
+        tweet.Append("retweet: " + retweetID.ToString() + " ; \n") |> ignore
         tweet.Append("}") |> ignore
 
         tweet.ToString()

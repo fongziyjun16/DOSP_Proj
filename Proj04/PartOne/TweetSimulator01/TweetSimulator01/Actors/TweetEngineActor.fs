@@ -49,7 +49,7 @@ type TweetEngineActor() =
         let mentions = tweetMentionDAO.getMentionsByTweetID(tweet.ID)
         let hashtagIDs = tweetHashtagDAO.getHashtagIDByTweetID(tweet.ID)
         let hashtags = hashtagDAO.getTopicsByHashtagIDs(hashtagIDs)
-        new TweetDTO(tweet.ID, tweet.CREATOR, tweet.CONTENT, mentions, hashtags, tweet.RETWEETID |> function id -> if id = -1 then false else true)
+        new TweetDTO(tweet.ID, tweet.CREATOR, tweet.CONTENT, mentions, hashtags, tweet.RETWEETID)
 
     let rawTweets2Tweets(rawTweets: List<Tweet>): List<TweetDTO> = 
         let tweets = new List<TweetDTO>()
@@ -136,10 +136,12 @@ type TweetEngineActor() =
                 
             // deliver to follower
             let followers = followDAO.getFollowersByName(msg.NAME)
-            let tweetDTO = new TweetDTO(tweetID, msg.NAME, msg.CONTENT, mentions, hashtags, msg.RETWEETFLAG)
+            let tweetDTO = new TweetDTO(tweetID, msg.NAME, msg.CONTENT, mentions, hashtags, retweetID)
             let deliverTweetOperation = new DeliverTweetOperation(tweetDTO)
             for follower in followers do
                 getClientActor(follower) <! deliverTweetOperation
+                
+            printer <! msg.NAME + " posts new one {" + tweetID.ToString() + "}"
         // query follow tweets
         | :? QueryFollowInfo as msg ->
             // query one of follow tweets

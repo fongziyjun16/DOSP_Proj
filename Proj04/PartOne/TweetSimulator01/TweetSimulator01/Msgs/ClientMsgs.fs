@@ -52,21 +52,28 @@ type TweetDTO =
         val CONTENT: string
         val MENTIONS: List<string>
         val HASHTAGS: List<string>
-        val RETWEET: bool
-        new (id: int, creator: string, content: string, mentions: List<string>, hashtags: List<string>, retweet: bool) = {
+        val RETWEETID: int
+        new (id: int, creator: string, content: string, mentions: List<string>, hashtags: List<string>, retweetID: int) = {
             ID = id;
             CREATOR = creator;
             CONTENT = content;
             MENTIONS = mentions;
             HASHTAGS = hashtags;
-            RETWEET = retweet;
+            RETWEETID = retweetID;
         }
 
         member this.getID(): int =
             this.ID
 
         member this.toString(): string =
-            Tools.buildPrintingTweet(this.CREATOR, this.CONTENT, this.MENTIONS, this.HASHTAGS, this.RETWEET)
+            Tools.buildPrintingTweet(this.CREATOR, this.CONTENT, this.MENTIONS, this.HASHTAGS, this.RETWEETID)
+    
+        member this.toSimpleString(): string =
+            let mutable baseString = new StringBuilder("{ " + this.ID.ToString())
+            if this.RETWEETID <> -1 then
+                baseString.Append("(" + this.RETWEETID.ToString() + ")") |> ignore
+            baseString.Append(" }") |> ignore
+            baseString.ToString()
     end
 
 type PostTweetOperation =

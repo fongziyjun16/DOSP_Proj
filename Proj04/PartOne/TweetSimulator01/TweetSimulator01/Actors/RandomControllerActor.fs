@@ -74,9 +74,9 @@ type RandomControllerActor(numberOfClients: int) =
                 starA <! new PostTweetOperation(false)
                 starB <! new PostTweetOperation(false)
             for client in clients do
-                // client <! new QueryFollowOperation()
+                client <! new QueryFollowOperation()
                 // client <! new QueryMentionOperation()
-                client <! new QueryHashtagOperation()
+                // client <! new QueryHashtagOperation()
         | :? StartSimulation as msg ->
                 printfn ""
         | _ -> printfn "%s gets unknown message" Actor.Context.Self.Path.Name
