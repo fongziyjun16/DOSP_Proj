@@ -78,75 +78,53 @@ In the data tier, we decided six relationships tables in SQLite to define the us
 
 ### Presentation & Logic Tier
 
-Above the data tier, the defination of user actions and corresponding behaviors of the engine are described in this layer. It contains the message type in folder "Msgs", which contains "TweetEngineMsgs.fs" to define message types in Engine, "ClientMsgs.fs" to define the message type in clients actors, and "RandomControllerMsgs.fs" to simulate the random behavior of users.
+Above the data tier, the defination of user actions and corresponding behaviors of the engine are described in this layer.
 
-- "Msgs.fs" defines different types of messages
-   - Module Msgs
+#### Frame & message types
+It contains the message type in folder "Msgs", which contains "TweetEngineMsgs.fs" to define message types in Engine, "ClientMsgs.fs" to define the message type in clients actors, and "RandomControllerMsgs.fs" to define message types in the random controller.
 
-- "Tools.fs" defines the tools to test the project
-   - Module ToolsKit
-   - Generate and transform different IP address and ports to simulate the chord algorithm
-      - static let generateOndNodeIdentifier()
-   - Encode Key by SHA1. 
-      - Attention: Here, it should add a "0" at the begining of the key to convert it into a positive integer of a Hexadecimal form
-      - static member encodeBySHA1(key: string)
-   - Generate nodes identifier randomly
-      - static member generateNodeIdentifier()
-   - Generate the chord of the identifiers
-      - static member getCorrectIdentifiers()
+- "TweetEngineMsgs.fs": Below only list some important message information types here
+   - RegisterInfo: User name
+   - RegisterSuccessInfo
+   - LoginInfo / LogoutInfo: User name
+   - SubscribeInfo: Follow, Follower
+   - PostTweetInfo: User name, Content(a random string), Number of mentions, Number of existing hashtags, Hashtags, Retweet flag.
+   - QueryFollowInfo: Follower
+   - QueryMentionInfo: User name
+   - QueryHashtagInfo: User name, Hashtag
 
-- "PrinterActor.fs"
-   - Module PrinterActor
-   - Inherit from actor, a print actor to print message   
-   
-- "ChordManagerActor.fs"
-   - Module ChordManagerActor
-   - An actor. Test the correctness of the chord and print the result using the printor actor
-   
-- "ChordNodeInfo.fs"
-   - Module ChordNodeInfo
-   - Stores the information (fingertable) of a node in the chord. Can be accessed by actor and assistant actor.
-   - Initialize and set the predecessor and successor
-   - Reset fingertable
-   - Find the successor in fingertable: judge if the current identifier's code is same to or in the range of the successor. If it is, change the variant "found" to be true. If not find, search from index=159 down to 0 in the finger table.
-   - Update the fingertable
-   - Get or set prececessor and successor and their codes
+- "ClientMsgs.fs": Below only list some important message information types here
+   - SimpleTweetDTO(gives the tweet and retweet ID): TweetID, RETWEETID
+   - TweetDTO: TweetID, Creator(User), Content, Mentions, Hashtags, RetweetID
+   - QueryFollowResult / QueryMentionResults: TWEETS(List<SimpleTweetDTO>)
+   - PostTweetOperation: RetweetFlag
+   - DeliverTweetOperation: TweetDTO
+   - DeliverTweetsOperations: TWEETS(List<Tweet>)
 
-- "ChordNodeActor.fs"
-   - Module ChordNodeInfo
-   - The realization of operations of a node in the chord, including "Lookup"
+- "RandomControllerMsgs.fs"
+   - StatisticsStatusEntiy: User name, User ID, Number of Follower, Post Rate
+   - StatisticsStatusResult: CLIENTS_STATUS(List<StatisticsStatusEntity>)
 
-- "ChordNodeAssitantActor.fs"
-   - Module ChordNodeAssitantActor
-   - Stabilize and fix finger table for each node.
-   
-- "Programs.fs" is the running entry of the application
-   - Generate number of "numberOfNodes" identifiers
-      - create first node
-      - After the first node, the other nodes join the network
-   - Check the node of chord structure every 500 ms
-   - Defines nodes broad cast router
-   - Check if the structure is completed
-   - If the chord is completed, start the mission
+#### Actors: Engine, Clients & RandomController
 
-### Actors of A Node
+In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor and of RandomControllerActor in "TweetEngineActor.fs", "ClientActor.fs", "RandomControllerActor.fs". There is also a Printer Actor, which will not be introduced formally.
 
-- Printer Actor in Module PrinterActor:
+- Engine Actor:
   - Print the addresses of the sender and its successor.
   - When the searching is down, be called and print out the result massage
 
-- Manage Actor in module ChordManagerActor: 
+- Client Actor: 
   - Destination actor of the messages, with messages processing
   - To verify the correctness of structure of the chord, by "CheckChordStructure"
   - Count the steps number and print each step, by "FoundResource"
   - Call the printer to print the final result and average number of hops
 
-- Assistant Actor in module ChordNodeAssitantActor
+- Random Controller Actor:
    - Get stabilize message and stabilize
    - Get fix finger table messge and fix the finger table.
-      - The operations of stabilizing and fixing finger table are seperated out to the Assistant actor so that an actor can no longer wait for these messages and doing corresponding operations that hinder other operations. The assistant actor will do these issues, and the efficient of and an actor of a node improves.
+    
 
-- Node Actor in module ChordNodeActor:
+- Print Actor:
   - Match the mailbox massage with the functions
   - Call the corresponding actions or actors to operate
   - Stableize: call the assistant actor to operate stablize operation
@@ -157,17 +135,20 @@ Above the data tier, the defination of user actions and corresponding behaviors 
 ![image](https://user-images.githubusercontent.com/28448629/140232556-f96f58b9-c354-49b2-a31c-8d05e09732b3.png)
 
 
+#### Functionalities
 
-### Attention
+1. Register Account
 
-Their was an deadlock problem we met when imployment the network.
-When their are two nodes A and B. A sends out a message to query B the successor or predecessor, while B also sends out a message to A's mailbox and is waiting for A's answer but the message is listed in the back of the mailbox of A. In such a condition, A will be hindered in a waiting status and B is the same hindered in a waiting status. The program is trapped in a deadlock.
+2. Send tweet
 
-![image](https://user-images.githubusercontent.com/28448629/140204445-efea5e7b-0733-4fc6-8e72-4b2c1f26cdea.png)
+3. Subscribe to user's tweets
 
-Such a situation happens also in a larger scale of situation, like "A->B->C->D->E->A". The solution of this problem is to do overtime processing periodically. After we added a judging step that set the flag to be "false" for a searching failure when one node waits for another until overtime, the problem is solved. The failure flag will stimulate the sender of "Findsuccessor" to do an corresponding processing.
+4. Re-tweets
 
-![image](https://user-images.githubusercontent.com/28448629/140238116-4011ac75-9521-4c4d-84b0-cc39dfd33d05.png)
+5. Allow querying tweets
+
+6. If the user is connected, deliver the above types of tweets live (without querying)
+
 
 
 
