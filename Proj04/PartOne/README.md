@@ -33,14 +33,6 @@
 
 <img width="872" alt="image" src="https://user-images.githubusercontent.com/28448629/143763354-9740d1f8-f76d-4af1-9972-d540130292a1.png">
 
-- When a node finds a key in ith steps, it is printed as "176_55_59_235_16731 found key 9IOm2wtz5D5XdKY6MtP in 1 steps".
-
-![image](https://user-images.githubusercontent.com/28448629/140211783-0fc7665b-cb24-4997-8769-8f6cba63f4c5.png)
-
-The other messages include:
-- The simulated IP_address and its key.
-
-![image](https://user-images.githubusercontent.com/28448629/140214848-93afcebf-a4a9-4608-ae3c-45926ee9c033.png)
 
 - A file of statistic data of number of subscribers and tweets amounts in folder "output" is newly created, named "statistic.txt" each time restarting the programming. 
 
