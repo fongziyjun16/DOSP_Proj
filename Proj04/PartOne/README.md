@@ -60,21 +60,25 @@ Here we combined the presentation and logic tiers to one tier, so that the whole
 
 As the subject of the project has two parts, users and tweets, we define 
 - user with their ID(number between 1 and the maximum of user amount), name(a random string)
-- tweet ID(the sequence number of one piece of tweeet),  and retweet times of one tweet(-1 for not been retweeted, with positive integers representing retweeting times)
+- tweet ID(the sequence number of one piece of tweeet),  and retweet ID of one tweet(-1 for not been retweeted, with positive integers representing retweeted ID)
 - hashtag(topic of a tweet, which can be created by a random user)
 
 ### Data Tier
 
-In the data tier, we decided six relationships tables in SQLite to define the user actions.
+In the data tier, we decided six relationships tables in SQLite to define the user actions, which is defined in the path "resources\\create_table.sql". Their basic CUID operations of the tables are defined in the namespace DAO, which includes "AccountDAO.fs", "FollowDAO.fs", "HashtagDAO.fs", "TweetDAO.fs", "TweetMentionDAO.fs", "TweetHashtagDAO.fs". Each time running the program, the programmed databade file "tweet_sys_db" is newly created. 
 - Account: User ID, User name
 - Follow: User name, Follower name
 - Hashtag: User ID, Topic, Creator(User name)
-- Tweet: User ID, Creator(User name), Topic(Hashtag), Retweet times
+- Tweet: User ID, Creator(User name), Topic(Hashtag), Retweet ID
 - Tweet_Mention: Tweet ID, User name
 - Tweet_Hashtag: Tweet ID, HashtagID
 
+<img width="538" alt="image" src="https://user-images.githubusercontent.com/28448629/143786338-00bd2be0-8dd1-4c61-aec1-ffcde3a4f3ec.png">
 
-### The structure of the source code
+
+### Presentation & Logic Tier
+
+Above the data tier, the defination of user actions and corresponding behaviors of the engine are described in this layer. It contains the message type in folder "Msgs", which contains "TweetEngineMsgs.fs" to define message types in Engine, "ClientMsgs.fs" to define the message type in clients actors, and "RandomControllerMsgs.fs" to simulate the random behavior of users.
 
 - "Msgs.fs" defines different types of messages
    - Module Msgs
@@ -201,9 +205,15 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
 <img width="872" alt="image" src="https://user-images.githubusercontent.com/28448629/143773599-ec1991d8-ef8d-4442-9aa4-5549c2fde95d.png">
 
 2. There are also simulations of login in and login out of users. The login in informatioin of one user is printed on the screen.
+-login in:
 <img width="452" alt="image" src="https://user-images.githubusercontent.com/28448629/143777089-b7f7ade7-a1d9-4d50-a0ec-ac5fb64d051d.png">
 
 <img width="467" alt="image" src="https://user-images.githubusercontent.com/28448629/143777096-803e5883-604d-48a7-9ba7-0f5177f64946.png">
+
+-login out:
+<img width="437" alt="image" src="https://user-images.githubusercontent.com/28448629/143785149-5a81ddf3-20e9-4ec3-bccb-9eade717c444.png">
+
+<img width="457" alt="image" src="https://user-images.githubusercontent.com/28448629/143785168-593849ec-0259-4599-b549-028da4fdb522.png">
 
 3. If a user queries one hashtag, mentioned ID, or subscribed tweet, the results will be printed on the screen. The form { 30(5), 18 } means that there are two results corresponding to the query, one is the post tweet 30 which is a retweet of tweet 5, the other is tweet 18. "[akka://TweetSimulator/user/NfSWWTUVYv4h62F]" at the beginning shows the querying operation by user who.
 - Query tweets subscribed to:
