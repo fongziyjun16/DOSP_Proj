@@ -182,9 +182,21 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
 
 #### Result
 
-1. Since we use SQLite in our experiments, running speed of the program and capacibility of users number are supposed to be very high. Here we tested a scale of 5000 users, after and There listed several results and their average number of hops below. The number of hops is counted using variant "totalNumberOfSteps" in ChordManagerActor.fs and each time it receives a message the variant will add the steps number up. Finally devided by totalNumberOfRequest to get the average hop number.
+1. Since we use SQLite in our experiments, running speed of the program and capacibility of users number are supposed to be very high. Here we tested a scale of 5000 users about which it consumes some time to set the subscribers and tweets and print all the results on the powershell. There is no limitaton of the scale therotically. When running on one machine, the limitation is bound to the machine performance and time. And if this project can be implemented on different machines, there will be no upper limitation on the number therotically.
 
-![image](https://user-images.githubusercontent.com/28448629/140229296-afd4b925-6a08-4760-b318-a3135bbc1923.png)
+<img width="872" alt="image" src="https://user-images.githubusercontent.com/28448629/143773599-ec1991d8-ef8d-4442-9aa4-5549c2fde95d.png">
+
+2. If a user queries one hashtag, mentioned ID, or subscribed tweet, the results will be printed on the screen. The form { 30(5), 18 } means that there are two results corresponding to the query, one is the post tweet 30 which is a retweet of tweet 5, the other is tweet 18.
+- Query tweets subscribed to:
+<img width="730" alt="image" src="https://user-images.githubusercontent.com/28448629/143774584-a29036b8-0d6e-43d0-b122-64f6ad5c04f0.png">
+
+- Query a special hashtag:
+<img width="743" alt="image" src="https://user-images.githubusercontent.com/28448629/143774554-c38a91e8-b2ca-4ef5-b5b3-678be42b4ecf.png">
+
+- Query mentioned tweets:
+<img width="555" alt="image" src="https://user-images.githubusercontent.com/28448629/143774638-30f14b64-9340-4dcb-bb2d-02687b5c27cb.png">
+
+3. 
 
 - numberOfNodes: 20   numberOfEachNodeRequests: 10
 
