@@ -50,7 +50,29 @@
 
 ## Architecture
 
-The project use model of MVC, which contains data layer, 
+The project uses three-tier architecture to build the twitter web simulation, which contains presentation tier, logic tier and data tier. 
+- presentation tier: web server, analyzing protocols
+- logic tier: mongrel rails server, to abate the work load
+- data tier: mysql of users data. Here we use SQLite imbedded in the program for convenience and speed consideration.
+Here we combined the presentation and logic tiers to one tier, so that the whole program has two part: 1. data tier, using SQLite. 2. presentation and logic tier, including engine which processes user register and query, and user actors.
+
+<img width="412" alt="image" src="https://user-images.githubusercontent.com/28448629/143783350-c28906f6-753b-4631-95ff-098e80d1bb15.png">
+
+As the subject of the project has two parts, users and tweets, we define 
+- user with their ID(number between 1 and the maximum of user amount), name(a random string)
+- tweet ID(the sequence number of one piece of tweeet),  and retweet times of one tweet(-1 for not been retweeted, with positive integers representing retweeting times)
+- hashtag(topic of a tweet, which can be created by a random user)
+
+### Data Tier
+
+In the data tier, we decided six relationships tables in SQLite to define the user actions.
+- Account: User ID, User name
+- Follow: User name, Follower name
+- Hashtag: User ID, Topic, Creator(User name)
+- Tweet: User ID, Creator(User name), Topic(Hashtag), Retweet times
+- Tweet_Mention: Tweet ID, User name
+- Tweet_Hashtag: Tweet ID, HashtagID
+
 
 ### The structure of the source code
 
