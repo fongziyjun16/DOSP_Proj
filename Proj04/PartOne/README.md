@@ -29,9 +29,9 @@
 
 ### Result Description
 
-- The avrage number of hops it takes is printed as "the average number of hops is 4.243333333333333" in the end.
+- The results of subscribers, querying and others are printed on the screen in the termination. Details about the results will be described in the section of "experiments results". 
 
-![image](https://user-images.githubusercontent.com/28448629/140201373-fd624d07-59c1-496e-9e41-63eca27b1ae9.png)
+<img width="872" alt="image" src="https://user-images.githubusercontent.com/28448629/143763354-9740d1f8-f76d-4af1-9972-d540130292a1.png">
 
 - When a node finds a key in ith steps, it is printed as "176_55_59_235_16731 found key 9IOm2wtz5D5XdKY6MtP in 1 steps".
 
@@ -42,35 +42,23 @@ The other messages include:
 
 ![image](https://user-images.githubusercontent.com/28448629/140214848-93afcebf-a4a9-4608-ae3c-45926ee9c033.png)
 
-- The first identifier
+- A file of statistic data of number of subscribers and tweets amounts in folder "output" is newly created, named "statistic.txt" each time restarting the programming. 
 
-![image](https://user-images.githubusercontent.com/28448629/140212788-a376e3a4-b8f9-4fc3-8e5f-eee11cee1296.png)
+<img width="467" alt="image" src="https://user-images.githubusercontent.com/28448629/143749845-f55efb96-ed65-4b10-bf29-bdf5e33ec250.png">
 
-   - Updating of a node of in its finger table of its predecessor and successor.
 
-![image](https://user-images.githubusercontent.com/28448629/140209336-20b38e3d-9196-4662-a75c-490bc8c840bc.png)
+   - In this txt file, one line of the output result shows like:
 
-   - Stabilize message
+<img width="562" alt="image" src="https://user-images.githubusercontent.com/28448629/143752091-3efa1053-5fc5-490a-89b9-6a8782714f8a.png">
 
-![image](https://user-images.githubusercontent.com/28448629/140209847-34cc7ba6-d47d-4b8f-ad95-fd05d6335602.png)
-
-   - Fix Finger Table message
-
-![image](https://user-images.githubusercontent.com/28448629/140209866-1e1493ed-e72c-4075-a9da-78f78a07be85.png)
-
-   -  Checking structure
-
-![image](https://user-images.githubusercontent.com/28448629/140210013-ac1eb365-e16e-4732-b5a6-9dad9603eed4.png)
-
-   -  Sends out all lookup
-
-![image](https://user-images.githubusercontent.com/28448629/140212219-1016b627-aaf8-428f-a131-c8f42972dc5a.png)
+   - ID number is listed in the left, followed with the user names, number of followers, and tweet posting rates.
+   - There only screen shotting a counting of the first 20 users. The other users are listed below but not screen shotting in.
 
 
 
 ## Architecture
 
-There are 8 files in total in this project.
+The project use model of MVC, which contains data layer, 
 
 ### The structure of the source code
 
@@ -194,7 +182,7 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
 
 #### Result
 
-1. There listed several results and their average number of hops below. The number of hops is counted using variant "totalNumberOfSteps" in ChordManagerActor.fs and each time it receives a message the variant will add the steps number up. Finally devided by totalNumberOfRequest to get the average hop number.
+1. Since we use SQLite in our experiments, running speed of the program and capacibility of users number are supposed to be very high. Here we tested a scale of 5000 users, after and There listed several results and their average number of hops below. The number of hops is counted using variant "totalNumberOfSteps" in ChordManagerActor.fs and each time it receives a message the variant will add the steps number up. Finally devided by totalNumberOfRequest to get the average hop number.
 
 ![image](https://user-images.githubusercontent.com/28448629/140229296-afd4b925-6a08-4760-b318-a3135bbc1923.png)
 
