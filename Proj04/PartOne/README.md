@@ -109,21 +109,43 @@ It contains the message type in folder "Msgs", which contains "TweetEngineMsgs.f
 
 In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor and of RandomControllerActor in "TweetEngineActor.fs", "ClientActor.fs", "RandomControllerActor.fs". There is also a Printer Actor, which will not be introduced formally.
 
-- Engine Actor:
-  - Print the addresses of the sender and its successor.
-  - When the searching is down, be called and print out the result massage
+- Engine Actor: Connecting with SQLite to acquire data and send data to clients.
+   - When receiving a "RegisterInfo" message, insert this new Info into Table ACCOUNT, then send register success info. 
+   - When receiving a "Login / Logout" message, print the login status message.
+   - When receiving a "SubscribeInfo" message, insert the follow and follower message into Table FOLLOW and print the message.
+   - When receiving a "PostTweetInfo" message, select random clients as equal number as mention numbers and add these clients name into mentions list. Add existing hashtags into the list hashtags. Insert this new tweet into TABLE TWEET and get the tweet ID from the table. Add the mentions list to TABLE TWEET_MENTION. Add hashtags list into TABLE HASHTAG(if not exists, create new hashtag; otherwise insert it into an existing hashtag). If it's a retweet tweet, update the retweetID in the TABLE TWEET. Finally, get  followers and deliver the tweet to them. Print the message.
 
-- Client Actor: 
-  - Destination actor of the messages, with messages processing
-  - To verify the correctness of structure of the chord, by "CheckChordStructure"
-  - Count the steps number and print each step, by "FoundResource"
-  - Call the printer to print the final result and average number of hops
+<img width="599" alt="image" src="https://user-images.githubusercontent.com/28448629/143789292-2f3c9f0a-dc18-4778-a45b-b56cd80446ef.png">
+
+   - When receiving a "QueryFollowInfo" message, query follows from FOLLOW. Then query Tweets of FOLLOWS from TWEET. Change the tweets form and send them to the querying follower.
+   - When receiving a "QueryMentionInfo" message, query tweetIDs from TWEET_MENTION by user name. Then gets tweets from TWEET. Change the form and send them to the querying client.
+   - When receiving a "QueryHashtagInfo" message, query hashtag from HASHTAG. Then query tweets by the hashtag from TWEET. Change the form and send them to the querying Client.
+   - When receiving a "StopSImulationInfo", do clients stop simulation.
+   - When receiving a "StatisticsStatus" message, do the statistic work(querying number of clients and tweets and traverse accounts in ACCOUNT. Write the results into "statistics.txt".
+
+- Client Actor: Is controlled by a flag variant "login". "login = true", all the operations can implement; else the clients will do no actions.
+   - When receiving "LoginOperation" or "LogoutOperation", set "login" to be "true" or "false".
+   - When receiving "RegisterOperation", send RegisterInfo with name to the tweetEngine.
+   - When receiving "PostTweetOperation", if "login = true", set numberOfMentions = -1. If there are more than 11 clients, give a random mentioned number in range [0, 9] to numberOfMention; else give a random mentioned number in range [0, numberOfRegister]. Give a random number of new hashtag between [0, 4], and a number of existinghashtags between [0, 4]. Assign a random string as content. Assign a string within length of 20 as a new hashtag and add new hashtags to HASHTAG. Send the posting tweet message to Engine. 
+
+<img width="372" alt="image" src="https://user-images.githubusercontent.com/28448629/143790720-8ea52b44-1aa5-44a3-9c96-e123d561454b.png">
+
+   - When receiving "DeliverTweetOperation", if login is true, print user name and it gets a new tweet.
+   - When receiving "QueryFollowOperation", if login is true, send the QueryFollowInfo with user name to Engine. When receiving "QueryFollowResult", print the querying follows' tweets result.
+   - When receiving "QueryMentionOperation", if login is true, send the QueryMentionInfo with user name to Engine. When receiving "QueryMentionResult", print the querying mentioned tweets result.
+   - When receiving "QueryHashtagOperation", if login is true, send the QueryMentionInfo with user name (and hashtag) to Engine. When receiving "QueryHashtagResult", print the querying tweets result with the hashtag.
+   - When receiving "SimulationOperation", simulate possible operations by a actual user asynchronizingly. When it's "logout", change the status to "login = true". Otherwise, if "login = true", do "logout", "query" and so on. Give a random number between [0,6] to define the operations.
+      - 0 : do logout operation. Possibility = 1/7
+      - 1 || 2 : do QueryFollowOperation. Possibility = 2/7
+      - 3 || 4 : do QueryMentionOperation. Possibility = 2/7
+      - 5 || 6 : do QueryHashtagOperation. Possibility = 2/7
+      - After doing the operation. Sleep for 1ms to release the occupation of the thread and give the other actors chances to operate, avoiding one actor occupies one thread for much time.
+   - When receiving "StopSimulationOperation", simulationWork will be set to be "false". Print "user name  stop simulation" and send "StopSimulationInfo" to Engine.
 
 - Random Controller Actor:
    - Get stabilize message and stabilize
    - Get fix finger table messge and fix the finger table.
     
-
 - Print Actor:
   - Match the mailbox massage with the functions
   - Call the corresponding actions or actors to operate
