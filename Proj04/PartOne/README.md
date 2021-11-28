@@ -186,7 +186,7 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
 
 <img width="872" alt="image" src="https://user-images.githubusercontent.com/28448629/143773599-ec1991d8-ef8d-4442-9aa4-5549c2fde95d.png">
 
-2. If a user queries one hashtag, mentioned ID, or subscribed tweet, the results will be printed on the screen. The form { 30(5), 18 } means that there are two results corresponding to the query, one is the post tweet 30 which is a retweet of tweet 5, the other is tweet 18.
+2. If a user queries one hashtag, mentioned ID, or subscribed tweet, the results will be printed on the screen. The form { 30(5), 18 } means that there are two results corresponding to the query, one is the post tweet 30 which is a retweet of tweet 5, the other is tweet 18. "[akka://TweetSimulator/user/NfSWWTUVYv4h62F]" at the beginning shows the querying operation by user who.
 - Query tweets subscribed to:
 <img width="730" alt="image" src="https://user-images.githubusercontent.com/28448629/143774584-a29036b8-0d6e-43d0-b122-64f6ad5c04f0.png">
 
@@ -196,24 +196,6 @@ Such a situation happens also in a larger scale of situation, like "A->B->C->D->
 - Query mentioned tweets:
 <img width="555" alt="image" src="https://user-images.githubusercontent.com/28448629/143774638-30f14b64-9340-4dcb-bb2d-02687b5c27cb.png">
 
-3. 
+3. A Zipf distribution on the number of subscribers and more subscribers, more tweets and retweets. The count of number of subscribers and tweet proportion of all users are listed in the path "output\\statistics.txt". One line in the file gives the user ID, user name, number of followers and how much proportion his number of tweets occupies in the total tweets.
 
-- numberOfNodes: 20   numberOfEachNodeRequests: 10
-
-![image](https://user-images.githubusercontent.com/28448629/140234197-d98f9331-c1f9-49c1-8978-ad93d8e4d1b2.png) 
-
-![image](https://user-images.githubusercontent.com/28448629/140234164-f0de9601-1a1e-4583-b1d2-bd0b6f815456.png)
-
-![image](https://user-images.githubusercontent.com/28448629/140234367-b31b994a-48dc-421f-b0bf-30141785c4eb.png)
-
-- numberOfNodes: 30   numberOfEachNodeRequests: 10
-
-![image](https://user-images.githubusercontent.com/28448629/140234398-28bdc64f-5bbd-4597-8805-61bb0e7fdaf3.png)
-
-![image](https://user-images.githubusercontent.com/28448629/140200345-2c0faae2-98b6-42da-931b-e3d11cb134f3.png)
-
-
-
-2. As we tested in the program, 50 nodes performs well in this chord algorithm and theoritically it can afford way much more scale of network to realize chord algorithm. There is no up limitation when the program is implemented in a real network unless bigger than 2^160. Limited to the running time and a single machine to do the experiments, there are only results of limited scales. 
-
-   And When deploymented in a solo machine, a mailbox of an actor may receive too much messages so that leads to delay of network building or finger table updating. In a real multi-machine network, there will not be such problems.   
+<img width="571" alt="image" src="https://user-images.githubusercontent.com/28448629/143775072-6d4480f5-38f0-48e3-b632-ccc0b2a82245.png">
