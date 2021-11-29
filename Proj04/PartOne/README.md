@@ -167,47 +167,33 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 
 1. Register Account
 
+   
 2. Send tweet
 
+   
 3. Subscribe to user's tweets
 
+   
 4. Re-tweets
 
+   
 5. Allow querying tweets
 
+   
 6. If the user is connected, deliver the above types of tweets live (without querying)
+   
+   -There are two methods to realize the delivering without querying.
+      - One is when a user logins, the Engine finds and sends the new tweets to this user automatically. However, this method contains additional steps of database operations which consumes much more time.
+   <img width="358" alt="image" src="https://user-images.githubusercontent.com/28448629/143793605-10623910-1715-4896-8fbe-b3639bfb0ec4.png">
 
-
-
-
-### Chord Algorithm
-
-- Create a chord ring
-   -"Program.fs" 
-      - Create the first node
-      - After the first node, the other nodes join the ring
-      - Call stablilize
-      - Fix Finger table
-   - "ChordNodeActor.fs"
-      - Join in a new node
-      - Stabilizing every 200 ms
-      - Notify
-
-- Find locations of the keys
-   - Use hash to map keys by SHA1.
-   - Identifiers are ordered on an circle. A key K is assigned to the first node whose identifier is equal to or follows k, which is called the successor node. 
-
-![image](https://user-images.githubusercontent.com/28448629/139670532-43c33549-aa20-4d0f-a225-b081a5c33c4a.png)
-
-   - Each identifier knows its fingertable. Find the query key by jumping to the closest successor of the key in the finger table. If there is not any closest identifier in the finger table, find the closest predecessor.
-
-![image](https://user-images.githubusercontent.com/28448629/139672461-60d82661-d352-42c6-b3dc-5d4941551027.png)
+      - The other is that delivers the tweets to all its followers. When the follower is connected, the tweet received in mailbox will be printed without querying. However, if the user is not online, the client actor will do nothing even if the tweets has been sent to its mailbox. This method is realized by adding in a control variant "Login".
+   - Considering the convenience and speed of the algorithm, we here choose the second method in our codes.
 
 
 
 ## Experiment
 
-#### Result
+### Result
 
 1. Since we use SQLite in our experiments, running speed of the program and capacibility of users number are supposed to be very high. Here we tested a scale of 5000 users about which it consumes some time to set the subscribers and tweets and print all the results on the powershell. There is no limitaton of the scale therotically. When running on one machine, the limitation is bound to the machine performance and time. And if this project can be implemented on different machines, there will be no upper limitation on the number therotically.
 
