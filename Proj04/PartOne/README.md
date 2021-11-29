@@ -128,13 +128,13 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
    - When receiving "RegisterOperation", send RegisterInfo with name to the tweetEngine.
    - When receiving "PostTweetOperation", if "login = true", set numberOfMentions = -1. If there are more than 11 clients, give a random mentioned number in range [0, 9] to numberOfMention; else give a random mentioned number in range [0, numberOfRegister]. Give a random number of new hashtag between [0, 4], and a number of existinghashtags between [0, 4]. Assign a random string as content. Assign a string within length of 20 as a new hashtag and add new hashtags to HASHTAG. Send the posting tweet message to Engine. 
 
-<img width="372" alt="image" src="https://user-images.githubusercontent.com/28448629/143790720-8ea52b44-1aa5-44a3-9c96-e123d561454b.png">
+<img width="370" alt="image" src="https://user-images.githubusercontent.com/28448629/143792737-48e98740-5fd4-4ea4-80ac-08b72c494088.png">
 
    - When receiving "DeliverTweetOperation", if login is true, print user name and it gets a new tweet.
    - When receiving "QueryFollowOperation", if login is true, send the QueryFollowInfo with user name to Engine. When receiving "QueryFollowResult", print the querying follows' tweets result.
    - When receiving "QueryMentionOperation", if login is true, send the QueryMentionInfo with user name to Engine. When receiving "QueryMentionResult", print the querying mentioned tweets result.
    - When receiving "QueryHashtagOperation", if login is true, send the QueryMentionInfo with user name (and hashtag) to Engine. When receiving "QueryHashtagResult", print the querying tweets result with the hashtag.
-   - When receiving "SimulationOperation", simulate possible operations by a actual user asynchronizingly. When it's "logout", change the status to "login = true". Otherwise, if "login = true", do "logout", "query" and so on. Give a random number between [0,6] to define the operations.
+   - When receiving "SimulationOperation", simulate possible operations by a actual user with asynchronization. When it's "logout", change the status to "login = true". Otherwise, if "login = true", do "logout", "query" and so on. Give a random number between [0,6] to define the operations.
       - 0 : do logout operation. Possibility = 1/7
       - 1 || 2 : do QueryFollowOperation. Possibility = 2/7
       - 3 || 4 : do QueryMentionOperation. Possibility = 2/7
@@ -142,19 +142,27 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
       - After doing the operation. Sleep for 1ms to release the occupation of the thread and give the other actors chances to operate, avoiding one actor occupies one thread for much time.
    - When receiving "StopSimulationOperation", simulationWork will be set to be "false". Print "user name  stop simulation" and send "StopSimulationInfo" to Engine.
 
-- Random Controller Actor:
+- Random Controller Actor: do tests to give a simulating enviroments of random controller for all users. 
    - Get stabilize message and stabilize
-   - Get fix finger table messge and fix the finger table.
-    
+   - When receiving "RegisterTest", give all client in clients list the RegisterOperation.
+   - When receiving "LoginLogoutTest", doing the belowing operations with asynchronization: 
+      - give a random number in range [1, 9]. If the number between [1, 7], change the "Login" and "Logout" status. Possibility = 7/9
+      - sleep for 5000ms after a loop of operation for all clients.
+   - When receiving "ClientPostTest", choose a random client starA and a random client starB. For all clients do SubscribeOperation to starA. StarA do PostTweetOperation with false while starB with true.
+   - When receiving "QueryTest", for starA and starB do SubscribeOperations for all clients. All clients will start a new QueryFollowOperation.
+   - When receiving "StartSimulationWithZipf", 
+      - assign all other users to subscribe the first user
+      - assign 1/2 users to subscribe the second user
+      - assign 1/3 users to subscribe the third user
+      - ......
+      - For each clients do SimulationOperation. After the operations, sleep for 500 ms.The sleep time longer, the tweet or operation numbers larger.
+      - Stop the simulation.
+    - When receiving "StatisticsStatusResult", output the result to file "output/statistics.txt". When doing this, all operations have stopped for 500ms.
+   
 - Print Actor:
-  - Match the mailbox massage with the functions
-  - Call the corresponding actions or actors to operate
-  - Stableize: call the assistant actor to operate stablize operation
-  - Notify
-  - Send "StopStabilize" and "StopFixFingerTable" message to its assistant actor
-  - Lookup: start lookup mission, Prelookup and Lookup.  
+  - Print the actor path.  
  
-![image](https://user-images.githubusercontent.com/28448629/140232556-f96f58b9-c354-49b2-a31c-8d05e09732b3.png)
+<img width="481" alt="image" src="https://user-images.githubusercontent.com/28448629/143792669-e08cf280-9ecc-4a91-a9b3-3b2756b06709.png">
 
 
 #### Functionalities
