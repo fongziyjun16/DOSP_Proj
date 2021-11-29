@@ -21,7 +21,7 @@
 
 4. Run the command line "dotnet run [numberOfClients]"
 
-![415612026495964824](https://user-images.githubusercontent.com/28448629/140237180-54ef7eea-69b9-4937-8cf2-0ec9d1d5fd02.png)
+<img width="868" alt="image" src="https://user-images.githubusercontent.com/28448629/143818708-e2790947-63cb-4af0-a855-86fb447de60f.png">
 
 
 5. Wait and observe the result 
@@ -51,10 +51,10 @@
 ## Architecture
 
 The project uses three-tier architecture to build the twitter web simulation, which contains presentation tier, logic tier and data tier. 
-- presentation tier: web server, analyzing protocols
-- logic tier: mongrel rails server, to abate the work load
-- data tier: mysql of users data. Here we use SQLite imbedded in the program for convenience and speed consideration.
-Here we combined the presentation and logic tiers to one tier, so that the whole program has two part: 1. data tier, using SQLite. 2. presentation and logic tier, including engine which processes user register and query, and user actors.
+- presentation tier: output and show the processing results.
+- logic tier: defines some logical processes.
+- data tier: among plenty of imbeded database, we use SQLite here to store the user and tweets data, for convenience and speed consideration.
+Here we combine the presentation and logic tiers to one tier, so that the whole program has two parts: 1. data tier, using SQLite. 2. presentation and logic tier, including engine which processes user register and query, and user actors.
 
 <img width="412" alt="image" src="https://user-images.githubusercontent.com/28448629/143783350-c28906f6-753b-4631-95ff-098e80d1bb15.png">
 
@@ -153,9 +153,9 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
       - assign 1/2 users to subscribe the second user
       - assign 1/3 users to subscribe the third user
       - ......
-      - For each clients do SimulationOperation. After the operations, sleep for 500 ms.The sleep time longer, the tweet or operation numbers larger.
+      - For each clients do SimulationOperation. After the operations, the controller waits for 500 ms, to let the clients do their operations automatically for 500ms. In this 500ms, there will be enough instances of tweets, subscribes, login/logout and so on to be observed (for testing convenience, we set the waiting time to be 500ms. It can be set longer to get more experiment data as you would like). The waiting time of the controller longer, the tweets and operation numbers larger.
       - Stop the simulation.
-    - When receiving "StatisticsStatusResult", output the result to file "output/statistics.txt". When doing this, all operations have stopped for 500ms.
+    - When receiving "StatisticsStatusResult", output the result to file "output/statistics.txt". Before doing this, all clients have run for 500ms (you can set this running time as you like) and then stopped.
    
 - Print Actor:
   - Print the actor path.  
@@ -214,12 +214,14 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 <img width="872" alt="image" src="https://user-images.githubusercontent.com/28448629/143773599-ec1991d8-ef8d-4442-9aa4-5549c2fde95d.png">
 
 2. There are also simulations of login in and login out of users. The login in informatioin of one user is printed on the screen.
--login in:
+   -login:
+   
 <img width="452" alt="image" src="https://user-images.githubusercontent.com/28448629/143777089-b7f7ade7-a1d9-4d50-a0ec-ac5fb64d051d.png">
 
 <img width="467" alt="image" src="https://user-images.githubusercontent.com/28448629/143777096-803e5883-604d-48a7-9ba7-0f5177f64946.png">
-
--login out:
+   
+   -logout:
+   
 <img width="437" alt="image" src="https://user-images.githubusercontent.com/28448629/143785149-5a81ddf3-20e9-4ec3-bccb-9eade717c444.png">
 
 <img width="457" alt="image" src="https://user-images.githubusercontent.com/28448629/143785168-593849ec-0259-4599-b549-028da4fdb522.png">
@@ -243,3 +245,5 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 4. A Zipf distribution on the number of subscribers and more subscribers, more tweets and retweets. The count of number of subscribers and tweet proportion of all users are listed in the path "output\\statistics.txt". One line in the file gives the user ID, user name, number of followers and how much proportion his number of tweets occupies in the total tweets.
 
 <img width="571" alt="image" src="https://user-images.githubusercontent.com/28448629/143775072-6d4480f5-38f0-48e3-b632-ccc0b2a82245.png">
+
+   - Attention: there are some possibility rate = 0 instances. The rate equaling to 0 is not abnormal, since these users has a small number of subscribers, and each subscribers has only 
