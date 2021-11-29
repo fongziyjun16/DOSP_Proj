@@ -130,11 +130,11 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 
 <img width="370" alt="image" src="https://user-images.githubusercontent.com/28448629/143792737-48e98740-5fd4-4ea4-80ac-08b72c494088.png">
 
-      - When receiving "DeliverTweetOperation", if login is true, print user name and it gets a new tweet.
-      - When receiving "QueryFollowOperation", if login is true, send the QueryFollowInfo with user name to Engine. When receiving "QueryFollowResult", print the querying follows' tweets result.
-      - When receiving "QueryMentionOperation", if login is true, send the QueryMentionInfo with user name to Engine. When receiving "QueryMentionResult", print the querying mentioned tweets result.
-      - When receiving "QueryHashtagOperation", if login is true, send the QueryMentionInfo with user name (and hashtag) to Engine. When receiving "QueryHashtagResult", print the querying tweets result with the hashtag.
-      - When receiving "SimulationOperation", simulate possible operations by a actual user with asynchronization. When it's "logout", change the status to "login = true". Otherwise, if "login = true", do "logout", "query" and so on. Give a random number between [0,6] to define the operations.
+   - When receiving "DeliverTweetOperation", if login is true, print user name and it gets a new tweet.
+   - When receiving "QueryFollowOperation", if login is true, send the QueryFollowInfo with user name to Engine. When receiving "QueryFollowResult", print the querying follows' tweets result.
+   - When receiving "QueryMentionOperation", if login is true, send the QueryMentionInfo with user name to Engine. When receiving "QueryMentionResult", print the querying mentioned tweets result.
+   - When receiving "QueryHashtagOperation", if login is true, send the QueryMentionInfo with user name (and hashtag) to Engine. When receiving "QueryHashtagResult", print the querying tweets result with the hashtag.
+   - When receiving "SimulationOperation", simulate possible operations by a actual user with asynchronization. When it's "logout", change the status to "login = true". Otherwise, if "login = true", do "logout", "query" and so on. Give a random number between [0,6] to define the operations.
       - 0 : do logout operation. Possibility = 1/7
       - 1 || 2 : do QueryFollowOperation. Possibility = 2/7
       - 3 || 4 : do QueryMentionOperation. Possibility = 2/7
