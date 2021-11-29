@@ -75,8 +75,11 @@ In the data tier, we decided six relationships tables in SQLite to define the us
 - Tweet_Hashtag: Tweet ID, HashtagID
 
 In the normal database project, there are always foreign keys between table so that the tables can be related together. However, consider that in the further programming there may be deletions or modifications of current tables, we didn't add foreign keys in our database tables. But relations among tables do exist as below.
+- ACCOUNT -- NAME := TWEET -- CREATOR; HASHTAG -- CREATOR; FOLLOW -- NAME ; TWEET_MENTION -- NAME.
+- TWEET --ID := TWEET_HASHTAG -- TWEETID.
+- TWEET_HASHTAG -- HASHTAGID := HASHTAG -- ID.
 
-<img width="538" alt="image" src="https://user-images.githubusercontent.com/28448629/143786338-00bd2be0-8dd1-4c61-aec1-ffcde3a4f3ec.png">
+<img width="482" alt="image" src="https://user-images.githubusercontent.com/28448629/143825496-e0f2463e-199b-486f-9de3-b9ff657dc721.png">
 
 
 ### Presentation & Logic Tier
@@ -220,7 +223,7 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 
 2. There are also simulations of login in and login out of users. The login in informatioin of one user is printed on the screen. 
    
-   -login:
+-login:
    
 <img width="452" alt="image" src="https://user-images.githubusercontent.com/28448629/143777089-b7f7ade7-a1d9-4d50-a0ec-ac5fb64d051d.png">
 
