@@ -126,21 +126,21 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 - Client Actor: Is controlled by a flag variant "login". "login = true", all the operations can implement; else the clients will do no actions.
    - When receiving "LoginOperation" or "LogoutOperation", set "login" to be "true" or "false".
    - When receiving "RegisterOperation", send RegisterInfo with name to the tweetEngine.
-   - When receiving "PostTweetOperation", if "login = true", set numberOfMentions = -1. If there are more than 11 clients, give a random mentioned number in range [0, 9] to numberOfMention; else give a random mentioned number in range [0, numberOfRegister]. Give a random number of new hashtag between [0, 4], and a number of existinghashtags between [0, 4]. Assign a random string as content. Assign a string within length of 20 as a new hashtag and add new hashtags to HASHTAG. Send the posting tweet message to Engine. 
-
-<img width="370" alt="image" src="https://user-images.githubusercontent.com/28448629/143792737-48e98740-5fd4-4ea4-80ac-08b72c494088.png">
-
-      - When receiving "DeliverTweetOperation", if login is true, print user name and it gets a new tweet.
-      - When receiving "QueryFollowOperation", if login is true, send the QueryFollowInfo with user name to Engine. When receiving "QueryFollowResult", print the querying follows' tweets result.
-      - When receiving "QueryMentionOperation", if login is true, send the QueryMentionInfo with user name to Engine. When receiving "QueryMentionResult", print the querying mentioned tweets result.
-      - When receiving "QueryHashtagOperation", if login is true, send the QueryMentionInfo with user name (and hashtag) to Engine. When receiving "QueryHashtagResult", print the querying tweets result with the hashtag.
-      - When receiving "SimulationOperation", simulate possible operations by a actual user with asynchronization. When it's "logout", change the status to "login = true". Otherwise, if "login = true", do "logout", "query" and so on. Give a random number between [0,6] to define the operations.
+   - When receiving "PostTweetOperation", if "login = true", set numberOfMentions = -1. If there are more than 11 clients, give a random mentioned number in range [0, 9] to numberOfMention; else give a random mentioned number in range [0, numberOfRegister]. Give a random number of new hashtag between [0, 4], and a number of existinghashtags between [0, 4]. Assign a random string as content. Assign a string within length of 20 as a new hashtag and add new hashtags to HASHTAG. Send the posting tweet message to Engine.
+   - When receiving "DeliverTweetOperation", if login is true, print user name and it gets a new tweet.
+   - When receiving "QueryFollowOperation", if login is true, send the QueryFollowInfo with user name to Engine. When receiving "QueryFollowResult", print the querying follows' tweets result.
+   - When receiving "QueryMentionOperation", if login is true, send the QueryMentionInfo with user name to Engine. When receiving "QueryMentionResult", print the querying mentioned tweets result.
+   - When receiving "QueryHashtagOperation", if login is true, send the QueryMentionInfo with user name (and hashtag) to Engine. When receiving "QueryHashtagResult", print the querying tweets result with the hashtag.
+   - When receiving "SimulationOperation", simulate possible operations by a actual user with asynchronization. When it's "logout", change the status to "login = true". Otherwise, if "login = true", do "logout", "query" and so on. Give a random number between [0,6] to define the operations.
       - 0 : do logout operation. Possibility = 1/7
       - 1 || 2 : do QueryFollowOperation. Possibility = 2/7
       - 3 || 4 : do QueryMentionOperation. Possibility = 2/7
       - 5 || 6 : do QueryHashtagOperation. Possibility = 2/7
       - After doing the operation. Sleep for 1ms to release the occupation of the thread and give the other actors chances to operate, avoiding one actor occupies one thread for much time.
-      - When receiving "StopSimulationOperation", simulationWork will be set to be "false". Print "user name  stop simulation" and send "StopSimulationInfo" to Engine.
+   - When receiving "StopSimulationOperation", simulationWork will be set to be "false". Print "user name  stop simulation" and send "StopSimulationInfo" to Engine.
+
+
+<img width="370" alt="image" src="https://user-images.githubusercontent.com/28448629/143792737-48e98740-5fd4-4ea4-80ac-08b72c494088.png">
 
 - Random Controller Actor: do tests to give a simulating enviroments of random controller for all users. 
    - Get stabilize message and stabilize
