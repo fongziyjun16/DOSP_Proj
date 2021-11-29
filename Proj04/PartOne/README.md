@@ -66,7 +66,7 @@ As the subject of the project has two parts, users and tweets, we define
 
 ### Data Tier
 
-In the data tier, we decided six relationships tables in SQLite to define the user actions, which is defined in the path "resources\\create_table.sql". Their basic CUID operations of the tables are defined in the namespace DAO, which includes "AccountDAO.fs", "FollowDAO.fs", "HashtagDAO.fs", "TweetDAO.fs", "TweetMentionDAO.fs", "TweetHashtagDAO.fs". Each time running the program, the programmed databade file "tweet_sys_db" is newly created. 
+In the data tier, we decided six relationships tables in SQLite to define the user actions, which is defined in the path "resources\\create_table.sql". Their basic CRUD operations of the tables are defined in the namespace DAO, which includes "AccountDAO.fs", "FollowDAO.fs", "HashtagDAO.fs", "TweetDAO.fs", "TweetMentionDAO.fs", "TweetHashtagDAO.fs". Each time running the program, the programmed databade file "tweet_sys_db" is newly created. 
 - Account: User ID, User name
 - Follow: User name, Follower name
 - Hashtag: User ID, Topic, Creator(User name)
@@ -147,7 +147,7 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
    - When receiving "StopSimulationOperation", simulationWork will be set to be "false". Print "user name  stop simulation" and send "StopSimulationInfo" to Engine.
 
 - Random Controller Actor: do tests to give a simulating enviroments of random controller for all users. 
-   - Get stabilize message and stabilize
+   - In Random Controller Actor there are system tests, which are not the project functionality realization. These tests are listed below with some clarification. 
    - When receiving "RegisterTest", give all client in clients list the RegisterOperation.
    - When receiving "LoginLogoutTest", doing the belowing operations with asynchronization: 
       - give a random number in range [1, 9]. If the number between [1, 7], change the "Login" and "Logout" status. Possibility = 7/9
@@ -203,7 +203,7 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 6. If the user is connected, deliver the above types of tweets live (without querying)
    
    -There are two methods to realize the delivering without querying.
-      - One is when a user logins, the Engine finds and sends the new tweets to this user automatically. However, this method contains additional steps of database operations which consumes much more time.
+      - One is to set an online user table in the system. If a user sends a new tweet, Engine will query the user's all followers to intersect with that online user table. Basing on the result, Engine then send the new post tweet to the online followers. However, this method contains additional steps of database operations which consumes much more time.
    <img width="358" alt="image" src="https://user-images.githubusercontent.com/28448629/143793605-10623910-1715-4896-8fbe-b3639bfb0ec4.png">
 
       - The other is that delivers the tweets to all its followers. When the follower is connected, the tweet received in mailbox will be printed without querying. However, if the user is not online, the client actor will do nothing even if the tweets has been sent to its mailbox. This method is realized by adding in a control variant "Login".
