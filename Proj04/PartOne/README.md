@@ -114,9 +114,8 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
    - When receiving a "Login / Logout" message, print the login status message.
    - When receiving a "SubscribeInfo" message, insert the follow and follower message into Table FOLLOW and print the message.
    - When receiving a "PostTweetInfo" message, select random clients as equal number as mention numbers and add these clients name into mentions list. Add existing hashtags into the list hashtags. Insert this new tweet into TABLE TWEET and get the tweet ID from the table. Add the mentions list to TABLE TWEET_MENTION. Add hashtags list into TABLE HASHTAG(if not exists, create new hashtag; otherwise insert it into an existing hashtag). If it's a retweet tweet, update the retweetID in the TABLE TWEET. Finally, get  followers and deliver the tweet to them. Print the message.
-
-<img width="599" alt="image" src="https://user-images.githubusercontent.com/28448629/143789292-2f3c9f0a-dc18-4778-a45b-b56cd80446ef.png">
-
+   <img width="599" alt="image" src="https://user-images.githubusercontent.com/28448629/143789292-2f3c9f0a-dc18-4778-a45b-b56cd80446ef.png">
+   
    - When receiving a "QueryFollowInfo" message, query follows from FOLLOW. Then query Tweets of FOLLOWS from TWEET. Change the tweets form and send them to the querying follower.
    - When receiving a "QueryMentionInfo" message, query tweetIDs from TWEET_MENTION by user name. Then gets tweets from TWEET. Change the form and send them to the querying client.
    - When receiving a "QueryHashtagInfo" message, query hashtag from HASHTAG. Then query tweets by the hashtag from TWEET. Change the form and send them to the querying Client.
