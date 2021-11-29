@@ -54,6 +54,7 @@ The project uses three-tier architecture to build the twitter web simulation, wh
 - presentation tier: output and show the processing results.
 - logic tier: defines some logical processes.
 - data tier: among plenty of imbeded database, we use SQLite here to store the user and tweets data, for convenience and speed consideration.
+
 Here we combine the presentation and logic tiers to one tier, so that the whole program has two parts: 1. data tier, using SQLite. 2. presentation and logic tier, including engine which processes user register and query, and user actors.
 
 <img width="412" alt="image" src="https://user-images.githubusercontent.com/28448629/143783350-c28906f6-753b-4631-95ff-098e80d1bb15.png">
@@ -246,4 +247,4 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 
 <img width="571" alt="image" src="https://user-images.githubusercontent.com/28448629/143775072-6d4480f5-38f0-48e3-b632-ccc0b2a82245.png">
 
-   - Attention: there are some possibility rate = 0 instances. The rate equaling to 0 is not abnormal, since these users has a small number of subscribers, and each subscribers has only 
+   - Attention: there are some post rates = 0 instances. The rate equaling to 0 is not abnormal, since these users has a small number of subscribers, and each subscribers has only a rate of 50% to retweet a tweet random tweet. Therefore, some users with relatively small amount of subscribers may get his post rate = 0%.
