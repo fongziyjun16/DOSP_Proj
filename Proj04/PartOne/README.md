@@ -167,13 +167,15 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 
 1. Register Account
 
-   
+   <img width="362" alt="image" src="https://user-images.githubusercontent.com/28448629/143794033-4df3b930-5c44-44e5-9cbc-cbbbfd902189.png">
+
 2. Send tweet
 
    
 3. Subscribe to user's tweets
 
-   
+   <img width="382" alt="image" src="https://user-images.githubusercontent.com/28448629/143794203-1ebe55e3-bc50-4809-b3ae-0149564014aa.png">
+
 4. Re-tweets
 
    
