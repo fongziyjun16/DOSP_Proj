@@ -171,14 +171,18 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 
 2. Send tweet
 
-   
+   <img width="527" alt="image" src="https://user-images.githubusercontent.com/28448629/143795012-91231759-b691-4c3b-8b38-4de36d9a05bc.png">
+
 3. Subscribe to user's tweets
 
    <img width="382" alt="image" src="https://user-images.githubusercontent.com/28448629/143794203-1ebe55e3-bc50-4809-b3ae-0149564014aa.png">
 
 4. Re-tweets
 
+   <img width="527" alt="image" src="https://user-images.githubusercontent.com/28448629/143794990-ac77c32f-7f99-4e24-93a8-33034c976520.png">
    
+   - The re-tweets process is built in sending tweets, so that its process diagram is the same with send tweet with re-tweet being a part in the whole processing. 
+
 5. Allow querying tweets
 
    
