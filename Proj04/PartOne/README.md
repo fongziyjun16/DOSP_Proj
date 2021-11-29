@@ -138,7 +138,10 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
    - When receiving "QueryFollowOperation", if login is true, send the QueryFollowInfo with user name to Engine. When receiving "QueryFollowResult", print the querying follows' tweets result.
    - When receiving "QueryMentionOperation", if login is true, send the QueryMentionInfo with user name to Engine. When receiving "QueryMentionResult", print the querying mentioned tweets result.
    - When receiving "QueryHashtagOperation", if login is true, send the QueryMentionInfo with user name (and hashtag) to Engine. When receiving "QueryHashtagResult", print the querying tweets result with the hashtag.
-   - When receiving "SimulationOperation", simulate possible operations by a actual user with asynchronization. When it's "logout", change the status to "login = true". Otherwise, if "login = true", do "logout", "query" and so on. Give a random number between [0,6] to define the operations.
+   - When receiving "SimulationOperation", simulate possible operations by a actual user with asynchronization. When it's "logout", change the status to "login = true". Otherwise, if "login = true", do "logout", "post tweet", "query" and so on. 
+      - Give a random number between [0, UserID-1]. If the random number equals to 0, the user will post a tweet. Possibility of posting a tweet = 1/UserID.
+      - If the user is sure to post a new tweet, a new random number between [0, 1] will be decided with '0' representing it's a new tweet and '1' representing it's a re-tweet. Possibility of "it's a retweet" = 1/2.
+      - Give a random number between [0,6] to define the operations except post a new tweet.
       - 0 : do logout operation. Possibility = 1/7
       - 1 || 2 : do QueryFollowOperation. Possibility = 2/7
       - 3 || 4 : do QueryMentionOperation. Possibility = 2/7
@@ -147,13 +150,6 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
    - When receiving "StopSimulationOperation", simulationWork will be set to be "false". Print "user name  stop simulation" and send "StopSimulationInfo" to Engine.
 
 - Random Controller Actor: do tests to give a simulating enviroments of random controller for all users. 
-   - In Random Controller Actor there are system tests, which are not the project functionality realization. These tests are listed below with some clarification. 
-   - When receiving "RegisterTest", give all client in clients list the RegisterOperation.
-   - When receiving "LoginLogoutTest", doing the belowing operations with asynchronization: 
-      - give a random number in range [1, 9]. If the number between [1, 7], change the "Login" and "Logout" status. Possibility = 7/9
-      - sleep for 5000ms after a loop of operation for all clients.
-   - When receiving "ClientPostTest", choose a random client starA and a random client starB. For all clients do SubscribeOperation to starA. StarA do PostTweetOperation with false while starB with true.
-   - When receiving "QueryTest", for starA and starB do SubscribeOperations for all clients. All clients will start a new QueryFollowOperation.
    - When receiving "StartSimulationWithZipf", 
       - assign all other users to subscribe the first user
       - assign 1/2 users to subscribe the second user
@@ -162,6 +158,13 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
       - For each clients do SimulationOperation. After the operations, the controller waits for 500 ms, to let the clients do their operations automatically for 500ms. In this 500ms, there will be enough instances of tweets, subscribes, login/logout and so on to be observed (for testing convenience, we set the waiting time to be 500ms. It can be set longer to get more experiment data as you would like). The waiting time of the controller longer, the tweets and operation numbers larger.
       - Stop the simulation.
     - When receiving "StatisticsStatusResult", output the result to file "output/statistics.txt". Before doing this, all clients have run for 500ms (you can set this running time as you like) and then stopped.
+   - In Random Controller Actor there are system tests, which are not the project functionality realization. These tests are listed below with some clarification. 
+   - When receiving "RegisterTest", give all client in clients list the RegisterOperation.
+   - When receiving "LoginLogoutTest", doing the belowing operations with asynchronization: 
+      - give a random number in range [1, 9]. If the number between [1, 7], change the "Login" and "Logout" status. Possibility = 7/9
+      - sleep for 5000ms after a loop of operation for all clients.
+   - When receiving "ClientPostTest", choose a random client starA and a random client starB. For all clients do SubscribeOperation to starA. StarA do PostTweetOperation with false while starB with true.
+   - When receiving "QueryTest", for starA and starB do SubscribeOperations for all clients. All clients will start a new QueryFollowOperation.
    
 - Print Actor:
   - Print the actor path.  
@@ -257,4 +260,4 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 
 <img width="590" alt="image" src="https://user-images.githubusercontent.com/28448629/143822056-3b1507c6-0595-43ab-8b53-2568aef4eb0f.png">
 
-   - Attention: there are some post rates = 0 instances. The rate equaling to 0 is not abnormal, since these users has a small number of subscribers, and each subscribers has only a rate to pose a tweet. Therefore, some users with relatively small amount of subscribers may get his post rate = 0%.
+   - Attention: there are some post rates = 0 instances. The rate equaling to 0 is not abnormal, since these users has a small number of subscribers, and each user has only a rate of 1/UserID(in system a higher ID number means a lower subscribers number relating to Zipf distribution) to pose a tweet. Therefore, users with relatively small amount of subscribers may have higher chances to get his post rate = 0%.
