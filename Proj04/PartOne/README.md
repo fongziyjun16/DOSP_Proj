@@ -74,6 +74,8 @@ In the data tier, we decided six relationships tables in SQLite to define the us
 - Tweet_Mention: Tweet ID, User name
 - Tweet_Hashtag: Tweet ID, HashtagID
 
+In the normal database project, there are always foreign keys between table so that the tables can be related together. However, consider that in the further programming there may be deletions or modifications of current tables, we didn't add foreign keys in our database tables. But relations among tables do exist as below.
+
 <img width="538" alt="image" src="https://user-images.githubusercontent.com/28448629/143786338-00bd2be0-8dd1-4c61-aec1-ffcde3a4f3ec.png">
 
 
@@ -210,11 +212,14 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 
 ### Result
 
-1. Since we use SQLite in our experiments, running speed of the program and capacibility of users number are supposed to be very high. Here we tested a scale of 5000 users about which it consumes some time to set the subscribers and tweets and print all the results on the powershell. There is no limitaton of the scale therotically. When running on one machine, the limitation is bound to the machine performance and time. And if this project can be implemented on different machines, there will be no upper limitation on the number therotically.
+1. Since we use SQLite in our experiments, running speed of the program and capacibility of users number are supposed to be very high. Here we tested a scale of 5000 and 10000 users about which it consumes some time to set the subscribers and tweets and print all the results on the powershell. There is no limitaton of the scale therotically. When running on one machine, the limitation is bound to the machine performance and time. And if this project can be implemented on different machines, there will be no upper limitation on the number therotically.
 
 <img width="872" alt="image" src="https://user-images.githubusercontent.com/28448629/143773599-ec1991d8-ef8d-4442-9aa4-5549c2fde95d.png">
 
-2. There are also simulations of login in and login out of users. The login in informatioin of one user is printed on the screen.
+<img width="868" alt="image" src="https://user-images.githubusercontent.com/28448629/143821995-58316f56-e067-44c8-abec-697a2ab558f6.png">
+
+2. There are also simulations of login in and login out of users. The login in informatioin of one user is printed on the screen. 
+   
    -login:
    
 <img width="452" alt="image" src="https://user-images.githubusercontent.com/28448629/143777089-b7f7ade7-a1d9-4d50-a0ec-ac5fb64d051d.png">
@@ -247,4 +252,6 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 
 <img width="571" alt="image" src="https://user-images.githubusercontent.com/28448629/143775072-6d4480f5-38f0-48e3-b632-ccc0b2a82245.png">
 
-   - Attention: there are some post rates = 0 instances. The rate equaling to 0 is not abnormal, since these users has a small number of subscribers, and each subscribers has only a rate of 50% to retweet a tweet random tweet. Therefore, some users with relatively small amount of subscribers may get his post rate = 0%.
+<img width="590" alt="image" src="https://user-images.githubusercontent.com/28448629/143822056-3b1507c6-0595-43ab-8b53-2568aef4eb0f.png">
+
+   - Attention: there are some post rates = 0 instances. The rate equaling to 0 is not abnormal, since these users has a small number of subscribers, and each subscribers has only a rate to pose a tweet. Therefore, some users with relatively small amount of subscribers may get his post rate = 0%.
