@@ -118,7 +118,7 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
    
    - When receiving a "QueryFollowInfo" message, query follows from FOLLOW. Then query Tweets of FOLLOWS from TWEET. Change the tweets form and send them to the querying follower.
    - When receiving a "QueryMentionInfo" message, query tweetIDs from TWEET_MENTION by user name. Then gets tweets from TWEET. Change the form and send them to the querying client.
-   - When receiving a "QueryHashtagInfo" message, query hashtag from HASHTAG. Then query tweets by the hashtag from TWEET. Change the form and send them to the querying Client.
+   - When receiving a "QueryHashtagInfo" message, query hashtag from HASHTAG. Using the hashtag to query tweetID from TWEET_HASHTAG. Then query tweets by the tweetID from TWEET. Change the form and send them to the querying Client.
    - When receiving a "StopSImulationInfo", do clients stop simulation.
    - When receiving a "StatisticsStatus" message, do the statistic work(querying number of clients and tweets and traverse accounts in ACCOUNT. Write the results into "statistics.txt".
 
@@ -185,7 +185,15 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 
 5. Allow querying tweets
 
-   
+   - Query tweets subscribed to.
+   <img width="402" alt="image" src="https://user-images.githubusercontent.com/28448629/143795665-c337b1a0-a5ef-41f1-8062-41597faed046.png">
+
+   - Query tweets with specific hashtags
+   <img width="413" alt="image" src="https://user-images.githubusercontent.com/28448629/143796225-79d27410-0c2e-495d-ad91-49585818d502.png">
+
+   - Query tweets the user is mentioned
+   <img width="414" alt="image" src="https://user-images.githubusercontent.com/28448629/143796529-08a86216-72fb-4e07-8a12-b561a8889671.png">
+
 6. If the user is connected, deliver the above types of tweets live (without querying)
    
    -There are two methods to realize the delivering without querying.
