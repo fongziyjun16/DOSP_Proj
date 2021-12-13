@@ -48,7 +48,7 @@ module Program =
 
         let createTablesScript = File.ReadAllText(@"./resources/create_table.sql")
 
-        SQLiteConnection.CreateFile(@"./resources/tweet_sys.db")
+        SQLiteConnection.CreateFile(@"./resources/twitter_sys.db")
         use sqliteConnection = new SQLiteConnection(@"Data Source=./resources/twitter_sys.db")
         sqliteConnection.Open()
         let command = new SQLiteCommand(createTablesScript, sqliteConnection)

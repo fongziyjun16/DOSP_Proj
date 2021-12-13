@@ -306,7 +306,6 @@
    var tweets,i$1,$1;
    addLi2Table(tableID,"",true);
    tweets=(new Global.String(qryTweets)).split("}{");
-   console.log(tweets);
    for(i$1=0,$1=tweets.length-1;i$1<=$1;i$1++)addLi2Table(tableID,Arrays.get(tweets,i$1),false);
   }
   realTimeServer=null;
