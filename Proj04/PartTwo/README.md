@@ -1,4 +1,6 @@
-# DOSP_Proj04 Part I
+# DOSP_Proj04 Part II
+
+Please read this cute note => In project of our group, though it was a hard time, the realization of it is by websocket. If there is any possibility, is there a little bonus for this cute group?
 
 ## Group Members
 
@@ -7,7 +9,7 @@
 
 ## How to Run
 
-### Windows 10
+### Windows 10 or Up
 
 1. Environment Setup: 
 
@@ -15,16 +17,28 @@
 
    ​	.NET runtimes
 
-2. Decompressing the .RAR file: PartOne.rar
+2. Decompressing the .RAR file: PartTwo.rar
 
 3. Opening Command Prompt and Going to the folder obtained from the second step
 
-4. Run the command line "dotnet run [numberOfClients]"
+4. Run the command line "dotnet run"
 
-<img width="868" alt="image" src="https://user-images.githubusercontent.com/28448629/143818708-e2790947-63cb-4af0-a855-86fb447de60f.png">
+<img width="715" alt="image" src="https://user-images.githubusercontent.com/28448629/146088560-af0ec4a4-cef7-4ac4-8a53-77275154ce3a.png">
 
 
-5. Wait and observe the result 
+5. When the program starts, showing "Now listening on: http://localhost:5000  Now listening on: https://localhost:5001", open one browser and enter in "localhost:5000".
+
+<img width="867" alt="image" src="https://user-images.githubusercontent.com/28448629/146088865-8b4f5081-6f7a-4217-8b7b-a63e95ebfa57.png">
+
+
+6. Sign in with a signed name and passport, or sign up with new user name and passport.
+
+<img width="638" alt="image" src="https://user-images.githubusercontent.com/28448629/146090116-98d1ff9a-920a-4d5d-bf62-31a92522d8ab.png">
+
+<img width="753" alt="image" src="https://user-images.githubusercontent.com/28448629/146090215-fb6eb419-cecc-4506-a733-9c9384557663.png">
+
+
+7. After signning in, can do operations like following, receiving following tweets, retweeting, querying tweets by Hashtag/Mention/Following.
 
 
 ### Result Description
@@ -218,47 +232,40 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 
 ### Result
 
-1. Since we use SQLite in our experiments, running speed of the program and capacibility of users number are supposed to be very high. Here we tested a scale of 5000 and 10000 users about which it consumes some time to set the subscribers and tweets and print all the results on the powershell. There is no limitaton of the scale therotically. When running on one machine, the limitation is bound to the machine performance and time. And if this project can be implemented on different machines, there will be no upper limitation on the number therotically.
-
-<img width="872" alt="image" src="https://user-images.githubusercontent.com/28448629/143773599-ec1991d8-ef8d-4442-9aa4-5549c2fde95d.png">
-
-<img width="868" alt="image" src="https://user-images.githubusercontent.com/28448629/143821995-58316f56-e067-44c8-abec-697a2ab558f6.png">
-
-2. There are also simulations of login in and login out of users. The login in informatioin of one user is printed on the screen. 
+1. Sign up. At the same time, a user can only login on one device or webpage.
    
--login:
+   -"littleboy"
    
-<img width="452" alt="image" src="https://user-images.githubusercontent.com/28448629/143777089-b7f7ade7-a1d9-4d50-a0ec-ac5fb64d051d.png">
+   <img width="531" alt="image" src="https://user-images.githubusercontent.com/28448629/146092124-6ad007a6-00ab-49ff-a5de-230110a28676.png">
 
-<img width="467" alt="image" src="https://user-images.githubusercontent.com/28448629/143777096-803e5883-604d-48a7-9ba7-0f5177f64946.png">
+   -"binarysearchtree"
+
+   <img width="512" alt="image" src="https://user-images.githubusercontent.com/28448629/146092307-eec8f53d-d70e-4226-92d0-c6721d18c742.png">
+
+
+2. Sign in after signing up 
    
-   -logout:
+   <img width="665" alt="image" src="https://user-images.githubusercontent.com/28448629/146092703-f5193dc4-89d0-42cc-882f-c5ec555b1150.png">
    
-<img width="437" alt="image" src="https://user-images.githubusercontent.com/28448629/143785149-5a81ddf3-20e9-4ec3-bccb-9eade717c444.png">
+Attention: If enter "localhost:5000/main" and want to do some operations directly, tha page will jump to the login page. It is because tokens are used here. A token is a configuration for a user in the system. When a user login, the server will allocate a token to it. Each operation by the user will contains this token. If server doesn't find a token in the token list, it will clear the cookies.
+   
+3. Follow someone
+   
+   - "little boy" follows "binarysearchtree"
+   
+   
+4. Tweet 
+   
+5. Show the following tweet
 
-<img width="457" alt="image" src="https://user-images.githubusercontent.com/28448629/143785168-593849ec-0259-4599-b549-028da4fdb522.png">
+   
+6. Retweet
 
-3. If a user queries one hashtag, mentioned ID, or subscribed tweet, the results will be printed on the screen. The form { 30(5), 18 } means that there are two results corresponding to the query, one is the post tweet 30 which is a retweet of tweet 5, the other is tweet 18. "[akka://TweetSimulator/user/NfSWWTUVYv4h62F]" at the beginning shows the querying operation by user who.
-- Query tweets subscribed to:
-<img width="730" alt="image" src="https://user-images.githubusercontent.com/28448629/143774584-a29036b8-0d6e-43d0-b122-64f6ad5c04f0.png">
-
-<img width="857" alt="image" src="https://user-images.githubusercontent.com/28448629/143776999-67bb5073-aa8b-4928-a7e1-83da1ea12408.png">
-
-- Query a special hashtag:
-<img width="743" alt="image" src="https://user-images.githubusercontent.com/28448629/143774554-c38a91e8-b2ca-4ef5-b5b3-678be42b4ecf.png">
-
-<img width="743" alt="image" src="https://user-images.githubusercontent.com/28448629/143776972-bf953c59-a976-4d3c-b218-8464b49e24bd.png">
-
-- Query mentioned tweets:
-<img width="555" alt="image" src="https://user-images.githubusercontent.com/28448629/143774638-30f14b64-9340-4dcb-bb2d-02687b5c27cb.png">
-
-<img width="585" alt="image" src="https://user-images.githubusercontent.com/28448629/143777019-82a6536b-dba7-48ce-9d3f-f935e432bfd7.png">
-
-4. A Zipf distribution on the number of subscribers and more subscribers, more tweets and retweets. The count of number of subscribers and tweet proportion of all users are listed in the path "output\\statistics.txt". One line in the file gives the user ID, user name, number of followers and how much proportion his number of tweets occupies in the total tweets.
-
-<img width="571" alt="image" src="https://user-images.githubusercontent.com/28448629/143775072-6d4480f5-38f0-48e3-b632-ccc0b2a82245.png">
-
-<img width="590" alt="image" src="https://user-images.githubusercontent.com/28448629/143822056-3b1507c6-0595-43ab-8b53-2568aef4eb0f.png">
-
-   - Attention 1: there are some post rates = 0 instances. The rate equaling to 0 is not abnormal, since these users has a small number of subscribers, and each user has only a rate of 1/UserID(in system a higher ID number means a lower subscribers number relating to Zipf distribution) to pose a tweet. Therefore, users with relatively small amount of subscribers may have higher chances to get his post rate = 0%.
-   - Attention 2: In normal situation, the user with most subscribers will have the UserID = 1 in ACCOUNT. However, as actors sends register messages to Engine with asychronization, the UserID in TABLE ACCOUNT may not show to be 1 here. Actually, in the system each clients has an individual variant "index" to record their own order, so that though the print order seems disordered, the actual calculation of subscribers number and post rate is decided by each "index" of the client, which means that UserID in "statistics.txt" is just an ID number while the real computation of Zipf distribution uses "index" of each client actor.
+7. Query
+   
+   - Query tweets subscribed to:
+   
+   - Query a special hashtag:
+   
+   - Query mentioned tweets:
+   
