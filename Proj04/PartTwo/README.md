@@ -37,7 +37,7 @@ Please read this cute note => In project of our group, though it was a hard time
 
 <img width="638" alt="image" src="https://user-images.githubusercontent.com/28448629/146090116-98d1ff9a-920a-4d5d-bf62-31a92522d8ab.png">
 
-<img width="753" alt="image" src="https://user-images.githubusercontent.com/28448629/146090215-fb6eb419-cecc-4506-a733-9c9384557663.png">
+
 
 
 7. After signning in, can do operations like following, receiving following tweets, retweeting, querying tweets by Hashtag/Mention/Following.
