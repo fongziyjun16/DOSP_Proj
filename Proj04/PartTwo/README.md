@@ -226,30 +226,61 @@ In the backend, it contains files as below.
 
 2. Sign in after signing up 
    
-   <img width="665" alt="image" src="https://user-images.githubusercontent.com/28448629/146092703-f5193dc4-89d0-42cc-882f-c5ec555b1150.png">
+   - "littleboy"
    
-Attention: 
-   
-   <img width="388" alt="image" src="https://user-images.githubusercontent.com/28448629/146106281-37c06dc7-9fba-4a61-8d8d-e39859893530.png">
+   <img width="658" alt="image" src="https://user-images.githubusercontent.com/28448629/146140942-70bd1693-c0ed-4020-8349-9e461f059258.png">
 
-   
+   - "binarysearchtree"
+
+   <img width="655" alt="image" src="https://user-images.githubusercontent.com/28448629/146141021-653523e0-7dd4-4881-9d7a-dd45a1c8a1ae.png">
+
    
 3. Follow someone
    
    - "little boy" follows "binarysearchtree"
    
+   <img width="653" alt="image" src="https://user-images.githubusercontent.com/28448629/146141126-4c182b38-21f2-43ae-8b35-0024c914543a.png">
+
    
-4. Tweet 
+4. Tweet
+   
+   - "binarysearchtree" posts a tweet
+   
+   <img width="656" alt="image" src="https://user-images.githubusercontent.com/28448629/146141235-f5f5cd5c-70be-417d-b8f5-00b3f082ae61.png">
+
    
 5. Show the following tweet
 
+   - "littleboy" receives the tweet by "binarysearchtree"
    
+   <img width="653" alt="image" src="https://user-images.githubusercontent.com/28448629/146141350-992ebe26-207f-4188-9d12-4c94bf70caf8.png">
+
 6. Retweet
+   
+   - "littleboy" retweets the tweet "search 2" by "binarysearchtree"
+      - Get the tweet ID from about "Real Time Tweet from Following"
+   
+      <img width="440" alt="image" src="https://user-images.githubusercontent.com/28448629/146141654-f4dd6629-58d7-4348-bd87-cb8b07eed6b8.png">
+
+      - Input the "tweet ID"
+      
+      <img width="251" alt="image" src="https://user-images.githubusercontent.com/28448629/146141708-0fe45a99-8d32-4ade-a6ef-3e3f0565c6af.png">
+
+      - Input the content of the retweet
+      
+      <img width="267" alt="image" src="https://user-images.githubusercontent.com/28448629/146141769-26fb6219-e13a-4703-8835-d3072ca7ff72.png">
+
+      - Click "Retweet"
+      
+      <img width="476" alt="image" src="https://user-images.githubusercontent.com/28448629/146141810-c378f739-3454-4486-8b92-0f9f9f35409d.png">
+
 
 7. Query
    
    - Query tweets subscribed to:
    
+   <img width="634" alt="image" src="https://user-images.githubusercontent.com/28448629/146142184-62dc488e-f17c-427f-86a2-5ce3c18ca215.png">
+
    - Query a special hashtag:
    
    - Query mentioned tweets:
