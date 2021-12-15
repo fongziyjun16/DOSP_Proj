@@ -35,7 +35,11 @@ Please read this cute note => In project of our group, though it was a hard time
 
 6. Sign in with a signed name and passport, or sign up with new user name and passport.
 
+- Sign in & Sign up
+
 <img width="638" alt="image" src="https://user-images.githubusercontent.com/28448629/146090116-98d1ff9a-920a-4d5d-bf62-31a92522d8ab.png">
+
+- Operations
 
 <img width="653" alt="image" src="https://user-images.githubusercontent.com/28448629/146113561-27b2c433-f00a-4f0f-ac1f-5b095ae1d11a.png">
 
@@ -48,8 +52,6 @@ Please read this cute note => In project of our group, though it was a hard time
 - Followed tweets, querying results will all shown on the webpage in the blank. Details about the results will be described in the section of "experiments results". 
 
 <img width="659" alt="image" src="https://user-images.githubusercontent.com/28448629/146134632-b1455591-5b9b-4bb5-b539-3fe4e3985f08.png">
-
-<img width="653" alt="image" src="https://user-images.githubusercontent.com/28448629/146134692-bd1757df-138f-4b5f-87b9-55ab68934e3e.png">
 
 
 ## Architecture
@@ -128,7 +130,8 @@ to send the operation message and get the processing method back.
    <img width="383" alt="image" src="https://user-images.githubusercontent.com/28448629/146124373-e4e073ac-943c-4af9-9591-4c150823f828.png">
 
 
-<img width="674" alt="image" src="https://user-images.githubusercontent.com/28448629/146124098-44416161-f564-4303-a862-1554f11c8783.png">
+<img width="551" alt="image" src="https://user-images.githubusercontent.com/28448629/146139003-32a2f393-0f47-4b48-9e68-bdfa571bc7b8.png">
+
 
 - Templates.fs
    - Use template engine to substitute labels with required data.
