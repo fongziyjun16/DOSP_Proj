@@ -112,7 +112,8 @@ to send the operation message and get the processing method back.
       - Success, sign the status and show "sign in" or "sign up"
       - Not success, set error information to the status. 
 
-<img width="668" alt="image" src="https://user-images.githubusercontent.com/28448629/146122662-4fa838c5-3985-49ff-a4cd-97d067f1dde0.png">
+<img width="553" alt="image" src="https://user-images.githubusercontent.com/28448629/146139294-73e9a669-52b3-4b22-b921-902574a26d67.png">
+
 
 - Main.html
    - Defines the page after signing in.
@@ -188,68 +189,24 @@ In the backend, it contains files as below.
    - checkLogin: check if the login is legal
       - if the username exists and token is exact the current token, return true
       - else, return false
-   - buildTweetsString: 
-   - 
-      
-      
-
-In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor and of RandomControllerActor in "TweetEngineActor.fs", "ClientActor.fs", "RandomControllerActor.fs". There is also a Printer Actor, which will not be introduced formally.
-
-- Engine Actor: Connecting with SQLite to acquire data and send data to clients.
-   - When receiving a "RegisterInfo" message, insert this new Info into Table ACCOUNT, then send register success info. 
-   - When receiving a "Login / Logout" message, print the login status message.
-   - When receiving a "SubscribeInfo" message, insert the follow and follower message into Table FOLLOW and print the message.
-   - When receiving a "PostTweetInfo" message, select random clients as equal number as mention numbers and add these clients name into mentions list. Add existing hashtags into the list hashtags. Insert this new tweet into TABLE TWEET and get the tweet ID from the table. Add the mentions list to TABLE TWEET_MENTION. Add hashtags list into TABLE HASHTAG(if not exists, create new hashtag; otherwise insert it into an existing hashtag). If it's a retweet tweet, update the retweetID in the TABLE TWEET. Finally, get  followers and deliver the tweet to them. Print the message.
-   <img width="599" alt="image" src="https://user-images.githubusercontent.com/28448629/143789292-2f3c9f0a-dc18-4778-a45b-b56cd80446ef.png">
-   
-   - When receiving a "QueryFollowInfo" message, query follows from FOLLOW. Then query Tweets of FOLLOWS from TWEET. Change the tweets form and send them to the querying follower.
-   - When receiving a "QueryMentionInfo" message, query tweetIDs from TWEET_MENTION by user name. Then gets tweets from TWEET. Change the form and send them to the querying client.
-   - When receiving a "QueryHashtagInfo" message, query hashtag from HASHTAG. Using the hashtag to query tweetID from TWEET_HASHTAG. Then query tweets by the tweetID from TWEET. Change the form and send them to the querying Client.
-   - When receiving a "StopSImulationInfo", do clients stop simulation.
-   - When receiving a "StatisticsStatus" message, do the statistic work(querying number of clients and tweets and traverse accounts in ACCOUNT. Write the results into "statistics.txt".
-
-- Client Actor: Is controlled by a flag variant "login". "login = true", all the operations can implement; else the clients will do no actions.
-   - When receiving "LoginOperation" or "LogoutOperation", set "login" to be "true" or "false".
-   - When receiving "RegisterOperation", send RegisterInfo with name to the tweetEngine.
-   - When receiving "PostTweetOperation", if "login = true", set numberOfMentions = -1. If there are more than 11 clients, give a random mentioned number in range [0, 9] to numberOfMention; else give a random mentioned number in range [0, numberOfRegister]. Give a random number of new hashtag between [0, 4], and a number of existinghashtags between [0, 4]. Assign a random string as content. Assign a string within length of 20 as a new hashtag and add new hashtags to HASHTAG. Send the posting tweet message to Engine.
-   <img width="370" alt="image" src="https://user-images.githubusercontent.com/28448629/143793167-1835e9f5-42c2-4759-afef-1fa63f4999ba.png">
-
-   - When receiving "DeliverTweetOperation", if login is true, print user name and it gets a new tweet.
-   - When receiving "QueryFollowOperation", if login is true, send the QueryFollowInfo with user name to Engine. When receiving "QueryFollowResult", print the querying follows' tweets result.
-   - When receiving "QueryMentionOperation", if login is true, send the QueryMentionInfo with user name to Engine. When receiving "QueryMentionResult", print the querying mentioned tweets result.
-   - When receiving "QueryHashtagOperation", if login is true, send the QueryMentionInfo with user name (and hashtag) to Engine. When receiving "QueryHashtagResult", print the querying tweets result with the hashtag.
-   - When receiving "SimulationOperation", simulate possible operations by a actual user with asynchronization. When it's "logout", change the status to "login = true". Otherwise, if "login = true", do "logout", "post tweet", "query" and so on. 
-      - Give a random number between [0, UserID-1]. If the random number equals to 0, the user will post a tweet. Possibility of posting a tweet = 1/UserID.
-      - If the user is sure to post a new tweet, a new random number between [0, 1] will be decided with '0' representing it's a new tweet and '1' representing it's a re-tweet. Possibility of "it's a retweet" = 1/2.
-      - Give a random number between [0,6] to define the operations except post a new tweet.
-      - 0 : do logout operation. Possibility = 1/7
-      - 1 || 2 : do QueryFollowOperation. Possibility = 2/7
-      - 3 || 4 : do QueryMentionOperation. Possibility = 2/7
-      - 5 || 6 : do QueryHashtagOperation. Possibility = 2/7
-      - After doing the operation. Sleep for 1ms to release the occupation of the thread and give the other actors chances to operate, avoiding one actor occupies one thread for much time.
-   - When receiving "StopSimulationOperation", simulationWork will be set to be "false". Print "user name  stop simulation" and send "StopSimulationInfo" to Engine.
-
-- Random Controller Actor: do tests to give a simulating enviroments of random controller for all users. 
-   - When receiving "StartSimulationWithZipf", 
-      - assign all other users to subscribe the first user
-      - assign 1/2 users to subscribe the second user
-      - assign 1/3 users to subscribe the third user
-      - ......
-      - For each clients do SimulationOperation. After the operations, the controller waits for 500 ms, to let the clients do their operations automatically for 500ms. In this 500ms, there will be enough instances of tweets, subscribes, login/logout and so on to be observed (for testing convenience, we set the waiting time to be 500ms. It can be set longer to get more experiment data as you would like). The waiting time of the controller longer, the tweets and operation numbers larger.
-      - Stop the simulation.
-    - When receiving "StatisticsStatusResult", output the result to file "output/statistics.txt". Before doing this, all clients have run for 500ms (you can set this running time as you like) and then stopped.
-   - In Random Controller Actor there are system tests, which are not the project functionality realization. These tests are listed below with some clarification. 
-   - When receiving "RegisterTest", give all client in clients list the RegisterOperation.
-   - When receiving "LoginLogoutTest", doing the belowing operations with asynchronization: 
-      - give a random number in range [1, 9]. If the number between [1, 7], change the "Login" and "Logout" status. Possibility = 7/9
-      - sleep for 5000ms after a loop of operation for all clients.
-   - When receiving "ClientPostTest", choose a random client starA and a random client starB. For all clients do SubscribeOperation to starA. StarA do PostTweetOperation with false while starB with true.
-   - When receiving "QueryTest", for starA and starB do SubscribeOperations for all clients. All clients will start a new QueryFollowOperation.
-   
-- Print Actor:
-  - Print the actor path.  
+   - buildTweetsString: build tweets content into Json.Serialize
+   - Start(): StatefulAgent<S2CMessage, C2SMessage, int>
+      - this is the websocket using.
+      - Receive the messages from clients
+      - communicate with and operate database
+      - return the processed message
  
-<img width="481" alt="image" src="https://user-images.githubusercontent.com/28448629/143792669-e08cf280-9ecc-4a91-a9b3-3b2756b06709.png">
+- "Startup.fs": start some services and build the environment
+   - Build database
+      - find database files, connect to SQLite and create the database.
+   - Build webhost
+      - create default builder of websocket and build
+   
+   <img width="479" alt="image" src="https://user-images.githubusercontent.com/28448629/146140249-8bf01231-b990-4d22-8325-b3bc869bb9a6.png">
+
+- "Site.fs": contains frontier templetes that are created. "Account" and "Main"
+
+- "SimpleTwitter.fsproj": contains all files in the project, and includes SQLite and WebSharper services.
 
 
 ## Experiment
