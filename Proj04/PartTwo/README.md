@@ -222,6 +222,10 @@ In the backend, it contains files as below.
    -"binarysearchtree"
 
    <img width="512" alt="image" src="https://user-images.githubusercontent.com/28448629/146092307-eec8f53d-d70e-4226-92d0-c6721d18c742.png">
+   
+   - sign up again
+   
+   <img width="507" alt="image" src="https://user-images.githubusercontent.com/28448629/146198868-345f5b97-8cdb-441c-91bf-09c94972386c.png">
 
 
 2. Sign in after signing up 
@@ -234,12 +238,32 @@ In the backend, it contains files as below.
 
    <img width="655" alt="image" src="https://user-images.githubusercontent.com/28448629/146141021-653523e0-7dd4-4881-9d7a-dd45a1c8a1ae.png">
 
+   - wrong username or password
+   
+   <img width="512" alt="image" src="https://user-images.githubusercontent.com/28448629/146198675-590be1e5-0790-4ac9-941b-757734942ae4.png">
+   
+   - username that doesn't exist
+   
+   <img width="506" alt="image" src="https://user-images.githubusercontent.com/28448629/146199185-c887d426-01d4-4331-a9eb-d422381666f3.png">
+
+   - go to page "localhost:5000/maint" directly
+   
+   <img width="680" alt="image" src="https://user-images.githubusercontent.com/28448629/146199343-ae768a9f-8940-4047-8f21-37ba67276ec4.png">
+
    
 3. Follow someone
    
    - "little boy" follows "binarysearchtree"
    
    <img width="653" alt="image" src="https://user-images.githubusercontent.com/28448629/146141126-4c182b38-21f2-43ae-8b35-0024c914543a.png">
+
+   - "little boy" follows "binarysearchtree" again
+   
+   <img width="676" alt="image" src="https://user-images.githubusercontent.com/28448629/146198530-f7ee0cb5-1c8e-4a33-871a-a4c34f977bd1.png">
+
+   - "ab" follows someone that doesn't exist
+   
+   <img width="647" alt="image" src="https://user-images.githubusercontent.com/28448629/146199691-ba9ed3b0-a327-4fda-a364-49a1544fff76.png">
 
    
 4. Tweet
