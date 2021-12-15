@@ -16,6 +16,8 @@ Please read this cute note => In project of our group, though it was a hard time
    ​	.NET SDKs
 
    ​	.NET runtimes
+   
+   ​	various browsers. If it is the chrome, update to the newest version.
 
 2. Decompressing the .RAR file: PartTwo.rar
 
