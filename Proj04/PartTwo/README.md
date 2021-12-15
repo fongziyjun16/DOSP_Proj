@@ -17,7 +17,7 @@ Please read this cute note => In project of our group, though it was a hard time
 
    ​	.NET runtimes
    
-   ​	various browsers. If it is the chrome, update to the newest version.
+   ​	Various browsers. If it is the chrome, update to the newest version.
 
 2. Decompressing the .RAR file: PartTwo.rar
 
@@ -37,7 +37,7 @@ Please read this cute note => In project of our group, though it was a hard time
 
 <img width="638" alt="image" src="https://user-images.githubusercontent.com/28448629/146090116-98d1ff9a-920a-4d5d-bf62-31a92522d8ab.png">
 
-
+<img width="653" alt="image" src="https://user-images.githubusercontent.com/28448629/146113561-27b2c433-f00a-4f0f-ac1f-5b095ae1d11a.png">
 
 
 7. After signning in, can do operations like following, receiving following tweets, retweeting, querying tweets by Hashtag/Mention/Following.
@@ -53,50 +53,94 @@ Please read this cute note => In project of our group, though it was a hard time
 ## Architecture
 
 The project binds the frontend and backend up. As is described in the picture below with what not described, our program uses RPC, Json, websocket, template engine, which are either coded in a single file or contained in different processes as functions.
-- RPC: a protocol of sending messages to receiving and reacting. Here it is in a single file. It is a client/server mode. Here it calls functions in another file "RealTimeServer.fs" and connects with Database to complete the function of signing in and signing up in the "AccountPageProcess".
+
+- RPC: a protocol of sending messages to receiving and reacting. Here it is in a single file. It is a client/server mode. Here it calls functions in another file "RealTimeServer.fs" connecting with Database to complete the function of signing in and signing up in the "AccountPageProcess".
+
 - Json: To send messages between frontend and backend which uses different messages types that if there is not a transportable form, the received messages cannot be processed. So here we use the serialization and deserialization of Json.
    - Serialization: convert the object into a string.
+   
+   <img width="158" alt="image" src="https://user-images.githubusercontent.com/28448629/146115673-30b7ca49-6c39-45cd-ae47-521fa1e6edec.png">
+
    - Deserialization: inverse the process of Serialization, that convert the string into the object.
+   
+   <img width="383" alt="image" src="https://user-images.githubusercontent.com/28448629/146114563-92b6229c-b8be-46ca-a179-92a5ed734728.png">
+
 - Websocket: is used to connect the main ports between websockets servers, and after that the data can be transported on this connection.
  
+ <img width="511" alt="image" src="https://user-images.githubusercontent.com/28448629/146115487-2d729560-6556-47a4-98a2-0da22339cecb.png">
+
+ <img width="355" alt="image" src="https://user-images.githubusercontent.com/28448629/146115517-9ce96c7c-f46d-480f-a9a6-f69da0ab0ca4.png">
+
+
 - template engine: traverse the whole nodes and ask for the recognized labels. Make the engine with the lables.
 
-Here we combine the presentation and logic tiers to one tier, so that the whole program has two parts: 1. data tier, using SQLite. 2. presentation and logic tier, including engine which processes user register and query, and user actors.
+<img width="473" alt="image" src="https://user-images.githubusercontent.com/28448629/146117813-65c9d00f-1f74-4e62-ac06-205de73f25e2.png">
 
-<img width="412" alt="image" src="https://user-images.githubusercontent.com/28448629/143783350-c28906f6-753b-4631-95ff-098e80d1bb15.png">
 
-As the subject of the project has two parts, users and tweets, we define 
-- user with their ID(number between 1 and the maximum of user amount), name(a random string)
-- tweet ID(the sequence number of one piece of tweeet),  and retweet ID of one tweet(-1 for not been retweeted, with positive integers representing retweeted ID)
-- hashtag(topic of a tweet, which can be created by a random user)
+A user sign in to the system has two labels here: user name + token. 
+-  A token is a configuration for a user in the system. When a user login, the server will allocate a token to it. Each operation by the user will contains this token. If server doesn't find a token in the token list, it will clear the cookies.
+
+<img width="542" alt="image" src="https://user-images.githubusercontent.com/28448629/146118281-2a76957d-544e-4a76-ac71-f9883b682bb6.png">
+
+- Attention: If enter "localhost:5000/main" and want to do some operations directly, tha page will jump to the login page. It is because tokens are used here.
+
 
 <img width="922" alt="image" src="https://user-images.githubusercontent.com/28448629/146102679-fe7f3c16-1ffe-44a6-bdc6-8c49598562ca.png">
 
-Here the data layer we have done in the PART I project is still the same set int the backend.
+Here the data layer we have done in the PART I project is still the same set int the backend. The introduction of this project will be splited into two parts: frontend, backend.
 
 ### Frontend
 
-The frontend files are all contained in the folder "templates". It contains five parts, including "AccountPageProcess" which contains processes for frontpage entering and "MainPageProcess" which are processes for corresponding to the login page and operating page after login; "Account" and "Main" are the html file for rendering the page ;and a templates which uses template engine to substitute labels with required data for this separating purpose.
-Before introduce the contains of file, it needs to clarify that, the "AccountPageProcess" is connected to the RPC server which is 
+The frontend files are all contained in the folder "templates". It contains five parts, including "AccountPageProcess" which contains processes for frontpage entering and processing receiving. "MainPageProcess" containes processes for corresponding to the operation page after login. "Account" and "Main" are the html file for rendering the page. A  templates which use template engine to substitute labels with required data for this separating purpose to generate webpages with templates.
+It needs to clarify that, the "AccountPageProcess" is connected to the RPC server which is 
 
 <img width="158" alt="image" src="https://user-images.githubusercontent.com/28448629/146104608-7209b059-cd38-4a77-accf-edc829753eef.png">
 
+to send the operation message and get the processing method back.
+
 - Account.html
-   - In the Account.html file, it defines two processes: "SignIn" and "SignUp". 
-- AccountPageProcess.fs:
-- Main.html: 
-- MainPageProcess.fs: 
-- Templates.fs: 
+   - In the Account.html file, it defines the login page with "SignIn" and "SignUp". 
+- AccountPageProcess.fs
+   - Get the sign in and sign up information.
+   - Send the information to RPC and get serialized information back.
+   - Show the results of operations.
+   - Judge if signing in or signing up success
+      - Success, sign the status and show "sign in" or "sign up"
+      - Not success, set error information to the status. 
 
-In the normal database project, there are always foreign keys between table so that the tables can be related together. However, consider that in the further programming there may be deletions or modifications of current tables, we didn't add foreign keys in our database tables. But relations among tables do exist as below.
-- ACCOUNT -- NAME := TWEET -- CREATOR; HASHTAG -- CREATOR; FOLLOW -- NAME ; TWEET_MENTION -- NAME.
-- TWEET -- ID := TWEET_HASHTAG -- TWEETID.
-- TWEET_HASHTAG -- HASHTAGID := HASHTAG -- ID.
+<img width="668" alt="image" src="https://user-images.githubusercontent.com/28448629/146122662-4fa838c5-3985-49ff-a4cd-97d067f1dde0.png">
 
-<img width="482" alt="image" src="https://user-images.githubusercontent.com/28448629/143825496-e0f2463e-199b-486f-9de3-b9ff657dc721.png">
+- Main.html
+   - Defines the page after signing in.
+   - Contains blanks for following, retweeting, querying, and shows the automatically delivered followed tweets.
+- MainPageProcess.fs
+   - Send operating messages to "RealTimeServer" from websocket.
+   - An example:
+   
+   <img width="512" alt="image" src="https://user-images.githubusercontent.com/28448629/146124216-7a74e96e-8b95-499d-b15a-d7784a055d16.png">
+
+   - Get messages from websocket (in fact the real processing part is "RealTimeServer", and the messages are just sent by the websocket) with asychronization. 
+   - Show the message on the webpage.
+   - Example:
+   
+   <img width="383" alt="image" src="https://user-images.githubusercontent.com/28448629/146124373-e4e073ac-943c-4af9-9591-4c150823f828.png">
 
 
-### Presentation & Logic Tier
+<img width="674" alt="image" src="https://user-images.githubusercontent.com/28448629/146124098-44416161-f564-4303-a862-1554f11c8783.png">
+
+- Templates.fs
+   - Use template engine to substitute labels with required data.
+   - Use template to generate webpages by
+   
+   <img width="665" alt="image" src="https://user-images.githubusercontent.com/28448629/146132461-cbd050d8-b5bb-423e-9b0c-5f38c2c36643.png">
+
+
+In these frontend files, there are always some labels as "[<JavaScript>]" before modules.
+- To make frontend work in the modules and methods that are labeled with "[<JavaScript>]".
+- The files converted from those using F# cannot be used in it directly.
+
+
+### Backend
 
 Above the data tier, the defination of user actions and corresponding behaviors of the engine are described in this layer.
 
@@ -186,48 +230,6 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
 <img width="481" alt="image" src="https://user-images.githubusercontent.com/28448629/143792669-e08cf280-9ecc-4a91-a9b3-3b2756b06709.png">
 
 
-#### Functionalities
-
-1. Register Account
-
-   <img width="362" alt="image" src="https://user-images.githubusercontent.com/28448629/143794033-4df3b930-5c44-44e5-9cbc-cbbbfd902189.png">
-
-2. Send tweet
-
-   <img width="527" alt="image" src="https://user-images.githubusercontent.com/28448629/143795012-91231759-b691-4c3b-8b38-4de36d9a05bc.png">
-
-3. Subscribe to user's tweets
-
-   <img width="382" alt="image" src="https://user-images.githubusercontent.com/28448629/143794203-1ebe55e3-bc50-4809-b3ae-0149564014aa.png">
-
-4. Re-tweets
-
-   <img width="527" alt="image" src="https://user-images.githubusercontent.com/28448629/143794990-ac77c32f-7f99-4e24-93a8-33034c976520.png">
-   
-   - The re-tweets process is built in sending tweets, so that its process diagram is the same with send tweet with re-tweet being a part in the whole processing. 
-
-5. Allow querying tweets
-
-   - Query tweets subscribed to.
-   <img width="402" alt="image" src="https://user-images.githubusercontent.com/28448629/143795665-c337b1a0-a5ef-41f1-8062-41597faed046.png">
-
-   - Query tweets with specific hashtags
-   <img width="413" alt="image" src="https://user-images.githubusercontent.com/28448629/143796225-79d27410-0c2e-495d-ad91-49585818d502.png">
-
-   - Query tweets the user is mentioned
-   <img width="414" alt="image" src="https://user-images.githubusercontent.com/28448629/143796529-08a86216-72fb-4e07-8a12-b561a8889671.png">
-
-6. If the user is connected, deliver the above types of tweets live (without querying)
-   
-   -There are two methods to realize the delivering without querying.
-      - One is to set an online user table in the system. If a user sends a new tweet, Engine will query the user's all followers to intersect with that online user table. Basing on the result, Engine then send the new post tweet to the online followers. However, this method contains additional steps of database operations which consumes much more time.
-   <img width="358" alt="image" src="https://user-images.githubusercontent.com/28448629/143793605-10623910-1715-4896-8fbe-b3639bfb0ec4.png">
-
-      - The other is that delivers the tweets to all its followers. When the follower is connected, the tweet received in mailbox will be printed without querying. However, if the user is not online, the client actor will do nothing even if the tweets has been sent to its mailbox. This method is realized by adding in a control variant "Login".
-   - Considering the convenience and speed of the algorithm, we here choose the second method in our codes.
-
-
-
 ## Experiment
 
 ### Result
@@ -247,7 +249,7 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
    
    <img width="665" alt="image" src="https://user-images.githubusercontent.com/28448629/146092703-f5193dc4-89d0-42cc-882f-c5ec555b1150.png">
    
-Attention: If enter "localhost:5000/main" and want to do some operations directly, tha page will jump to the login page. It is because tokens are used here. A token is a configuration for a user in the system. When a user login, the server will allocate a token to it. Each operation by the user will contains this token. If server doesn't find a token in the token list, it will clear the cookies.
+Attention: 
    
    <img width="388" alt="image" src="https://user-images.githubusercontent.com/28448629/146106281-37c06dc7-9fba-4a61-8d8d-e39859893530.png">
 
