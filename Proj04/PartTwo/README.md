@@ -245,6 +245,10 @@ In the backend, it contains files as below.
    - username that doesn't exist
    
    <img width="506" alt="image" src="https://user-images.githubusercontent.com/28448629/146199185-c887d426-01d4-4331-a9eb-d422381666f3.png">
+   
+   - lost username or password
+   
+   <img width="507" alt="image" src="https://user-images.githubusercontent.com/28448629/146201117-cfe7b5e7-9fb2-4e1b-98a2-266765db3cb3.png">
 
    - go to page "localhost:5000/maint" directly
    
@@ -272,7 +276,10 @@ In the backend, it contains files as below.
    
    <img width="656" alt="image" src="https://user-images.githubusercontent.com/28448629/146141235-f5f5cd5c-70be-417d-b8f5-00b3f082ae61.png">
 
+   - "binarysearchtree" regrets and then clears what he has written in
    
+   <img width="656" alt="image" src="https://user-images.githubusercontent.com/28448629/146200522-077c5f44-ed0c-472d-bf5d-5a4b71dc6ef4.png">
+
 5. Show the following tweet
 
    - "littleboy" receives the tweet by "binarysearchtree"
@@ -308,4 +315,10 @@ In the backend, it contains files as below.
    - Query a special hashtag:
    
    - Query mentioned tweets:
+   
+   <img width="655" alt="image" src="https://user-images.githubusercontent.com/28448629/146201664-fd664fb3-3e76-4b09-bf6f-694c1bb4ba6a.png">
+
+   
+   - multiple mentions, use ';' to seperate each mention.
+   
    
