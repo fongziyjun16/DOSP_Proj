@@ -1,6 +1,6 @@
 # DOSP_Proj04 Part II
 
-Please read this cute note => In project of our group, though it was a hard time, the realization of it is by websocket. If there is any possibility, is there a little bonus for this cute group?
+Please read this cute note => In project of our group, though it was a hard time, the realization of it is using Websharper to implement websocket. If there is any possibility, is there a little bonus for this cute group?
 
 ## Group Members
 
