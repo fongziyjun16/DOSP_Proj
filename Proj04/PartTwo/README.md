@@ -47,7 +47,9 @@ Please read this cute note => In project of our group, though it was a hard time
 
 - Followed tweets, querying results will all shown on the webpage in the blank. Details about the results will be described in the section of "experiments results". 
 
-<img width="872" alt="image" src="https://user-images.githubusercontent.com/28448629/143763354-9740d1f8-f76d-4af1-9972-d540130292a1.png">
+<img width="659" alt="image" src="https://user-images.githubusercontent.com/28448629/146134632-b1455591-5b9b-4bb5-b539-3fe4e3985f08.png">
+
+<img width="653" alt="image" src="https://user-images.githubusercontent.com/28448629/146134692-bd1757df-138f-4b5f-87b9-55ab68934e3e.png">
 
 
 ## Architecture
@@ -77,7 +79,7 @@ The project binds the frontend and backend up. As is described in the picture be
 <img width="473" alt="image" src="https://user-images.githubusercontent.com/28448629/146117813-65c9d00f-1f74-4e62-ac06-205de73f25e2.png">
 
 
-A user sign in to the system has two labels here: user name + token. 
+A user signing in to the system has two labels here: user name + token. 
 -  A token is a configuration for a user in the system. When a user login, the server will allocate a token to it. Each operation by the user will contains this token. If server doesn't find a token in the token list, it will clear the cookies.
 
 <img width="542" alt="image" src="https://user-images.githubusercontent.com/28448629/146118281-2a76957d-544e-4a76-ac71-f9883b682bb6.png">
@@ -136,40 +138,57 @@ to send the operation message and get the processing method back.
 
 
 In these frontend files, there are always some labels as "[<JavaScript>]" before modules.
-- To make frontend work in the modules and methods that are labeled with "[<JavaScript>]".
-- The files converted from those using F# cannot be used in it directly.
+- To make these codes work in the modules and methods that are labeled with "[<JavaScript>]".
+- The files converted from those using F# cannot be used in them directly.
 
 
 ### Backend
 
-Above the data tier, the defination of user actions and corresponding behaviors of the engine are described in this layer.
+In the backend, it contains files as below.
 
-#### Frame & message types
-It contains the message type in folder "Msgs", which contains "TweetEngineMsgs.fs" to define message types in Engine, "ClientMsgs.fs" to define the message type in clients actors, and "RandomControllerMsgs.fs" to define message types in the random controller.
+<img width="125" alt="image" src="https://user-images.githubusercontent.com/28448629/146135142-70016418-8d9c-4852-9cdb-b56283b8bcde.png">
 
-- "TweetEngineMsgs.fs": Below only list some important message information types here
-   - RegisterInfo: User name
-   - RegisterSuccessInfo
-   - LoginInfo / LogoutInfo: User name
-   - SubscribeInfo: Follow, Follower
-   - PostTweetInfo: User name, Content(a random string), Number of mentions, Number of existing hashtags, Hashtags, Retweet flag.
-   - QueryFollowInfo: Follower
-   - QueryMentionInfo: User name
-   - QueryHashtagInfo: User name, Hashtag
 
-- "ClientMsgs.fs": Below only list some important message information types here
-   - SimpleTweetDTO(gives the tweet and retweet ID): TweetID, RETWEETID
-   - TweetDTO: TweetID, Creator(User), Content, Mentions, Hashtags, RetweetID
-   - QueryFollowResult / QueryMentionResults: TWEETS(List<SimpleTweetDTO>)
-   - PostTweetOperation: RetweetFlag
-   - DeliverTweetOperation: TweetDTO
-   - DeliverTweetsOperations: TWEETS(List<Tweet>)
+- "DTO.fs": defines some transportable objects.
+   - C2SMessage: Message object from client to server.
+   
+   <img width="268" alt="image" src="https://user-images.githubusercontent.com/28448629/146135353-1a29388f-222c-4635-aff3-bfb556fcf745.png">
 
-- "RandomControllerMsgs.fs"
-   - StatisticsStatusEntiy: User name, User ID, Number of Follower, Post Rate
-   - StatisticsStatusResult: CLIENTS_STATUS(List<StatisticsStatusEntity>)
+   - S2CMessage: Message object from server to client.
+   
+   <img width="328" alt="image" src="https://user-images.githubusercontent.com/28448629/146135415-cc3100c1-ff0f-4271-82f5-3b395736b0c0.png">
 
-#### Actors: Engine, Clients & RandomController
+   - Others like UsernameToken, FollowInfo, TweetInfo, FollowingNewTweetInfo.
+   
+   <img width="149" alt="image" src="https://user-images.githubusercontent.com/28448629/146136305-40ede159-56ea-416d-b4f7-69022df05034.png">
+   <img width="139" alt="image" src="https://user-images.githubusercontent.com/28448629/146136337-bba1f515-b76f-4f66-8292-8dbb0db3bd51.png">
+   <img width="140" alt="image" src="https://user-images.githubusercontent.com/28448629/146136368-33b93d38-6973-45c7-8dd4-2b0a0257e7f5.png">
+   <img width="190" alt="image" src="https://user-images.githubusercontent.com/28448629/146136383-5b34dfdf-17f9-4087-b554-4e36b3e9c6f2.png">
+
+
+- "Entities.fs": defines objects of "Account", "Follow", "Hashtag", "Tweet", "TweetMention", "TweetHashTag"
+   - These are the objects that communicates with database.
+
+- "RPCServer.fs": operation on the database based on the information coming from frontend "AccountPageProcess". 
+   - SignUpProcess: 
+      - set a new account with username and password into Database accountDAO
+   - SignInProcess: 
+      - get account by username from DatabaseDAO
+      - if account doesn't exist, return Json.Serialize(loginSign=false, token="")
+      - if account exist, return Json.Serialize(loginSign=true, token=newToken)
+      - Call function "addNewUsernameToken()" in RealTimeServer.fs to add this new online user in
+
+- "RealTimeServer.fs": functions of usertoken list or websocket services. 
+   - addNewUsernameToken: username - token list
+      - if the user doesn't exist searching by username, add username - token pair in
+      - if username exist but token doesn't equal, remove the old pair and add in the new pair (which means the user logins in again).
+   - checkLogin: check if the login is legal
+      - if the username exists and token is exact the current token, return true
+      - else, return false
+   - buildTweetsString: 
+   - 
+      
+      
 
 In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor and of RandomControllerActor in "TweetEngineActor.fs", "ClientActor.fs", "RandomControllerActor.fs". There is also a Printer Actor, which will not be introduced formally.
 
