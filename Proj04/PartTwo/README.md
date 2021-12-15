@@ -279,6 +279,22 @@ In the backend, it contains files as below.
    - "binarysearchtree" regrets and then clears what he has written in
    
    <img width="656" alt="image" src="https://user-images.githubusercontent.com/28448629/146200522-077c5f44-ed0c-472d-bf5d-5a4b71dc6ef4.png">
+   
+   - "binarysearchtree" mentions "littleboy" with hashtag "brothers"
+      - Use double slash "//" to seperate "[tweet content]//[@username]//[#hashtag]". System will find "//" to seperate the tweet.
+      - Add '@' before the mentioned username.
+      - Add '#' before the hashtag
+     
+   <img width="644" alt="image" src="https://user-images.githubusercontent.com/28448629/146208771-016bedc0-5952-4323-af47-cbe5ee054edf.png">
+   
+   <img width="636" alt="image" src="https://user-images.githubusercontent.com/28448629/146208831-b0a9329e-5d98-415b-b865-345865f2e3a6.png">
+
+      - if there are multiple users or hashtags, use ';' to split them.
+   
+   <img width="637" alt="image" src="https://user-images.githubusercontent.com/28448629/146208630-e0a38b50-48e0-41f7-b878-0e9de54afb2c.png">
+
+   <img width="638" alt="image" src="https://user-images.githubusercontent.com/28448629/146208683-8ab015ec-55f6-4271-92ce-6ee3b0b342c9.png">
+ 
 
 5. Show the following tweet
 
@@ -312,13 +328,14 @@ In the backend, it contains files as below.
    
    <img width="634" alt="image" src="https://user-images.githubusercontent.com/28448629/146142184-62dc488e-f17c-427f-86a2-5ce3c18ca215.png">
 
-   - Query a special hashtag:
+   - Query a special hashtag: 
+   
+   <img width="639" alt="image" src="https://user-images.githubusercontent.com/28448629/146208977-0e2d32c0-058a-4aa0-8eb7-219562c3263b.png">
+   
+      - if the hashtag doesn't exist, it shows nothing.
    
    - Query mentioned tweets:
    
    <img width="655" alt="image" src="https://user-images.githubusercontent.com/28448629/146201664-fd664fb3-3e76-4b09-bf6f-694c1bb4ba6a.png">
 
-   
-   - multiple mentions, use ';' to seperate each mention.
-   
-   
+   <img width="638" alt="image" src="https://user-images.githubusercontent.com/28448629/146208893-8a2bc7c1-fdcd-4d46-99cd-decf5462c1bd.png">
