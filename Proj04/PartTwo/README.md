@@ -43,31 +43,21 @@ Please read this cute note => In project of our group, though it was a hard time
 
 ### Result Description
 
-- The results of subscribers, querying and others are printed on the screen in the termination. Details about the results will be described in the section of "experiments results". 
+- Followed tweets, querying results will all shown on the webpage in the blank. Details about the results will be described in the section of "experiments results". 
 
 <img width="872" alt="image" src="https://user-images.githubusercontent.com/28448629/143763354-9740d1f8-f76d-4af1-9972-d540130292a1.png">
 
 
-- A file of statistic data of number of subscribers and tweets amounts in folder "output" is newly created, named "statistic.txt" each time restarting the programming. 
-
-<img width="467" alt="image" src="https://user-images.githubusercontent.com/28448629/143749845-f55efb96-ed65-4b10-bf29-bdf5e33ec250.png">
-
-
-   - In this txt file, one line of the output result shows like:
-
-<img width="562" alt="image" src="https://user-images.githubusercontent.com/28448629/143752091-3efa1053-5fc5-490a-89b9-6a8782714f8a.png">
-
-   - ID number is listed in the left, followed with the user names, number of followers, and tweet posting rates.
-   - There only screen shotting a counting of the first 20 users. The other users are listed below but not screen shotting in.
-
-
-
 ## Architecture
 
-The project uses three-tier architecture to build the twitter web simulation, which contains presentation tier, logic tier and data tier. 
-- presentation tier: output and show the processing results.
-- logic tier: defines some logical processes.
-- data tier: among plenty of imbeded database, we use SQLite here to store the user and tweets data, for convenience and speed consideration.
+The project binds the frontend and backend up. As is described in the picture below with what not described, our program uses RPC, Json, websocket, template engine, which are either coded in a single file or contained in different processes as functions.
+- RPC: a protocol of sending messages to receiving and reacting. Here it is in a single file. It is a client/server mode. Here it calls functions in another file "RealTimeServer.fs" and connects with Database to complete the function of signing in and signing up in the "AccountPageProcess".
+- Json: To send messages between frontend and backend which uses different messages types that if there is not a transportable form, the received messages cannot be processed. So here we use the serialization and deserialization of Json.
+   - Serialization: convert the object into a string.
+   - Deserialization: inverse the process of Serialization, that convert the string into the object.
+- Websocket: is used to connect the main ports between websockets servers, and after that the data can be transported on this connection.
+ 
+- template engine: traverse the whole nodes and ask for the recognized labels. Make the engine with the lables.
 
 Here we combine the presentation and logic tiers to one tier, so that the whole program has two parts: 1. data tier, using SQLite. 2. presentation and logic tier, including engine which processes user register and query, and user actors.
 
@@ -78,15 +68,23 @@ As the subject of the project has two parts, users and tweets, we define
 - tweet ID(the sequence number of one piece of tweeet),  and retweet ID of one tweet(-1 for not been retweeted, with positive integers representing retweeted ID)
 - hashtag(topic of a tweet, which can be created by a random user)
 
-### Data Tier
+<img width="922" alt="image" src="https://user-images.githubusercontent.com/28448629/146102679-fe7f3c16-1ffe-44a6-bdc6-8c49598562ca.png">
 
-In the data tier, we decided six relationships tables in SQLite to define the user actions, which is defined in the path "resources\\create_table.sql". Their basic CRUD operations of the tables are defined in the namespace DAO, which includes "AccountDAO.fs", "FollowDAO.fs", "HashtagDAO.fs", "TweetDAO.fs", "TweetMentionDAO.fs", "TweetHashtagDAO.fs". Each time running the program, the programmed databade file "tweet_sys_db" is newly created. 
-- Account: User ID, User name
-- Follow: User name, Follower name
-- Hashtag: User ID, Topic, Creator(User name)
-- Tweet: User ID, Creator(User name), Topic(Hashtag), Retweet ID
-- Tweet_Mention: Tweet ID, User name
-- Tweet_Hashtag: Tweet ID, HashtagID
+Here the data layer we have done in the PART I project is still the same set int the backend.
+
+### Frontend
+
+The frontend files are all contained in the folder "templates". It contains five parts, including "AccountPageProcess" which contains processes for frontpage entering and "MainPageProcess" which are processes for corresponding to the login page and operating page after login; "Account" and "Main" are the html file for rendering the page ;and a templates which uses template engine to substitute labels with required data for this separating purpose.
+Before introduce the contains of file, it needs to clarify that, the "AccountPageProcess" is connected to the RPC server which is 
+
+<img width="158" alt="image" src="https://user-images.githubusercontent.com/28448629/146104608-7209b059-cd38-4a77-accf-edc829753eef.png">
+
+- Account.html
+   - In the Account.html file, it defines two processes: "SignIn" and "SignUp". 
+- AccountPageProcess.fs:
+- Main.html: 
+- MainPageProcess.fs: 
+- Templates.fs: 
 
 In the normal database project, there are always foreign keys between table so that the tables can be related together. However, consider that in the further programming there may be deletions or modifications of current tables, we didn't add foreign keys in our database tables. But relations among tables do exist as below.
 - ACCOUNT -- NAME := TWEET -- CREATOR; HASHTAG -- CREATOR; FOLLOW -- NAME ; TWEET_MENTION -- NAME.
@@ -248,6 +246,10 @@ In folder "Actors", it contains actor operations of EngineActor, of ClientAcotor
    <img width="665" alt="image" src="https://user-images.githubusercontent.com/28448629/146092703-f5193dc4-89d0-42cc-882f-c5ec555b1150.png">
    
 Attention: If enter "localhost:5000/main" and want to do some operations directly, tha page will jump to the login page. It is because tokens are used here. A token is a configuration for a user in the system. When a user login, the server will allocate a token to it. Each operation by the user will contains this token. If server doesn't find a token in the token list, it will clear the cookies.
+   
+   <img width="388" alt="image" src="https://user-images.githubusercontent.com/28448629/146106281-37c06dc7-9fba-4a61-8d8d-e39859893530.png">
+
+   
    
 3. Follow someone
    
